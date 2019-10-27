@@ -12,7 +12,7 @@ The primary tools provided by the subtrix class are:
 
 - Substitutions
 
-
+Subtrix utilizes extensive yaml configuration documents to define identifiers within the document for actions to be taken against
 
 
 
