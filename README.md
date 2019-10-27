@@ -6,9 +6,14 @@ The primary tools provided by the subtrix class are:
 
 - Functions
 
-- Substitutions
-
 - Loops
 
 - Matricies
+
+- Substitutions
+
+
+
+
+
 
