@@ -1,0 +1,59 @@
+---
+<(META)>:
+  docid: 'ba609769-12ae-4c36-b555-d8904cfaf778'
+  name: Element Level Rule Module Python Document
+  description: >
+    Implement a templating system layering the concepts of
+    variables, substitions, loops, and functions
+
+    use rules to implement permissions by combining WHO with TMPLT
+
+    run a function on the group that the function is contained in
+    are there times when a function would need to be applied
+    to template data the function is not in? fucntion values
+    apply functions recursively? or have a recursive function?
+    mapp target of function and process through tmplting engine as needed?
+
+  version: 0.0.0.0.0.0
+  expire: <^(EXPIRE)^>
+  here: <^(HERE)^>
+  outline:
+  <(WT)>: -32
+system:
+  name: FLEXI
+  mechanisms:
+  perf:
+    cores: 8
+data:
+  names:
+    path: <[LEXIvrs]>panda/<[pov]>/RESRCs/configs/names/names.sqlite
+sequence: ['varr', 'sub', 'matrix', 'loop', 'func', 'sub']
+processors:
+  func:
+    fx: 'func'
+    path: '/_data_/func.yaml'
+  loop:
+    fx: 'loop'
+    path: '/_data_/loop.yaml'
+  matrix:
+    fx: 'matrix'
+    path: '/_data_/matrix.yaml'
+  sub:
+    fx: 'sub'
+    path: '/_data_/sub.yaml'
+  varr:
+    fx: 'varr'
+    path: '/_data_/varr.yaml'
+<(DNA)>:
+  administer:
+    version: <[active:.version]>
+    test:
+    description: >
+      Administrate Tests of the Tmplt Classes
+    work:
+  here:
+    version: <[active:.version]>
+    test:
+    description: >
+      <[description]>
+    work:

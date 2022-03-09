@@ -1,0 +1,130 @@
+---
+<(META)>:
+  DOCid: <^[uuid]^>
+  name: Element Level Rule Module Python Document
+  description: >
+    Implement rule system of document markup and data expansion
+    through substitution, functions, loops
+  expirary: <[expiration]>
+  version: <[version]>
+  path: <[LEXIvrs]>pheonix/elements/rule/rule.py
+  outline: <[outline]>
+  authority: document|this
+  security: sec|lvl2
+  <(WT)>: -32
+base:
+  name:
+  description: >
+  pattern:
+    initialize:
+      -
+        symbol: '<('
+        name: Start Variable Symbol
+        description: >
+          Signal the start of a templting/rule variable
+      -
+        symbol: '<^('
+        name: Request Start Variable Symbol
+        description: >
+          Signal the start of a templting/rule variable
+    processors:
+    finalize:
+      -
+        symbol: ')>'
+        name: End Variable Symbol
+        description: >
+          Signal the end of a templting/rule variable
+      -
+        symbol: ')^>'
+        name: Request End Variable Symbol
+        description: >
+          Signal the end of a templting/rule variable
+how: 'varr'
+knowns:
+  <(DTID)>:
+    name: Date Time Identifier
+    description: >
+    object: pheonix.elements.thing.thing.when().credtid()
+    outs:
+  <(HRID)>:
+    name:
+    description: >
+      Increment in a specificly grouped sequence using
+      standardized logic
+    object:
+    outs:
+    code: <[<[CODE]><[----]>.<[----]>.<[----]>]>
+    name: human readable identifier
+    Incrementer:
+      python: self.identify
+      description: >
+        Increment sequence using a source getter for use
+  <(TODAY)>:
+    name:
+    description: >
+      implement time rules using the timemap module
+    object: pheonix.elements.thing.thing.when
+    outs: today
+  <(UUID)>:
+    name: Universally Unique Identification
+    description: >
+    object: pheonix.elements.thing.thing.what
+    outs: ruuid
+  <(DATAvrs)>:
+    name:
+    description:
+    object: povsesh.env['DATAvrs']
+    outs:
+  <(HOMEvrs)>:
+    name:
+    description:
+    object: povsesh.env['HOMEvrs']
+    outs:
+  <(IMPORT)>:
+    name:
+    description:
+    object:
+    outs:
+  <(LEXIvrs)>:
+    name:
+    description:
+    object: povsesh.env['LEXIvrs']
+    outs:
+  <(Ovrs)>:
+    name:
+    description:
+    object: povsesh.env['Ovrs']
+    outs:
+  <(THINGvrs)>:
+    name:
+    description:
+    object: povsesh.env['THINGvrs']
+    outs:
+  <(VEINvrs)>:
+    name:
+    description:
+    object: povsesh.env['VEINvrs']
+    outs:
+  <(WAREvrs)>:
+    name:
+    description:
+    object: povsesh.env['WAREvrs']
+    outs:
+  <(WORKvrs)>:
+    name:
+    description:
+    object: povsesh.env['WORKvrs']
+    outs:
+<(DNA)>:
+  administer:
+    version: <[active:.version]>
+    test:
+    description: >
+      Administrate Tests of the Tmplt Classes
+    work:
+  here:
+    version: <[active:.version]>
+    test:
+    description: >
+      <+[description]+>
+    work:

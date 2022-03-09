@@ -1,0 +1,25 @@
+functionSubstition:
+  input:
+    'args':
+    'kwargs':
+  output:
+loopingSubstitution:
+  input:
+    'args':
+    'kwargs':
+  output:
+matrixSubstition:
+  input:
+    'args':
+    'kwargs':
+  output:
+simpleSubstitution:
+  input:
+    'args':
+    'kwargs':
+  output:
+variableSubstition:
+  input:
+    'args':
+    'kwargs':
+  output:

@@ -1,0 +1,77 @@
+---
+<(META)>:
+  DOCid: <^(UUID)^>
+  name: Default Template Configuration
+  description: >
+  version: 0.0.0.0.0.0
+  expire: <^[expire]^>
+  here: <[LEXIvrs]>/pheonix/.yaml
+  outline:
+base: #seems like everything could just be a type of function but with some being special?
+  name:
+  description: >
+    A system to generate data based on simple matrixing rules
+  pattern:
+    initialize:
+      -
+        symbol: '<+['
+        name: &SMSS Start Matrix Substitute Symbol
+        description: >
+          Signal the start of a matrix based command
+        obligation: optional
+      -
+        symbol: '<+{'
+        name: &SMFS Start Matrix Function Symbol
+        description: >
+          Signal the start of a matrix based command
+        obligation: optional
+    processors:
+      prefix:
+        -
+          symbol: ':.'
+          name: prefixalize
+          description: >
+            Signal the start of a substitution command
+          obligation: optional
+      midfix:
+        -
+          symbol: ->
+          name:
+          description: >
+            negative progressing matrix
+          obligation:
+        -
+          symbol: <-
+          name:
+          description: >
+            positive progressing matrix
+        -
+          symbol: <=>
+          name:
+          description: >
+            binary dimension matrix
+        -
+          symbol: <*>
+          name:
+          description: >
+            all dimensions matrix
+      suffix:
+        -
+          symbol: '.:'
+          name: suffixalize
+          description: >
+            Signal the start of a substitution command
+          obligation: optional
+    finalize:
+      -
+        symbol: ']+>'
+        name: &EMSS End Matrix Substitute Symbol
+        description: >
+          Signal the start of a matrix based command
+        obligation: optional
+      -
+        symbol: '}+>'
+        name: &EMFS End Matrix Function Symbol
+        description: >
+          Signal the start of a matrix based command
+        obligation: optional
