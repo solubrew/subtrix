@@ -48,10 +48,10 @@ class mechanism:#														||
 		self.data = data#												||
 		if cfg != None:#												||
 			config = getYAML(cfg)#						||
-		pxcfg = '{0}z-data_/rule.yaml'.format(here)#								||use default configuration
+		pxcfg = '{0}_data_/rule.yaml'.format(here)#								||use default configuration
 		self.config = getYAML(pxcfg)#						||load configuration file
 		if rules != None:#												||
-			cfg = '{0}z-data_/rules'.format(here)#									||set folder path
+			cfg = '{0}_data_/rules'.format(here)#									||set folder path
 			rules = getYAML(cfg)#						||read files in directory
 		self.tmpltmap = {'tmplts': tmplts, 'docs': tmplts}#				||set vars
 		self.tipe = self.config['system']['name']#						||
@@ -212,7 +212,7 @@ class mechanism:#														||
 	def procFix(self, term, spat='', epat='', cfg=None):#				||
 		'Set Prefix and Suffix of the Active Term'#						||
 		if cfg == None:#												||
-			cfg = '{0}z-data_/rule/sub.yaml'.format(here)#				||
+			cfg = '{0}_data_/rule/sub.yaml'.format(here)#				||
 			cfg = getYAML(cfg)#						||
 		prcsrs = cfg['base']['pattern']['processors']#					||
 		symbols = self._collectSymbols(prcsrs)#							||
