@@ -1,66 +1,78 @@
 ---
 meta:
-	DOCid: <^[uuid]^>
-	name: Default Template Configuration
-	description: >
-	version: 0.0.0.0.0.0
-	expire: <^[expire]^>
-	here: <[LEXIvrs]>/pheonix/.yaml
-	outline:
+  DOCid: <^[uuid]^>
+  name: Default Template Configuration
+  description: >
+  version: 0.0.0.0.0.0
+  expire: <^[expire]^>
+  here: <[LEXIvrs]>/pheonix/.yaml
+  outline:
 base: #seems like everything could just be a type of function but with some being special?
-	name:
-	description: >
-		A system to generate data based on simple looping rules
-	pattern:
-		initialize:
-			-
-				symbol: '<@['
-				name: &SLSS Start Loop Substitute Symbol
-				description: >
-					Signal the start of a loop based command
-				obligation: optional
-			-
-				symbol: '<@{'
-				name: &SLFS Start Loop Function Symbol
-				description: >
-					Signal the start of a loop based command
-				obligation: optional
-		processors:
-			prefix:
-			midfix:
-				-
-					symbol: ->
-					name:
-					description: >
-						negative progressing loop
-					obligation:
-				-
-					symbol: <-
-					name:
-					description: >
-						positive progressing loop
-				-
-					symbol: <=>
-					name:
-					description: >
-						binary dimension loop
-				-
-					symbol: <*>
-					name:
-					description: >
-						all dimensions loop
-			suffix:
-		finalize:
-			-
-				symbol: ']@>'
-				name: &ELSS End Loop Substitute Symbol
-				description: >
-					Signal the start of a loop based command
-				obligation: optional
-			-
-				symbol: '}@>'
-				name: &ELFS End Loop Function Symbol
-				description: >
-					Signal the start of a loop based command
-				obligation: optional
+  name:
+  description: >
+    A system to generate data based on simple looping rules
+  pattern:
+    initialize:
+      -
+        symbol: '<@['
+        name: &SLSS Start Loop Substitute Symbol
+        description: >
+          Signal the start of a loop based command
+        obligation: optional
+      -
+        symbol: '<@{'
+        name: &SLFS Start Loop Function Symbol
+        description: >
+          Signal the start of a loop based command
+        obligation: optional
+    processors:
+      prefix:
+        -
+          symbol: ':.'
+          name: prefixalize
+          description: >
+            Signal the start of a substitution command
+          obligation: optional
+      midfix:
+        -
+          symbol: ->
+          name:
+          description: >
+            negative progressing loop
+          obligation:
+        -
+          symbol: <-
+          name:
+          description: >
+            positive progressing loop
+        -
+          symbol: <=>
+          name:
+          description: >
+            binary dimension loop
+        -
+          symbol: <*>
+          name:
+          description: >
+            all dimensions loop
+      suffix:
+        -
+          symbol: '.:'
+          name: suffixalize
+          description: >
+            Signal the start of a substitution command
+          obligation: optional
+    finalize:
+      -
+        symbol: ']@>'
+        name: &ELSS End Loop Substitute Symbol
+        description: >
+          Signal the start of a loop based command
+        obligation: optional
+      -
+        symbol: '}@>'
+        name: &ELFS End Loop Function Symbol
+        description: >
+          Signal the start of a loop based command
+        obligation: optional
 how: 'loop'

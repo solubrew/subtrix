@@ -1,374 +1,374 @@
 ---
 <(meta)>:
-	DOCid: <^[uuid]^>
-	name: Element Level Rule Module Function Configuration YAML Document
-	description: >
-		Implement rule system of document markup and data expansion
-		through substitution, functions, loops
-	expirary: <[expiration]>
-	version: <[version]>
-	path: <[LEXIvrs]>pheonix/elements/rule/rule.py
-	outline: <[outline]>
-	authority: document|this
-	security: seclvl2
-	<(wt)>: -32
+  DOCid: <^[uuid]^>
+  name: Element Level Rule Module Function Configuration YAML Document
+  description: >
+    Implement rule system of document markup and data expansion
+    through substitution, functions, loops
+  expirary: <[expiration]>
+  version: <[version]>
+  path: <[LEXIvrs]>pheonix/elements/rule/rule.py
+  outline: <[outline]>
+  authority: document|this
+  security: seclvl2
+  <(wt)>: -32
 base:
-	description: >
-		A dynamic system for
-		- finding data within data based on rules
-	ex:
-		-
-			code: '<{<[skrp]>:=>WRITE]=[TO]-[<[file]>}>'
-			explanation: >
-				Write skrp text to the verse+path+file location
-	pattern:
-		initialize:
-			-
-				symbol: '<{'
-				name: &SFS Start Function Symbol
-				description: >
-					Signal the start of a function based command
-				obligation: required
-			-
-				symbol: '<^{'
-				name: &RSFS Request Start Function Symbol
-				description: >
-						Signal the start of a function based command
-				obligation: required
-			-
-				symbol: '<~{'
-				name: &OSFS Optional Start Function Symbol
-				description: >
-						Signal the start of a function based command
-				obligation: optional
-			-
-				symbol: '<o{'
-				name: &TSFS Templting Start Function Symbol
-				description: >
-						Signal the start of a function based command
-				obligation: non-mutable
-		processors:
-			prefix:
-			midfix:
-				-
-					symbol: ':=>'
-					name: Function Target Seperator
-					description:
-					obligation:
-				-
-					symbol: ']=['
-					name: Fuction chain
-					description:
-					obligation:
-				-
-					symbol: ']-['
-					name: Target chain
-					description:
-					obligation:
-			suffix:
-		finalize:
-			-
-				symbol: '}>'
-				name: &EFS End Function Symbol
-				description: >
-						Signal the start of a function based command
-				obligation: required
-			-
-				symbol: '}^>'
-				name: &REFS Request End Function Symbol
-				description: >
-					Signal the start of a function based command
-				obligation: required
-			-
-				symbol: '}~>'
-				name: &OEFS Optional End Function Symbol
-				description: >
-					Signal the start of a function based command
-				obligation: optional
-			-
-				symbol: '}o>'
-				name: &TEFS Templting End Function Symbol
-				description: >
-					Signal the start of a function based command
-				obligation: non-mutable
-		comments:
-			-
-				name: multiline comment
-				find:
-					initialize:
-						code: '<+[cmt0s]+>'
-						func: '<{<[FORMATS]>:=>LOAD]=[SELECT.START}>'
-					finalize:
-						code: '<+[cmt0e]+>'
-						func: '<{<[FORMATS]>:=>LOAD]=[SELECT.END}>'
+  description: >
+    A dynamic system for
+    - finding data within data based on rules
+  ex:
+    -
+      code: '<{<[skrp]>:=>WRITE]=[TO]-[<[file]>}>'
+      explanation: >
+        Write skrp text to the verse+path+file location
+  pattern:
+    initialize:
+      -
+        symbol: '<{'
+        name: &SFS Start Function Symbol
+        description: >
+          Signal the start of a function based command
+        obligation: required
+      -
+        symbol: '<^{'
+        name: &RSFS Request Start Function Symbol
+        description: >
+            Signal the start of a function based command
+        obligation: required
+      -
+        symbol: '<~{'
+        name: &OSFS Optional Start Function Symbol
+        description: >
+            Signal the start of a function based command
+        obligation: optional
+      -
+        symbol: '<o{'
+        name: &TSFS Templting Start Function Symbol
+        description: >
+            Signal the start of a function based command
+        obligation: non-mutable
+    processors:
+      prefix:
+      midfix:
+        -
+          symbol: ':=>'
+          name: Function Target Seperator
+          description:
+          obligation:
+        -
+          symbol: ']=['
+          name: Fuction chain
+          description:
+          obligation:
+        -
+          symbol: ']-['
+          name: Target chain
+          description:
+          obligation:
+      suffix:
+    finalize:
+      -
+        symbol: '}>'
+        name: &EFS End Function Symbol
+        description: >
+            Signal the start of a function based command
+        obligation: required
+      -
+        symbol: '}^>'
+        name: &REFS Request End Function Symbol
+        description: >
+          Signal the start of a function based command
+        obligation: required
+      -
+        symbol: '}~>'
+        name: &OEFS Optional End Function Symbol
+        description: >
+          Signal the start of a function based command
+        obligation: optional
+      -
+        symbol: '}o>'
+        name: &TEFS Templting End Function Symbol
+        description: >
+          Signal the start of a function based command
+        obligation: non-mutable
+    comments:
+      -
+        name: multiline comment
+        find:
+          initialize:
+            code: '<+[cmt0s]+>'
+            func: '<{<[FORMATS]>:=>LOAD]=[SELECT.START}>'
+          finalize:
+            code: '<+[cmt0e]+>'
+            func: '<{<[FORMATS]>:=>LOAD]=[SELECT.END}>'
 how: 'func'
 knowns:
-	ABRV:
-		name: Abbreviate
-		description: >
-			Trigger abbreviation
-		object: pheonix.elements.calcgen.stuff
-		chain: abbreviate
-		out: it
-	COMPARE:
-		name:
-		description: >
-			Compare givens
-		object: pheonix.elements.exam.stuff
-		chain: compare
-		out: it
-	CREATE:
-		name:
-		description: >
-			generate
-		object: pheonix.elements.calcgen.stuff
-		chain: abbreviate
-		out: it
-	EXTEND:
-		description: >
-			change substitution keys in name or function
-			ie. func to loop or sub to loop
-			Extrapolate and/or Interpolate a dataset using
-			various tagets
-		object: pheonix.elements.calcgen.stuff
-		chain: abbreviate
-		out: it
-		targets:
-			- list
-			- algo
-	FILTER:
-		description: >
-		object: pheonix.elements.calcgen.stuff
-		chain: abbreviate
-		out: it
-	FIND:
-		object: pheonix.elements.calcgen.stuff
-		chain: abbreviate
-		out: it
-		syntax:
-			pheonix:
-				text: >
-					<{:IF=>}>
-			python:
-				text: >
-					c if a == b else d
-			excel:
-				text: >
-					=IF(a=b,c,d)
-	GET:
-		description: >
-			Filter down to the given key
-		object: pheonix.elements.calcgen.stuff
-		chain: abbreviate
-		out: it
-		process:
-			sane.stuff(x).filtr(var)
-	LOAD:
-		description: >
-			load the thing that comes before :=>
-		object: >
-			pheonix.elements.store.store.stuff
-		chain:
-			- read
-		out: dikt
-	LOOP:
-		description: >
-			Loop in document
-		object:
+  ABRV:
+    name: Abbreviate
+    description: >
+      Trigger abbreviation
+    object: pheonix.elements.calcgen.stuff
+    chain: abbreviate
+    out: it
+  COMPARE:
+    name:
+    description: >
+      Compare givens
+    object: pheonix.elements.exam.stuff
+    chain: compare
+    out: it
+  CREATE:
+    name:
+    description: >
+      generate
+    object: pheonix.elements.calcgen.stuff
+    chain: abbreviate
+    out: it
+  EXTEND:
+    description: >
+      change substitution keys in name or function
+      ie. func to loop or sub to loop
+      Extrapolate and/or Interpolate a dataset using
+      various tagets
+    object: pheonix.elements.calcgen.stuff
+    chain: abbreviate
+    out: it
+    targets:
+      - list
+      - algo
+  FILTER:
+    description: >
+    object: pheonix.elements.calcgen.stuff
+    chain: abbreviate
+    out: it
+  FIND:
+    object: pheonix.elements.calcgen.stuff
+    chain: abbreviate
+    out: it
+    syntax:
+      pheonix:
+        text: >
+          <{:IF=>}>
+      python:
+        text: >
+          c if a == b else d
+      excel:
+        text: >
+          =IF(a=b,c,d)
+  GET:
+    description: >
+      Filter down to the given key
+    object: pheonix.elements.calcgen.stuff
+    chain: abbreviate
+    out: it
+    process:
+      sane.stuff(x).filtr(var)
+  LOAD:
+    description: >
+      load the thing that comes before :=>
+    object: >
+      pheonix.elements.store.store.stuff
+    chain:
+      - read
+    out: dikt
+  LOOP:
+    description: >
+      Loop in document
+    object:
 
-	MONITOR:
-		description: >
-	SCRAPE:
-		description: >
-	SEARCH:
-		description: >
-	STORE:
-		description: >
-	UPDATE:
-		description: >
-	TAG:
-		description: >
-			create names for groups or specific items
-		directors:
-			- by
-			- algo
-	IF:
-		syntax:
-			pheonix:
-				text: >
-					<{:IF=>}>
-			python:
-				text: >
-					{c} if {a} == {b} else {d}
+  MONITOR:
+    description: >
+  SCRAPE:
+    description: >
+  SEARCH:
+    description: >
+  STORE:
+    description: >
+  UPDATE:
+    description: >
+  TAG:
+    description: >
+      create names for groups or specific items
+    directors:
+      - by
+      - algo
+  IF:
+    syntax:
+      pheonix:
+        text: >
+          <{:IF=>}>
+      python:
+        text: >
+          {c} if {a} == {b} else {d}
 
-	LOOKUP:
-		syntax:
-			pheonix:
-				text: >
-					<{:IF=>}>
-			python:
-				text: >
-					c if a == b else d
-	SUM:
-		syntax:
-			pheonix:
-				text: >
-					<{:IF=>}>
-			python:
-				text: >
-					c if a == b else d
-	SUMIF:
-		syntax:
-			pheonix:
-				text: >
-					<{:IF=>}>
-			python:
-				text: >
-					c if a == b else d
-	SUMIFS:
-		syntax:
-			pheonix:
-				text: >
-					<{:IF=>}>
-			python:
-				text: >
-					c if a == b else d
-	ISERROR:
-		syntax:
-			pheonix:
-				text: >
-					<{:IF=>}>
-			python:
-				text: >
-					c if a == b else d
-			excel:
-				text: >
-					=IF(a=b,c,d)
-	AVERAGE:
-		syntax:
-			pheonix:
-				text: >
-					<{:IF=>}>
-			python:
-				text: >
-					c if a == b else d
-			excel:
-				text: >
-					=IF(a=b,c,d)
-		ids:
-			name:
-			search:
-				MEAN:
-	MEDIAN:
-		syntax:
-			pheonix:
-				text: >
-					<{:IF=>}>
-			python:
-				text: >
-					c if a == b else d
-			excel:
-				text: >
-					=AVERAGE(a:c)|=AVERAGE(a,b)|=AVERAGE(a,c,d:g)
-	MATCH:
-		syntax:
-			pheonix:
-				text: >
-					<{:IF=>}>
-			python:
-				text: >
-					c if a == b else d
-			excel:
-				text: >
-					=IF(a=b,c,d)
-	INDEX:
-		syntax:
-			pheonix:
-				text: >
-					<{:IF=>}>
-			python:
-				text: >
-					c if a == b else d
-			excel:
-				text: >
-					=IF(a=b,c,d)
-	LEN:
-		syntax:
-			pheonix:
-				text: >
-					<{:IF=>}>
-			python:
-				text: >
-					c if a == b else d
-			excel:
-				text: >
-					=IF(a=b,c,d)
-	RFIND:
-		syntax:
-			pheonix:
-				text: >
-					<{:IF=>}>
-			python:
-				text: >
-					c if a == b else d
-			excel:
-				text: >
-					=IF(a=b,c,d)
-	TRIM:
-		syntax:
-			pheonix:
-				text: >
-					<{:IF=>}>
-			python:
-				text: >
-					c if a == b else d
-			excel:
-				text: >
-					=IF(a=b,c,d)
-	RTRIM:
-		syntax:
-			pheonix:
-				text: >
-					<{:IF=>}>
-			python:
-				text: >
-					c if a == b else d
-			excel:
-				text: >
-					=IF(a=b,c,d)
-	NOW:
-	PIVOT:
-	GRAPH:
-	UNIQUE:
-	DROPDOWN:
+  LOOKUP:
+    syntax:
+      pheonix:
+        text: >
+          <{:IF=>}>
+      python:
+        text: >
+          c if a == b else d
+  SUM:
+    syntax:
+      pheonix:
+        text: >
+          <{:IF=>}>
+      python:
+        text: >
+          c if a == b else d
+  SUMIF:
+    syntax:
+      pheonix:
+        text: >
+          <{:IF=>}>
+      python:
+        text: >
+          c if a == b else d
+  SUMIFS:
+    syntax:
+      pheonix:
+        text: >
+          <{:IF=>}>
+      python:
+        text: >
+          c if a == b else d
+  ISERROR:
+    syntax:
+      pheonix:
+        text: >
+          <{:IF=>}>
+      python:
+        text: >
+          c if a == b else d
+      excel:
+        text: >
+          =IF(a=b,c,d)
+  AVERAGE:
+    syntax:
+      pheonix:
+        text: >
+          <{:IF=>}>
+      python:
+        text: >
+          c if a == b else d
+      excel:
+        text: >
+          =IF(a=b,c,d)
+    ids:
+      name:
+      search:
+        MEAN:
+  MEDIAN:
+    syntax:
+      pheonix:
+        text: >
+          <{:IF=>}>
+      python:
+        text: >
+          c if a == b else d
+      excel:
+        text: >
+          =AVERAGE(a:c)|=AVERAGE(a,b)|=AVERAGE(a,c,d:g)
+  MATCH:
+    syntax:
+      pheonix:
+        text: >
+          <{:IF=>}>
+      python:
+        text: >
+          c if a == b else d
+      excel:
+        text: >
+          =IF(a=b,c,d)
+  INDEX:
+    syntax:
+      pheonix:
+        text: >
+          <{:IF=>}>
+      python:
+        text: >
+          c if a == b else d
+      excel:
+        text: >
+          =IF(a=b,c,d)
+  LEN:
+    syntax:
+      pheonix:
+        text: >
+          <{:IF=>}>
+      python:
+        text: >
+          c if a == b else d
+      excel:
+        text: >
+          =IF(a=b,c,d)
+  RFIND:
+    syntax:
+      pheonix:
+        text: >
+          <{:IF=>}>
+      python:
+        text: >
+          c if a == b else d
+      excel:
+        text: >
+          =IF(a=b,c,d)
+  TRIM:
+    syntax:
+      pheonix:
+        text: >
+          <{:IF=>}>
+      python:
+        text: >
+          c if a == b else d
+      excel:
+        text: >
+          =IF(a=b,c,d)
+  RTRIM:
+    syntax:
+      pheonix:
+        text: >
+          <{:IF=>}>
+      python:
+        text: >
+          c if a == b else d
+      excel:
+        text: >
+          =IF(a=b,c,d)
+  NOW:
+  PIVOT:
+  GRAPH:
+  UNIQUE:
+  DROPDOWN:
 GRAPHIC:
-	FORM:
-		VIEW:
-		ENTRY:
-			description: >
-				how to map the entry fields to a table?....auto create table as best as possible
-				how to handle one to many and many to many relationships...and enable standard reuse of the table?
-				delete functions with recovery...impacts to security...default to share without history...
-				except where history is need to enable functionality outside of history rewind
-	PUBLISH:
-		FORM:
-		TABLE: >
-			publish table takes over as master by default?...maintain sync by sending a stream fo cmds
-			generally lots of data will be only moved once
-		GRAPHIC:
-	SMALLTABLECOMPACTION: >
-		common values are summarized to a seperate table and linked when such values reach a level
-		that they represent a statistically impactfull amount of the file size
+  FORM:
+    VIEW:
+    ENTRY:
+      description: >
+        how to map the entry fields to a table?....auto create table as best as possible
+        how to handle one to many and many to many relationships...and enable standard reuse of the table?
+        delete functions with recovery...impacts to security...default to share without history...
+        except where history is need to enable functionality outside of history rewind
+  PUBLISH:
+    FORM:
+    TABLE: >
+      publish table takes over as master by default?...maintain sync by sending a stream fo cmds
+      generally lots of data will be only moved once
+    GRAPHIC:
+  SMALLTABLECOMPACTION: >
+    common values are summarized to a seperate table and linked when such values reach a level
+    that they represent a statistically impactfull amount of the file size
 <(DNA)>:
-	administer:
-		version: <[active:.version]>
-		test:
-		description: >
-			Administrate Tests of the Tmplt Classes
-		work:
-	here:
-		version: <[active:.version]>
-		test:
-		description: >
-			<+[description]+>
-		work:
+  administer:
+    version: <[active:.version]>
+    test:
+    description: >
+      Administrate Tests of the Tmplt Classes
+    work:
+  here:
+    version: <[active:.version]>
+    test:
+    description: >
+      <+[description]+>
+    work:
