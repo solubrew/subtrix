@@ -31,19 +31,19 @@ sequence: ['varr', 'sub', 'matrix', 'loop', 'func', 'sub']
 processors:
   func:
     fx: 'func'
-    path: '/_data_/func.yaml'
+    path: '_data_/func.yaml'
   loop:
     fx: 'loop'
-    path: '/_data_/loop.yaml'
+    path: '_data_/loop.yaml'
   matrix:
     fx: 'matrix'
-    path: '/_data_/matrix.yaml'
+    path: '_data_/matrix.yaml'
   sub:
     fx: 'sub'
-    path: '/_data_/sub.yaml'
+    path: '_data_/sub.yaml'
   varr:
     fx: 'varr'
-    path: '/_data_/varr.yaml'
+    path: '_data_/varr.yaml'
 <(DNA)>:
   administer:
     version: <[active:.version]>
