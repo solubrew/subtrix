@@ -2,7 +2,7 @@
 '''
 ---
 <(META)>:
-	DOCid: 03a412f8-c767-467e-9044-ea7cf19c2f9e
+	docid: 03a412f8-c767-467e-9044-ea7cf19c2f9e
 	name: Subtrix Module Python Document
 	description: >
 		Implement subtrix system of document markup and data expansion
@@ -12,8 +12,7 @@
 
 	expirary: <[expiration]>
 	version: <[version]>
-	path: <[LEXIvrs]>pheonix/elements/subtrix/subtrix.py
-	outline: <[outline]>
+	path: <[LEXIvrs]>subtrix/subtrix.py
 	authority: document|this
 	security: sec|lvl2
 	<(WT)>: -32
@@ -30,6 +29,7 @@ there = abspath(join('../../..'))#												||set path at pheonix level
 version = '0.0.0.0.0.0'#														||
 log = False
 #===============================================================================||
+pxcfg = join(abspath(here), '_data_/subtrix.yaml')#							||use default configuration
 class mechanism:#																||
 	'''Perform replacement in templates from given data'''#						||=>Describe class
 	version = '0.0.0.0.0.0'#													||=>Set version
@@ -43,18 +43,19 @@ class mechanism:#																||
 		self.data = data#														||
 		if cfg != None:#														||
 			config = thing.what().get(cfg).dikt#								||
-		pxcfg = f'{here}_data_/subtrix.yaml'#									||use default configuration
 		self.config = thing.what().get(pxcfg).dikt#								||load configuration file
 		if rules != None:#														||
-			cfg = f'{here}z-data_'#												||set folder path
+			cfg = join(abspath(here), '_data_')#												||set folder path
 			#rules = next(store.stuff(cfg).read())#								||read files in directory
 		self.tmpltmap = {'tmplts': tmplts, 'docs': tmplts}#						||set vars
 		self.tipe = self.config['system']['name']#								||
+
 	@classmethod#																||
 	def from_stream(cls, data):#												||=>alt class input
 		'''Group data from a stream...turn a stream into frames'''#				||=>describe method
 		data = pd.DataFrame(data)#												||set data into frame
 		return cls(data)#														||
+
 	def findPattern(self, spat, epat, tmplt, inclusive=True):#					||=>Define module
 		'''check text for patterns'''#											||=>Describe module
 		self.lock, self.term = False, ''#										||Set the cycle lock to open
@@ -67,6 +68,7 @@ class mechanism:#																||
 			if spat in tmplt[enum:]:#											||verify the need to keep working
 				self.lock = True#												||Set the cycle lock to closed
 		return snum, enum#														||
+
 	def func(self, tmplt, j, data, cfg={}):#									||
 		'process all functions'#												||
 		self.mapPattern(cfg, tmplt, data, 'func')#								||map patterns in config
@@ -93,6 +95,7 @@ class mechanism:#																||
 			self.tmpltmap['docs'].pop(0)#										||
 			self.tmpltmap[i]['sub']['terms'][term][l]['data'] = fdata#			||
 		return self#															||
+
 	def getDterm(self, data, cterm, scode, sterm):#								||
 		'Get term from data'#													||
 		dterm = ''#																||
@@ -106,6 +109,7 @@ class mechanism:#																||
 		elif isinstance(data, list):#											||
 			dterm = data[cterm]#												||count term
 		return dterm#															||
+
 	def getFterm(self, fmap, dterm, spat, how='sub'):#							||
 		fterm = ''#																||
 		if spat in fmap.keys():#												||
@@ -114,6 +118,7 @@ class mechanism:#																||
 		if ':.' in fmap.keys():#												||
 			fterm += str(fmap['.:']['fterm'])#									||
 		return fterm#															||
+
 	def loop(self, tmplt, j, data, cfg={}):#									||
 		'Load loop data and combine with tmplt data'#							||
 		self.mapPattern(cfg, tmplt, data, 'loop')#								||map patterns in config
@@ -149,6 +154,7 @@ class mechanism:#																||
 			lterm = term
 			tmplt = self.tmpltmap['docs'][j]#							||
 		return self#													||
+
 	def mapp(self, tmplt, data, spat='<[', epat=']>', how='sub'):#		||=>Define module
 		'''Create Dictionary of all rule mechanisms in given document'''#		||
 		self.spat, self.epat = spat, epat#										||set bookend patterns
@@ -170,17 +176,16 @@ class mechanism:#																||
 				fterm = self.getFterm(self.fixmap, dterm, spat, epat)#			||
 				if scode not in tterms.keys():#									||
 					tterms[scode] = []#											||
-				tterms[scode].append({'code': self.term,#						||
-													'pos': [pl+snum, pl+enum],#	||add simple term and full term to mapp dikt
-													'data': dterm,#				||
-													'fterm': fterm,#			||
-													'mods': self.fixmap})#		||
+				load = {'code': self.term, 'pos': [pl+snum, pl+enum],
+							'data': dterm, 'fterm': fterm, 'mods': self.fixmap}#||
+				tterms[scode].append(load)#										||
 				pl += enum#												||
 				ntmplt = ntmplt[enum:]#									||
 		if tterms != {}:#												||
 			#i really think this will need to be a merge of the tterms dicts in order to handle multiple patterns
 			self.tmpltmap[tmpltDEX][how]['terms'].update(tterms)#		||
 		return self#													||
+
 	def mapPattern(self, cfg, tmplt, data, how):#						||
 		''
 		strts = cfg['base']['pattern']['initialize']#					||
@@ -191,6 +196,7 @@ class mechanism:#																||
 			self.mapp(tmplt, data, spat, epat, how)#					||=>Run method
 			cnt += 1#													||
 		return self#													||
+
 	def matrix(self, tmplt, j, data, cfg={}):#							||
 		'Load matrix data and combine with tmplt data'#					||
 		terms = self.tmpltmap[j]['matrix']['terms']#					||
@@ -208,10 +214,11 @@ class mechanism:#																||
 			self.tmpltmap['docs'].insert(0, tmplt)#						||
 		self.tmpltmap['docs'].pop(0)#									||
 		return self#													||
+
 	def procFix(self, term, spat='', epat='', cfg=None):#				||
 		'Set Prefix and Suffix of the Active Term'#						||
 		if cfg == None:#												||
-			cfg = f'{here}_data_/sub.yaml'#							||
+			cfg = join(abspath(here), '_data_/sub.yaml')#						||
 			cfg = condor.instruct(cfg).load().dikt#						||
 		prcsrs = cfg['base']['pattern']['processors']#					||
 		symbols = self._collectSymbols(prcsrs)#							||
@@ -227,6 +234,7 @@ class mechanism:#																||
 				continue#												||
 			self.fixmap[fpat] = {'fterm': term[n:nl], 'pos': [n, nl]}#	||
 		return self#													||
+
 	def run(self, full=False, optional=False):#							||=>Define method
 		'process mapp rules based on type allow for depth of rules'#	||
 		if isinstance(self.tmplts, int):
@@ -235,7 +243,7 @@ class mechanism:#																||
 		cfgs = list(self.config['processors'].keys())#					||
 		for i in seq:#													||
 			cfgp = self.config['processors'][i]['path']#				||
-			cfg = condor.instruct(here+cfgp).load().dikt#				||load config file
+			cfg = condor.instruct(join(abspath(here), cfgp)).load().dikt#								||load config file
 			cfgn = self.config['processors'][i]['fx']#					||
 			runner = getattr(self, cfgn)#								||
 			x, shift = 0, 0#											||
@@ -251,21 +259,20 @@ class mechanism:#																||
 		if full == False:#												||
 			if self.diktlock == 1:
 				r = []
-#				print('TMPLTMAP',self.tmpltmap['docs'],'Type',type(self.tmpltmap['docs']))
 				for t in self.tmpltmap['docs']:
 					st = json.loads(json.dumps(t))
 					#print('TMPLT',st)
 					r.append(st)
 			else:
 				r = self.tmpltmap['docs']
-#			print('Return Type', type(r[0]))
 			if self.diktlock ==1:
 				if not isinstance(r[0], dict):
 					print('FAIL')
 			return r#															||
 		return self#															||
+
 	def sub(self, tmplt, j, data, cfg={}):#										||
-		'Subsitute Template Codes for Data from Template Map'#					||
+		'''Subsitute Template Codes for Data from Template Map'''#				||
 		self.mapPattern(cfg, tmplt, data, 'sub')#								||map patterns in config
 		terms = self.tmpltmap[j]['sub']['terms']#								||
 		for term in list(terms.keys()):#										||cycle terms
@@ -286,11 +293,13 @@ class mechanism:#																||
 			self.tmpltmap['docs'].pop(j)#										||
 			self.tmpltmap['docs'].append(tmplt)#								||
 		return self#															||
+
 	def rmvOptional(self):#														||
-		''
+		''' '''
 		return self#															||
+
 	def varr(self, tmplt, j, data, cfg={}, optn='incr'):#						||
-		'Define Standard Variables for Lookup and Generation'#					||
+		'''Define Standard Variables for Lookup and Generation'''#					||
 		self.mapPattern(cfg, tmplt, data, 'varr')#								||map patterns in config
 		terms = self.tmpltmap[j]['varr']['terms']#								||
 		if len(terms.keys()) == 0:#												||
@@ -303,11 +312,8 @@ class mechanism:#																||
 				varobj = found[0]#					||
 			except Exception as e:#										||
 				break#													||
-			print('Term', term)
-
 			fdata = condor.instruct(varobj['object']).modulize().obj#	||
 			fdata = getattr(fdata(), varobj['outs'])#					||
-
 			for l in range(len(termmap)):#								||
 				k = termmap[l]#											||
 				sdata = {term: fdata}#									||
@@ -318,6 +324,7 @@ class mechanism:#																||
 			self.tmpltmap['docs'].pop(0)#								||
 			self.tmpltmap[i]['sub']['terms'][term][l]['data'] = fdata#	||
 		return self#													||
+
 	def _collectSymbols(self, symcfg):#									||
 		fpats = []#														||
 		for fix in symcfg.keys():#										||
@@ -326,6 +333,7 @@ class mechanism:#																||
 			for i in range(len(symcfg[fix])):#							||
 				fpats.append(symcfg[fix][i]['symbol'])#					||
 		return fpats#													||
+
 	def identify(self, code=None, how='incr'):#							||
 		'how->[incr,uuid,find,date,tuuid]'#								||
 		if code == None:#												||
@@ -342,11 +350,14 @@ class mechanism:#																||
 		elif how == 'find':#											||
 			pass#														||
 		return idnt#															||
+
 	def incid(self, name):#														||
 		table = name[2:-len(name)+len(':.incid]>')-1]#							||
 		inc = rule.mechanism([name]).identify(table)#							||lookup identity and increment name
 		name = tmplt.thing(name, {'incid':inc}).ran()#							||fill template
 		return name#															||
+
+
 def search(this, within, found, keys, recur=False):
 	'''find list of keys in tree given a single or multiple set of keys
 		switch between searching top level or allowing for crawling down the
@@ -382,6 +393,7 @@ def search(this, within, found, keys, recur=False):
 				if recur == True:
 					found, within = search(val, within, found, keys, recur)
 	return found, within
+
 # def import_loader():#															||
 # 	ext = calct.stuff(path).getExtension().trimPast('[').it#					||
 # 	treedikt = {}#																||
@@ -394,101 +406,12 @@ def search(this, within, found, keys, recur=False):
 # 		for branch in treedikt.keys():#											||
 # 			dikt = dikt[branch]#												||
 # 	return dikt#																||
-#==========================Code Source Examples=================================||
+
+
+#==============================Source Materials=================================||
 '''
 	https://gist.github.com/angstwad/bf22d1822c38a92ec0a9
 	http://pybem.sourceforge.net/
 	http://www.prankster.com/project/index.htm
 '''
-#====================================:::DNA:::==================================||
-'''
-<(DNA)>:
-	201906170059:
-		refactored rule module
-	201804101534:
-		mechanism:
-			version: 0.0.0.0.0.0
-			test:
-			description: >
-				Compacted Rule, Template and Group rezeroing to Rule
-			work:
-			compaction:
-				201804101534:
-					coupling:
-						version: <[active:.version]>
-						test:
-						description: >
-							Couple tmplts and data with rule systems implicitally
-							and explicitally
-						work:
-				201804101534:
-					here:
-						version: <[active:.version]>
-						test:
-						description: >
-							Define Rule Routing for Utilization of Multiple Rule Systems
-						work:
-				201804101213:
-					administer:
-						version: <[active:.version]>
-						test:
-						description: >
-							Administrate Tests of the Tmplt Classes
-						work:
-				201804101213:
-					here:
-						version: <[active:.version]>
-						test:
-						description: >
-							Test Each Tmplt Class
-						work:
-				201811132207:
-					thing:
-						version: 0.0.0.0.2.0
-						test: FAIL
-						description: >
-							rewrite template module to simplify logic
-							created more extensive template map
-						work:
-				201804091305:
-					thing:
-						version: 0.0.0.0.1.1
-						test: PASS
-						description: >
-							Correct for Full Test
-						work:
-				201804091231:
-					thing:
-						version: 0.0.0.0.1.1
-						test: FAIL
-						description: >
-							update to map prefixes and suffixes properly
-						work:
-							- 201804091200
-				201804091111:
-					thing:
-						version: 0.0.0.0.1.0
-						test: PASS
-						description: >
-							rewrite to process template first and populate
-							with given data alinearly
-						work:
-							- 201804091030
-							- 201804082200
-				201804051642:
-					thing:
-						version: 0.0.0.0.0.2
-						test: PASS
-						description: >
-							added map_terms and rmvOptional methods to the class
-						work:
-							- 201804051536
-				201804022117:
-					thing:
-						version: 0.0.0.0.0.1
-						test: PASS
-						description: >
-							rewrite to process template first and populate
-							with given data alinearly
-						work:
-'''
+#@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@||
