@@ -1,0 +1,18 @@
+---
+<(meta)>:
+  DOCid: <^[uuid]^>
+  name: Elements Level Thing Module Python Document
+  description: >
+  expirary: <[expiration]>
+  version: <[Version]>
+  outline:
+    FRMT00.000
+  authority: document|this
+  security: seclvl2
+  <(wt)>: -32
+append:
+symbols: <(THINGvrs)>things/symbols.yaml
+constants: <(THINGvrs)>things/constants.yaml
+heximal: <(THINGvrs)>things/heximal.txt
+binary: <(THINGvrs)>/panda/grn/things/binary.txt
+time:

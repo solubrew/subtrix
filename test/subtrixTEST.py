@@ -7,7 +7,6 @@
 	description: >
 	expirary: <[expiration]>
 	version: <[version]>
-	path: <[LEXIvrs]>pheonix/elements/subtrix/subtrix.py
 	outline: <[outline]>
 	authority: document|this
 	security: sec|lvl2
@@ -16,7 +15,6 @@
 # -*- coding: utf-8 -*-
 #===============================================================================||
 from os.path import abspath, dirname, join
-#===============================================================================||
 #========================Common Globals=========================================||
 here = join(dirname(__file__),'')#												||
 there = abspath(join('../../..'))#												||set path at pheonix level
@@ -24,7 +22,11 @@ version = '0.0.0.0.0.0'#														||
 log = False
 #===============================================================================||
 pxcfg = f'{here}/_data_/t_subtrix.yaml'
-cfg = condor.instruct(pxcfg).load().dikt
+
+class Test_Thing_What(unittest.TestCase):
+    """ """
+    def test_All(self):
+
 def functionSubstition():
 	''' '''
 	input = cfg['functionSubstition']['input']
