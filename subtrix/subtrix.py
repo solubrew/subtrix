@@ -364,8 +364,6 @@ class mechanism:  # ||
 	# 	inc = rule.mechanism([name]).identify(table)  # ||lookup identity and increment name
 	# 	name = tmplt.thing(name, {'incid': inc}).ran()  # ||fill template
 	# 	return name  # ||
-
-
 def search(this, within, found, keys, recur=False):
 	'''find list of keys in tree given a single or multiple set of keys
 		switch between searching top level or allowing for crawling down the
@@ -401,8 +399,6 @@ def search(this, within, found, keys, recur=False):
 				if recur == True:
 					found, within = search(val, within, found, keys, recur)
 	return found, within
-
-
 # def import_loader():#															||
 # 	ext = calct.stuff(path).getExtension().trimPast('[').it#					||
 # 	treedikt = {}#																||
@@ -415,8 +411,6 @@ def search(this, within, found, keys, recur=False):
 # 		for branch in treedikt.keys():#											||
 # 			dikt = dikt[branch]#												||
 # 	return dikt#																||
-
-
 # ==============================Source Materials=================================||
 '''
 	https://gist.github.com/angstwad/bf22d1822c38a92ec0a9
