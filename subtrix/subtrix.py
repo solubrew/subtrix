@@ -17,12 +17,14 @@
 	security: sec|lvl2
 	<(WT)>: -32
 '''
+import json  # ||
 # -*- coding: utf-8 -*-
 # ===============================================================================||
 from os.path import abspath, dirname, join
-import json  # ||
+
 # ===============================================================================||
 from subtrix import thing, thingifier
+
 # ========================Common Globals=========================================||
 here = join(dirname(__file__), '')  # ||
 there = abspath(join('../../..'))  # ||set path at pheonix level
@@ -31,7 +33,8 @@ log = False
 # ===============================================================================||
 pxcfg = join(abspath(here), '_data_/subtrix.yaml')  # ||use default configuration
 
-class mechanism:  # ||
+
+class Mechanism:  # ||
 	'''Perform replacement in templates from given data'''  # ||=>Describe class
 	version = '0.0.0.0.0.0'  # ||=>Set version
 
