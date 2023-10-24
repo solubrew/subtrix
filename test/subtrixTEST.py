@@ -18,8 +18,7 @@ from os.path import abspath, dirname, join
 
 from subtrix import Mechanism
 
-# ===============================================================================||
-#========================Common Globals=========================================||
+# ========================Common Globals=========================================||
 here = join(dirname(__file__),'')#												||
 there = abspath(join('../../..'))#												||set path at pheonix level
 version = '0.0.0.0.0.0'#														||
@@ -28,7 +27,7 @@ log = False
 pxcfg = f'{here}/_data_/t_subtrix.yaml'
 
 
-class Test_Mechanism(unittest.TestCase):
+class Test_Mechanism:
 	"""
 
 	"""
