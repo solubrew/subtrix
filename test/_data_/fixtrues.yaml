@@ -1,0 +1,220 @@
+fixture_000:
+  description: >
+    Provide a simple substitution test text
+  data:
+    <[where]>: "WHERE anomdetect.pot<[year]>.LineNumber <> '0'"
+    <[year]>: '2015'
+  tmplt: >
+    SELECT
+       anomdetect.pot<[year]>.ReportingSeriesCode,
+       anomdetect.pot<[year]>.Item_Series_Code,
+       anomdetect.pot<[year]>.Like_Part_Description,
+       anomdetect.pot<[year]>.Like_Part_ID,
+       anomdetect.pot<[year]>.Samtec_Part_Master_ID,
+       anomdetect.pot<[year]>.Samtec_Part_Master_Description,
+       anomdetect.pot<[year]>.ManufacturingOrderId,
+       anomdetect.pot<[year]>.OrderNumber,
+       anomdetect.pot<[year]>.LineNumber,
+       anomdetect.pot<[year]>.MfgDueDate,
+       anomdetect.pot<[year]>.MOEntered,
+       anomdetect.pot<[year]>.QuantityRequired
+     FROM anomdetect.pot<[year]>
+     <[where]>
+     GROUP BY
+       anomdetect.pot<[year]>.ReportingSeriesCode,
+       anomdetect.pot<[year]>.Item_Series_Code,
+       anomdetect.pot<[year]>.Like_Part_Description,
+       anomdetect.pot<[year]>.Like_Part_ID,
+       anomdetect.pot<[year]>.Samtec_Part_Master_ID,
+       anomdetect.pot<[year]>.Samtec_Part_Master_Description,
+       anomdetect.pot<[year]>.ManufacturingOrderId,
+       anomdetect.pot<[year]>.OrderNumber,
+       anomdetect.pot<[year]>.LineNumber,
+       anomdetect.pot<[year]>.MfgDueDate,
+       anomdetect.pot<[year]>.MOEntered,
+       anomdetect.pot<[year]>.QuantityRequired
+     ORDER BY
+       anomdetect.pot<[year]>.ManufacturingOrderId DESC
+  output:
+    SELECT
+    anomdetect.pot2015.ReportingSeriesCode,
+    anomdetect.pot2015.Item_Series_Code,
+    anomdetect.pot2015.Like_Part_Description,
+    anomdetect.pot2015.Like_Part_ID,
+    anomdetect.pot2015.Samtec_Part_Master_ID,
+    anomdetect.pot2015.Samtec_Part_Master_Description,
+    anomdetect.pot2015.ManufacturingOrderId,
+    anomdetect.pot2015.OrderNumber,
+    anomdetect.pot2015.LineNumber,
+    anomdetect.pot2015.MfgDueDate,
+    anomdetect.pot2015.MOEntered,
+    anomdetect.pot2015.QuantityRequired
+    FROM anomdetect.pot2015
+    <[where]>
+    GROUP BY
+    anomdetect.pot2015.ReportingSeriesCode,
+    anomdetect.pot2015.Item_Series_Code,
+    anomdetect.pot2015.Like_Part_Description,
+    anomdetect.pot2015.Like_Part_ID,
+    anomdetect.pot2015.Samtec_Part_Master_ID,
+    anomdetect.pot2015.Samtec_Part_Master_Description,
+    anomdetect.pot2015.ManufacturingOrderId,
+    anomdetect.pot2015.OrderNumber,
+    anomdetect.pot2015.LineNumber,
+    anomdetect.pot2015.MfgDueDate,
+    anomdetect.pot2015.MOEntered,
+    anomdetect.pot2015.QuantityRequired
+    ORDER BY
+    anomdetect.pot2015.ManufacturingOrderId DESC
+fixture_001:
+  data: #And Or to signify the mutiplexing processed needed 1, 0, 10,
+    'OR':
+      <@[controlfield]@>: [ 'p.buddyid', 'p.facility_id', 'p.operatorid',
+                            'p.plant_id', 'p.description',
+                            'p.quantityrequired', 'p.reportingseriescode',
+                            'p.samtec_part_master_description',
+                            'p.manufacturingOrderid', 'p.item_series_code',
+                            'p.like_part_id','p.runhours','p.setuphours',
+                            'p.work_center','p.potentered','p.datecompleted',
+                            'p.processorderid', ]
+    '<[qp]>': [ 'eQP','QP' ]
+    '<[year]>': [ '2015', '2016','2017','2018' ]
+  tmplt: >
+    SELECT
+      <@[controlfield.:, ]@>
+      (SUM(p.totalquantity::int)-SUM(p.goodquantity::int))/SUM(p.goodquantity::int) AS qlfscrap,
+      COUNT(p.processordertransactionid) AS numpots,
+      qpsum.numeqp,
+      qpsum.totaldefects,
+      CASE
+        WHEN COUNT(qpsum.manufacturingorderid) = 0 THEN 0 ELSE 1 END AS isQP
+        FROM anomdetect.pot<[year]> p
+     LEFT JOIN (
+      SELECT
+        e.manufacturingorderid,
+        COUNT(e.manufacturingorderId) AS numeqp,
+        SUM(e.reporteddefectcount::int) AS totaldefects
+      FROM anomdetect.<[qp]> e
+      GROUP BY
+        e.manufacturingorderid
+    ) AS qpsum ON p.manufacturingorderid = qpsum.manufacturingorderid
+    GROUP BY
+     qpsum.numeqp,
+     qpsum.totaldefects,
+      <@[controlfield.:, ]@>
+    ORDER BY
+      qpsum.numeqp DESC
+fixture_002:
+  data:
+    '<[year]>': [ '2015', '2016','2017','2018' ]
+    '<[qp]>': [ 'eQP','QP' ]
+  tmplt: >
+    SELECT
+       anomdetect.pot<[year]>.ManufacturingOrderId,
+       CASE
+         WHEN <[qp]>.ReportedDefectCount IS NULL
+         THEN 0 ELSE 1
+         END AS isQP,
+       CASE
+         WHEN <[qp]>.ReportedDefectCount IS NULL
+         THEN 0 ELSE <[qp]>.ReportedDefectCount
+         END AS DefectCount
+     FROM anomdetect.pot<[year]>
+     LEFT OUTER JOIN <[qp]> ON anomdetect.pot<[year]>.ManufacturingOrderId = <[qp]>.ManufacturingOrderId
+     WHERE anomdetect.pot<[year]>.OrderNumber IS NOT NULL
+     GROUP BY
+       anomdetect.pot<[year]>.ManufacturingOrderId
+     ORDER BY
+       DefectCount DESC
+fixture_003:
+  data:
+    <[year]>: [ '2015', '2016','2017','2018' ]
+    '<[qp]>': [ 'eQP','QP' ]
+  tmplt: >
+    SELECT
+       *,
+       eQPsum.numeQP
+     FROM anomdetect.pot<[year]>
+     LEFT OUTER JOIN (
+       SELECT
+         <[qp]>.ManufacturingOrderId,
+         COUNT(<[qp]>.ManufacturingOrderId) AS numeQP
+       FROM <[qp]>
+       GROUP BY
+         <[qp]>.ManufacturingOrderId
+     ) AS eQPsum ON anomdetect.pot<[year]>.ManufacturingOrderId = eQPsum.ManufacturingOrderId
+     WHERE
+      anomdetect.pot<[year]>.ManufacturingOrderId LIKE '%%'
+     ORDER BY
+       anomdetect.pot<[year]>.ProcessOrderTransactionId
+fixture_004:
+  description: >
+    Provide a simple substitution test text
+  data:
+    <[where]>: [ "WHERE anomdetect.pot<[year]>.LineNumber <> '0'", ' ' ]
+    <[year]>: [ '2015', '2016','2017','2018' ]
+  tmplt: >
+    SELECT
+       anomdetect.pot<[year]>.ReportingSeriesCode,
+       anomdetect.pot<[year]>.Item_Series_Code,
+       anomdetect.pot<[year]>.Like_Part_Description,
+       anomdetect.pot<[year]>.Like_Part_ID,
+       anomdetect.pot<[year]>.Samtec_Part_Master_ID,
+       anomdetect.pot<[year]>.Samtec_Part_Master_Description,
+       anomdetect.pot<[year]>.ManufacturingOrderId,
+       anomdetect.pot<[year]>.OrderNumber,
+       anomdetect.pot<[year]>.LineNumber,
+       anomdetect.pot<[year]>.MfgDueDate,
+       anomdetect.pot<[year]>.MOEntered,
+       anomdetect.pot<[year]>.QuantityRequired
+     FROM anomdetect.pot<[year]>
+     <[where]>
+     GROUP BY
+       anomdetect.pot<[year]>.ReportingSeriesCode,
+       anomdetect.pot<[year]>.Item_Series_Code,
+       anomdetect.pot<[year]>.Like_Part_Description,
+       anomdetect.pot<[year]>.Like_Part_ID,
+       anomdetect.pot<[year]>.Samtec_Part_Master_ID,
+       anomdetect.pot<[year]>.Samtec_Part_Master_Description,
+       anomdetect.pot<[year]>.ManufacturingOrderId,
+       anomdetect.pot<[year]>.OrderNumber,
+       anomdetect.pot<[year]>.LineNumber,
+       anomdetect.pot<[year]>.MfgDueDate,
+       anomdetect.pot<[year]>.MOEntered,
+       anomdetect.pot<[year]>.QuantityRequired
+     ORDER BY
+       anomdetect.pot<[year]>.ManufacturingOrderId DESC
+  output:
+    SELECT
+    anomdetect.pot<[year]>.ReportingSeriesCode,
+    anomdetect.pot<[year]>.Item_Series_Code,
+    anomdetect.pot<[year]>.Like_Part_Description,
+    anomdetect.pot<[year]>.Like_Part_ID,
+    anomdetect.pot<[year]>.Samtec_Part_Master_ID,
+    anomdetect.pot<[year]>.Samtec_Part_Master_Description,
+    anomdetect.pot<[year]>.ManufacturingOrderId,
+    anomdetect.pot<[year]>.OrderNumber,
+    anomdetect.pot<[year]>.LineNumber,
+    anomdetect.pot<[year]>.MfgDueDate,
+    anomdetect.pot<[year]>.MOEntered,
+    anomdetect.pot<[year]>.QuantityRequired
+    FROM anomdetect.pot<[year]>
+    <[where]>
+    GROUP BY
+    anomdetect.pot<[year]>.ReportingSeriesCode,
+    anomdetect.pot<[year]>.Item_Series_Code,
+    anomdetect.pot<[year]>.Like_Part_Description,
+    anomdetect.pot<[year]>.Like_Part_ID,
+    anomdetect.pot<[year]>.Samtec_Part_Master_ID,
+    anomdetect.pot<[year]>.Samtec_Part_Master_Description,
+    anomdetect.pot<[year]>.ManufacturingOrderId,
+    anomdetect.pot<[year]>.OrderNumber,
+    anomdetect.pot<[year]>.LineNumber,
+    anomdetect.pot<[year]>.MfgDueDate,
+    anomdetect.pot<[year]>.MOEntered,
+    anomdetect.pot<[year]>.QuantityRequired
+    ORDER BY
+    anomdetect.pot<[year]>.ManufacturingOrderId DESC
+
+
+
