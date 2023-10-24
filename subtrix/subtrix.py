@@ -1,5 +1,5 @@
 # @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@||
-'''
+"""
 ---
 <(META)>:
 	docid: 03a412f8-c767-467e-9044-ea7cf19c2f9e
@@ -16,7 +16,7 @@
 	authority: document|this
 	security: sec|lvl2
 	<(WT)>: -32
-'''
+"""
 import json  # ||
 # -*- coding: utf-8 -*-
 # ===============================================================================||
@@ -34,8 +34,30 @@ log = False
 pxcfg = join(abspath(here), '_data_/subtrix.yaml')  # ||use default configuration
 
 
-class Mechanism:  # ||
-	'''Perform replacement in templates from given data'''  # ||=>Describe class
+class Mechanism(object):  # ||
+	"""
+	Perform replacement in templates from given data
+	Substitution is performed in various ways based on the coding system of various methods
+
+	Prexfix: :.term
+	Suffix: term.:
+
+	Varr: A set of predefined known variables that can be set globablly
+		codes: <(: standard, <^(: template update, <~(: optional, <o(: stop override
+
+	Sub: A simple string replacement with both prefix and suffix
+		codes: <[: standard, <^[: template update, <~[: optional, <o[: stop override
+
+	Matrix:
+		codes: <#[: Matrix Substitution, <#{: Matrix Functions
+
+	Loop:
+		codes: <@[: Loop Substitution, <@{: Loop Function
+
+	Func:
+		codes: <{: standard, <^{: template update, <~{: optional, <o{: stop override
+
+	"""
 	version = '0.0.0.0.0.0'  # ||=>Set version
 
 	def __init__(self, tmplts=[], data={}, rules=None, cfg=None):  # ||
@@ -58,12 +80,12 @@ class Mechanism:  # ||
 
 	# @classmethod  # ||
 	# def from_stream(cls, data):  # ||=>alt class input  unsure why this is in subtrix
-	# 	'''Group data from a stream...turn a stream into frames'''  # ||=>describe method
+	# 	"""Group data from a stream...turn a stream into frames"""  # ||=>describe method
 	# 	data = pd.DataFrame(data)  # ||set data into frame
 	# 	return cls(data)  # ||
 
 	def findPattern(self, spat, epat, tmplt, inclusive=True):  # ||=>Define module
-		'''check text for patterns'''  # ||=>Describe module
+		"""check text for patterns"""  # ||=>Describe module
 		self.lock, self.term = False, ''  # ||Set the cycle lock to open
 		snum = tmplt.find(spat)  # ||find start pattern
 		enum = snum + tmplt[snum:].find(epat) + len(epat)  # ||find end patter after start
@@ -163,7 +185,7 @@ class Mechanism:  # ||
 		return self  # ||
 
 	def mapp(self, tmplt, data, spat='<[', epat=']>', how='sub'):  # ||=>Define module
-		'''Create Dictionary of all rule mechanisms in given document'''  # ||
+		"""Create Dictionary of all rule mechanisms in given document"""  # ||
 		self.spat, self.epat = spat, epat  # ||set bookend patterns
 		self.lock, self.fixmap, cterm = True, {}, 0  # ||set variables
 		tmpltDEX = self.tmpltmap['docs'].index(tmplt)  # ||
@@ -278,7 +300,7 @@ class Mechanism:  # ||
 		return self  # ||
 
 	def sub(self, tmplt, j, data, cfg={}):  # ||
-		'''Subsitute Template Codes for Data from Template Map'''  # ||
+		"""Subsitute Template Codes for Data from Template Map"""  # ||
 		self.mapPattern(cfg, tmplt, data, 'sub')  # ||map patterns in config
 		terms = self.tmpltmap[j]['sub']['terms']  # ||
 		for term in list(terms.keys()):  # ||cycle terms
@@ -301,11 +323,19 @@ class Mechanism:  # ||
 		return self  # ||
 
 	def rmvOptional(self):  # ||
-		''' '''
+		""" """
 		return self  # ||
 
 	def varr(self, tmplt, j, data, cfg={}, optn='incr'):  # ||
-		'''Define Standard Variables for Lookup and Generation'''  # ||
+		"""
+		Define Standard Variables for Lookup and Generation
+		:param tmplt: 
+		:param j: 
+		:param data: 
+		:param cfg: 
+		:param optn: 
+		:return: 
+		"""  # ||
 		self.mapPattern(cfg, tmplt, data, 'varr')  # ||map patterns in config
 		terms = self.tmpltmap[j]['varr']['terms']  # ||
 		if len(terms.keys()) == 0:  # ||
@@ -340,38 +370,11 @@ class Mechanism:  # ||
 				fpats.append(symcfg[fix][i]['symbol'])  # ||
 		return fpats  # ||
 
-	# def identify(self, code=None, how='incr'):  # ||
-	# 	"""how->[incr,uuid,find,date,tuuid]
-	# 	This is intended ti allow for externall connected data sources to be pulled from based on the identify
-	# 	code via the account verse
-	# 	This is likely why condor is needed
-	# 	likely just remove this functionality and move it up the stack somewhere like FxSQuiRL
-	# 	"""  # ||
-	# 	if code == None:  # ||
-	# 		code = 'GENRL'  # ||
-	# 	if how == 'incr':  # ||
-	# 		db = self.config['data']['things']['ID']  # ||
-	# 		verse = acct.prime().verse  # ||
-	# 		data = {'verse': verse}  # ||
-	# 		db = tmplt.thing(db, data).ran()  # ||
-	# 		idnt = grab.stuff(db).nextrecord(code)  # ||
-	# 	#			print('idnt rule returned',idnt)#							||
-	# 	elif how == 'uuid':  # ||
-	# 		pass  # ||
-	# 	elif how == 'find':  # ||
-	# 		pass  # ||
-	# 	return idnt  # ||
-
-	# def incid(self, name):  # ||
-	# 	table = name[2:-len(name) + len(':.incid]>') - 1]  # ||
-	# 	inc = rule.mechanism([name]).identify(table)  # ||lookup identity and increment name
-	# 	name = tmplt.thing(name, {'incid': inc}).ran()  # ||fill template
-	# 	return name  # ||
 def search(this, within, found, keys, recur=False):
-	'''find list of keys in tree given a single or multiple set of keys
+	"""find list of keys in tree given a single or multiple set of keys
 		switch between searching top level or allowing for crawling down the
 		tree branches.  allow for an override of the tree to be searched
-		using the inthis variable'''  # ||
+		using the inthis variable"""  # ||
 	if not isinstance(keys, list):
 		keys = list(keys)
 	for key in keys:  # ||
@@ -401,23 +404,11 @@ def search(this, within, found, keys, recur=False):
 							found.append(val)
 				if recur == True:
 					found, within = search(val, within, found, keys, recur)
-	return found, within
-# def import_loader():#															||
-# 	ext = calct.stuff(path).getExtension().trimPast('[').it#					||
-# 	treedikt = {}#																||
-# 	for branch in path[path.find(ext):].split('['):#							||
-# 		treedikt[branch] = {}#													||
-# 	tree = path[path.find(treepath):]#											||
-# 	#dikt = next(store.stuff(filepath).read()).dikt#								||
-# 	branch = None#																||
-# 	while branch != {}:#														||
-# 		for branch in treedikt.keys():#											||
-# 			dikt = dikt[branch]#												||
-# 	return dikt#																||
+	return found, within | |
 # ==============================Source Materials=================================||
-'''
+"""
 	https://gist.github.com/angstwad/bf22d1822c38a92ec0a9
 	http://pybem.sourceforge.net/
 	http://www.prankster.com/project/index.htm
-'''
+"""
 # @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@||
