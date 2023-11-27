@@ -15,12 +15,17 @@
 """
 # -*- coding: utf-8 -*-
 # =======================================================================||
-import datetime as dt, uuid, socket, platform
+import datetime as dt
+import platform
+import socket
+import urllib.request
+import uuid
 from os import environ, name
 from os.path import abspath, dirname, exists, join
+
 import pytz
 from dateutil.parser import parse
-import urllib.request
+
 try:  # ||
 	from yaml import CLoader as Loader, CDumper as Dumper  # ||
 except ImportError:  # ||
@@ -52,7 +57,7 @@ except:
 here = join(dirname(__file__), '')
 there = abspath(join('../../..'))  # set path at pheonix level
 version = '0.0.0.0.0.0'
-log = True
+log = False
 # =======================================================================||
 pxcfg = join(abspath(here), '_data_/thing.yaml')  # use default configuration
 
@@ -72,7 +77,7 @@ class What:
     def __init__(self, it=None, cfg=None):
         self.it = it
         self.dikt = {}
-        self.config = self.get(pxcfg).dikt
+        # self.config = self.get(pxcfg).dikt
         self.uuid()
 
     def gen(self, how='open', given=None):
@@ -107,6 +112,58 @@ class What:
         except Exception as e:
             print('Couldnt Load YAML document ', thing, 'due to', e)
         return self
+    
+    def load(self, thing=None):  # ||
+        """
+		Scan text and replace include codes with other text files
+		:param thing:
+		:return:
+		"""
+        if thing == None:  # ||
+            thing = self.it  # ||
+        try:  # ||
+            with open(thing, 'r') as doc:  # ||
+                text = doc.read()  # ||
+        except Exception as e:  # ||
+            text = ''  # ||
+            m = ['Couldnt Open', thing, 'due to', e]  # ||
+            print(*m)  # ||
+        if log: print('TEXT', text)
+        fnl = thing.rfind('/')  # ||
+        base_path = thing[:fnl + 1]  # ||
+        start_pt, depth, fstart, fend = 0, 0, '<(INCL)>', '.yaml'  # ||
+        while True:  # ||
+            fspl = text[start_pt:].find(fstart) + start_pt  # ||
+            linepos = text[:fspl].rfind('\n')  # ||
+            depth = text[linepos:fspl].find('  ')  # ||
+            if depth == -1:  # ||
+                depth = 0  # ||
+            depth += 1  # ||
+            if fspl == start_pt - 1:  # ||
+                break  # ||
+            fspl = fspl  # ||
+            fepl = text[fspl:].find(fend) + fspl + len(fend)  # ||
+            pattern = text[fspl:fepl]  # ||
+            if pattern == '':  # ||
+                start_pt = fepl + len(ntext) - len(pattern)  # ||
+                continue  # ||
+            path = pattern.replace(fstart, '')  # ||
+            if log: print('Pattern', path, 'basepath', base_path)
+            path = join(abspath(base_path), path)
+            if log: print('Pattern', path, 'basepath', base_path)
+            if exists(path):  # ||
+                ntext = self.load(path).text  # ||
+                ntext = ntext.replace('---', ' ')  # ||
+                ntext = ntext.replace('\n', '\n' + '  ' * depth)  # ||
+            else:  # ||
+                ntext = path  # ||
+            depth = '\n' + '  ' * depth  # ||
+            text = f'{text[:fspl]}{depth}{ntext}{text[fepl:]}'  # ||
+            start_pt = fepl + len(ntext) - len(path)  # ||
+            path = ''  # ||
+        self.text = text
+        self.get(text)
+        return self  # ||
 
     def uuid(self):
         """"""

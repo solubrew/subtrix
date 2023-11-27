@@ -16,30 +16,50 @@
 # ===============================================================================||
 from os.path import abspath, dirname, join
 
-import Pytest
-
 # ===============================================================================||
+import pytest
+# ===============================================================================||
+from condor import condor
 
 # ========================Common Globals=========================================||
 here = join(dirname(__file__), '')  # ||
-there = abspath(join('../../..'))  # ||set path at pheonix level
+there = abspath(join('../../..'))  # ||
 version = '0.0.0.0.0.0'  # ||
 log = False
 # ===============================================================================||
-pxcfg = f'{here}/_data_/t_subtrix.yaml'
+pxcfg = join(here, '_data_', 'fixtures.yaml')
 
 
-@Pytest.fixture
-def template_fixture():
+@pytest.fixture
+class SubtrixFixture(object):
 	"""
-
 	:return:
 	"""
+	
+	def __init__(self, name):
+		"""
+
+		:param name:
+		"""
+		self.config = condor.condor.instruct(pxcfg).load().dikt
+		self.data = self.config[name]['data']
+		self.tmplt = self.config[name]['tmplt']
+		self.output = self.config[name]['output']
 
 
-def fixture_000():
-	""" """
-	fixture_cfg = cfg['fixture_000']
-	data = fixture_cfg['data']
-	tmplt = fixture_cfg['tmplt']
-	output = fixture_cfg['output']
+class ThingFixture(object):
+	"""
+
+	"""
+	
+	def __init__(self, name):
+		"""
+
+		:param name:
+		"""
+	
+	def WhatFixture(self):
+		"""
+
+		:return:
+		"""

@@ -404,7 +404,7 @@ def search(this, within, found, keys, recur=False):
 							found.append(val)
 				if recur == True:
 					found, within = search(val, within, found, keys, recur)
-	return found, within | |
+	return found, within
 # ==============================Source Materials=================================||
 """
 	https://gist.github.com/angstwad/bf22d1822c38a92ec0a9

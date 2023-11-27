@@ -11,10 +11,12 @@
 	security: seclvl2
 	<(WT)>: -32
 """
+import traceback
+from importlib import import_module
 # -*- coding: utf-8 -*-
 # ===============================================================================||
 from os.path import abspath, dirname, expanduser, exists, join
-from importlib import import_module
+
 # ===============================================================================||
 from subtrix.thing import What
 
@@ -91,6 +93,8 @@ def modulize(thing):
 		obj = getattr(module, class_name)
 	except AttributeError as e:
 		print('config modulize', e)
+		traceback.print_exc()
+		raise e
 	return obj
 
 
@@ -111,11 +115,15 @@ def thingify(thing, module=None, path=None, test=False):
 			except Exception as e:
 				print(f'Thingify Module Path {thing} Failed {e}')
 				if path: print('From this Path', path)
-				return None
+				traceback.print_exc()
+				raise e
+		# return None
 		try:
 			obj = getattr(module, thing)
 		except AttributeError as e:
 			print('Thingification Failed due to ', e)
+			traceback.print_exc()
+			raise e
 		return obj
 
 

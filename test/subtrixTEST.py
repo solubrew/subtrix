@@ -62,8 +62,9 @@ class Test_Mechanism:
 
 		:return:
 		"""
-		self.test_Mechanism.run(fixture000)
-		assert self.
+		self.test_Mechanism = Mechanism(fixture000.tmplt, fixture000.data)
+		self.test_Mechanism.run()
+		assert self.test_Mechanism == fixture000.output
 
 	def functionSubstition(self):
 		''' '''
