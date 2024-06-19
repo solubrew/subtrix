@@ -348,17 +348,18 @@ class Mechanism(object):  # ||
 				varobj = found[0]  # ||
 			except Exception as e:  # ||
 				break  # ||
-			fdata = thingifier.modulize(varobj['object'])  # ||
-			fdata = getattr(fdata(), varobj['outs'])  # ||
-			for l in range(len(termmap)):  # ||
-				k = termmap[l]  # ||
-				sdata = {term: fdata}  # ||
-				ksub = {'sub': {'terms': {term: [k]}}}  # ||
-				self.tmpltmap[j] = ksub  # ||
-				self.sub(tmplt, j, sdata, cfg)  # ||
-				self.tmpltmap['docs'].insert(0, tmplt)  # ||
-			self.tmpltmap['docs'].pop(0)  # ||
-			self.tmpltmap[i]['sub']['terms'][term][l]['data'] = fdata  # ||
+			if 'object' in varobj.keys():
+				fdata = thingifier.modulize(varobj['object'])  # ||
+				fdata = getattr(fdata(), varobj['outs'])  # ||
+				for l in range(len(termmap)):  # ||
+					k = termmap[l]  # ||
+					sdata = {term: fdata}  # ||
+					ksub = {'sub': {'terms': {term: [k]}}}  # ||
+					self.tmpltmap[j] = ksub  # ||
+					self.sub(tmplt, j, sdata, cfg)  # ||
+					self.tmpltmap['docs'].insert(0, tmplt)  # ||
+				self.tmpltmap['docs'].pop(0)  # ||
+				self.tmpltmap[i]['sub']['terms'][term][l]['data'] = fdata  # ||
 		return self  # ||
 
 	def _collectSymbols(self, symcfg):  # ||
