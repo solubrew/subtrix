@@ -1,0 +1,113 @@
+---
+<(META)>:
+  DOCid: <^[uuid]^>
+  name: Element Level Rule Module Python Document
+  description: >
+    Implement rule system of document markup and data expansion
+    through substitution, functions, loops
+  expirary: <[expiration]>
+  version: <[version]>
+  path: <[LEXIvrs]>pheonix/elements/rule/rule.py
+  outline: <[outline]>
+  authority: document|this
+  security: sec|lvl2
+  <(WT)>: -32
+base:
+  name:
+  description: >
+  pattern:
+    initialize:
+      - symbol: "<("
+        name: Start Variable Symbol
+        description: >
+          Signal the start of a templting/rule variable
+      - symbol: "<^("
+        name: Request Start Variable Symbol
+        description: >
+          Signal the start of a templting/rule variable
+          for use in meta substitutions
+    processors:
+      prefix:
+        - symbol: ".:"
+          name: prefixalize
+          description: >
+            Signal the start of a substitution command
+          obligation: optional
+      suffix:
+        - symbol: ":."
+          name: suffixalize
+          description: >
+            Signal the start of a substitution command
+          obligation: optional
+    finalize:
+      - symbol: ")>"
+        name: End Variable Symbol
+        description: >
+          Signal the end of a templting/rule variable
+      - symbol: ")^>"
+        name: Request End Variable Symbol
+        description: >
+          Signal the end of a templting/rule variable
+          for use in meta substitutions
+how: "varr"
+knowns:
+  <(DTID)>:
+    name: Date Time Identifier
+    description: >
+    object:
+    outs:
+  <(HRID)>:
+    description: >
+      Increment in a specificly grouped sequence using
+      standardized logic
+    object:
+    outs:
+    code: <[<[CODE]><[----]>.<[----]>.<[----]>]>
+    name: human readable identifier
+    Incrementer:
+      python: self.identify
+      description: >
+        Increment sequence using a source getter for use
+  <(META)>:
+    description: >
+    object:
+    code:
+    name:
+  <(NOW)>:
+    description:
+    object:
+    tmplt:
+    code:
+    name:
+    outs:
+  <(PATH)>:
+    description:
+    object:
+    tmplt:
+    code:
+    name:
+    outs:
+  <(TEXT)>:
+    description:
+    object:
+    tmplt:
+    code:
+    name:
+    outs:
+  <(TODAY)>:
+    name:
+    description: >
+      implement time rules using the timemap module
+    object: subtrix.subtrix.today
+    outs:
+  <(UUID)>:
+    name: Universally Unique Identification
+    description: >
+    object: subtrix.subtrix.uuid
+    outs:
+  <(WT)>:
+    name:
+    description: >
+    object:
+    outs:
+

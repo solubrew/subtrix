@@ -1,0 +1,731 @@
+fixture_000:
+  description: >
+    Provide a simple substitution test text
+  data:
+    <[from]>: "DATA_TABLE"
+    <[year]>: '2015'
+    <[not_here]>: 'not here'
+    not_there: 'not there'
+  tmplt: |
+    SELECT <[year]> FROM <[from]> GROUP BY <[year]>
+  output:
+    tmplt_map:
+      'tmplt': 'SELECT <[year]> FROM <[from]> GROUP BY <[year]>'
+      'docs': [ 'SELECT 2015 FROM DATA_TABLE GROUP BY 2015' ]
+      'map':
+        sub:
+          'terms':
+            '<[from]>':
+              - 'code': '<[from]>'
+                'pos': [ 21, 29 ]
+                'data': [ "DATA_TABLE", ]
+                'final_term':
+                'mods': { }
+            <[year]>:
+              - 'code': '<[year]>'
+                'pos': [ 7, 15 ]
+                'data': [ "2015", ]
+                'final_term':
+                'mods': { }
+              - 'code': '<[year]>'
+                'pos': [ 39, 47 ]
+                'data': [ "2015", ]
+                'final_term':
+                'mods': { }
+    text: |
+      SELECT 2015 FROM DATA_TABLE GROUP BY 2015
+fixture_001:
+  description: >
+    Provide a simple substitution test text
+  data:
+    <[from]>: "DATA_TABLE"
+    <[year]>: '2015'
+  tmplt: |
+    SELECT <[year]>, <(TODAY)> FROM <[from]> GROUP BY <[year]>
+  output:
+    test_varr:
+      tmplt_map:
+        'tmplt': 'SELECT <[year]>, <(TODAY)> FROM <[from]> GROUP BY <[year]>'
+        'docs': [ 'SELECT <[year]>, <(TODAY)> FROM <[from]> GROUP BY <[year]>' ]
+        'map':
+          varr:
+            "terms":
+              "<(TODAY)>":
+                - 'code': '<(TODAY)>'
+                  'pos': [ 17, 26 ]
+                  'data': [ "{today}" ]
+                  'final_term':
+                  'mods': { }
+    tmplt_map:
+      'tmplt': 'SELECT <[year]>, <(TODAY)> FROM <[from]> GROUP BY <[year]>'
+      'docs': [ 'SELECT 2015, {today} FROM DATA_TABLE GROUP BY 2015' ]
+      'map':
+        sub:
+          'terms':
+            '<[from]>':
+              - 'code': '<[from]>'
+                'pos': [ 32, 40 ]
+                'data': [ "DATA_TABLE" ]
+                'final_term':
+                'mods': { }
+            <[year]>:
+              - 'code': '<[year]>'
+                'pos': [ 7, 15 ]
+                'data': [ "2015" ]
+                'final_term':
+                'mods': { }
+              - 'code': '<[year]>'
+                'pos': [ 50, 58 ]
+                'data': [ "2015" ]
+                'final_term':
+                'mods': { }
+        varr:
+          "terms":
+            "<(TODAY)>":
+              - 'code': '<(TODAY)>'
+                'pos': [ 17, 26 ]
+                'data': [ "{today}" ]
+                'final_term':
+                'mods': { }
+    text: |
+      SELECT 2015, {today} FROM DATA_TABLE GROUP BY 2015
+fixture_002:
+  data: #And Or to signify the mutiplexing processed needed 1, 0, 10,
+    <@[controlfield]@>: [ 'p.buddyid', 'p.facility_id' ]
+    '<[qp]>': [ 'eQP','QP' ]
+    '<[year]>': [ '2015', '2016','2017','2018' ]
+  tmplt: >
+    SELECT
+      <@[controlfield:., ]@>
+      CASE
+        FROM anomdetect.pot<[year]> p
+      FROM anomdetect.<[qp]> e
+     qpsum.totaldefects,
+      <@[controlfield:., ]@>
+    ORDER BY
+  output:
+    tmplt_map:
+      "map":
+        "loop":
+          "terms":
+            "<@[controlfield]@>":
+              - 'code': '<@[controlfield:., ]@>'
+              'pos': [ 9, 31 ]
+                'data': [ [ 'p.buddyid' ], [ 'p.facility_id' ], [ "p.buddyid", "p.facility_id" ] ]
+                'final_term':
+              'mods':
+                ':.':
+                  'final_term': ', '
+                  'pos': [ 17, 19 ]
+              - 'code': '<@[controlfield:., ]@>'
+              'pos': [ 123, 145 ]
+                'data': [ [ 'p.buddyid' ], [ 'p.facility_id' ], [ "p.buddyid", "p.facility_id" ] ]
+                'final_term':
+              'mods':
+                ':.':
+                  'final_term': ', '
+                  'pos': [ 17, 19 ]
+        sub:
+          terms:
+            "<[year]>":
+              - 'code': '<[year]>'
+                'pos': [ ]
+                'data': [ '2015', '2016', '2017', '2018' ]
+                'final_term': [ '2015', '2016', '2017', '2018' ]
+                'mods': { }
+            "<[qp]>":
+              - 'code': '<[qp]>'
+                'pos': [ ]
+                'data': [ 'QP', 'eQP' ]
+                'final_term': [ 'QP', 'eQP' ]
+                'mods': { }
+      tmplt: |
+        SELECT
+          <@[controlfield:., ]@>
+          CASE
+            FROM anomdetect.pot<[year]> p
+          FROM anomdetect.<[qp]> e
+         qpsum.totaldefects,
+          <@[controlfield:., ]@>
+        ORDER BY
+      'docs':
+        - |
+          SELECT
+            p.buddyid
+            CASE
+              FROM anomdetect.pot2015 p
+            FROM anomdetect.eQP e
+           qpsum.totaldefects,
+              p.buddyid
+          ORDER BY
+        - |
+          SELECT
+            p.buddyid
+            CASE
+              FROM anomdetect.pot2016 p
+            FROM anomdetect.eQP e
+           qpsum.totaldefects,
+              p.buddyid
+          ORDER BY
+        - |
+          SELECT
+            p.buddyid
+            CASE
+              FROM anomdetect.pot2017 p
+            FROM anomdetect.eQP e
+           qpsum.totaldefects,
+              p.buddyid
+          ORDER BY
+        - |
+          SELECT
+            p.buddyid
+            CASE
+              FROM anomdetect.pot2018 p
+            FROM anomdetect.eQP e
+           qpsum.totaldefects,
+              p.buddyid
+          ORDER BY
+        - |
+          SELECT
+            p.buddyid
+            CASE
+              FROM anomdetect.pot2015 p
+            FROM anomdetect.QP e
+           qpsum.totaldefects,
+              p.buddyid
+          ORDER BY
+        - |
+          SELECT
+            p.buddyid
+            CASE
+              FROM anomdetect.pot2016 p
+            FROM anomdetect.QP e
+           qpsum.totaldefects,
+              p.buddyid
+          ORDER BY
+        - |
+          SELECT
+            p.buddyid
+            CASE
+              FROM anomdetect.pot2017 p
+            FROM anomdetect.QP e
+           qpsum.totaldefects,
+              p.buddyid
+          ORDER BY
+        - |
+          SELECT
+            p.buddyid
+            CASE
+              FROM anomdetect.pot2018 p
+            FROM anomdetect.QP e
+           qpsum.totaldefects,
+              p.buddyid
+          ORDER BY
+        - |
+          SELECT
+            p.facility_id
+            CASE
+              FROM anomdetect.pot2015 p
+            FROM anomdetect.eQP e
+           qpsum.totaldefects,
+              p.buddyid
+          ORDER BY
+        - |
+          SELECT
+            p.facility_id
+            CASE
+              FROM anomdetect.pot2016 p
+            FROM anomdetect.eQP e
+           qpsum.totaldefects,
+              p.buddyid
+          ORDER BY
+        - |
+          SELECT
+            p.facility_id
+            CASE
+              FROM anomdetect.pot2017 p
+            FROM anomdetect.eQP e
+           qpsum.totaldefects,
+              p.buddyid
+          ORDER BY
+        - |
+          SELECT
+            p.facility_id
+            CASE
+              FROM anomdetect.pot2018 p
+            FROM anomdetect.eQP e
+           qpsum.totaldefects,
+            p.facility_id
+          ORDER BY
+        - |
+          SELECT
+            p.facility_id
+            CASE
+              FROM anomdetect.pot2015 p
+            FROM anomdetect.QP e
+           qpsum.totaldefects,
+            p.facility_id
+          ORDER BY
+        - |
+          SELECT
+            p.facility_id
+            CASE
+              FROM anomdetect.pot2016 p
+            FROM anomdetect.QP e
+           qpsum.totaldefects,
+            p.facility_id
+          ORDER BY
+        - |
+          SELECT
+            p.facility_id
+            CASE
+              FROM anomdetect.pot2017 p
+            FROM anomdetect.QP e
+           qpsum.totaldefects,
+            p.facility_id
+          ORDER BY
+        - |
+          SELECT
+            p.facility_id
+            CASE
+              FROM anomdetect.pot2018 p
+            FROM anomdetect.QP e
+           qpsum.totaldefects,
+            p.facility_id
+          ORDER BY
+        - |
+          SELECT
+            p.buddyid, p.facility_id
+            CASE
+              FROM anomdetect.pot2015 p
+            FROM anomdetect.eQP e
+           qpsum.totaldefects,
+            p.buddyid, p.facility_id
+          ORDER BY
+        - |
+          SELECT
+            p.buddyid, p.facility_id
+            CASE
+              FROM anomdetect.pot2016 p
+            FROM anomdetect.eQP e
+           qpsum.totaldefects,
+            p.buddyid, p.facility_id
+          ORDER BY
+        - |
+          SELECT
+            p.buddyid, p.facility_id
+            CASE
+              FROM anomdetect.pot2017 p
+            FROM anomdetect.eQP e
+           qpsum.totaldefects,
+            p.buddyid, p.facility_id
+          ORDER BY
+        - |
+          SELECT
+            p.buddyid, p.facility_id
+            CASE
+              FROM anomdetect.pot2018 p
+            FROM anomdetect.eQP e
+           qpsum.totaldefects,
+            p.buddyid, p.facility_id
+          ORDER BY
+        - |
+          SELECT
+            p.buddyid, p.facility_id
+            CASE
+              FROM anomdetect.pot2015 p
+            FROM anomdetect.QP e
+           qpsum.totaldefects,
+            p.buddyid, p.facility_id
+          ORDER BY
+        - |
+          SELECT
+            p.buddyid, p.facility_id
+            CASE
+              FROM anomdetect.pot2016 p
+            FROM anomdetect.QP e
+           qpsum.totaldefects,
+            p.buddyid, p.facility_id
+          ORDER BY
+        - |
+          SELECT
+            p.buddyid, p.facility_id
+            CASE
+              FROM anomdetect.pot2017 p
+            FROM anomdetect.QP e
+           qpsum.totaldefects,
+            p.buddyid, p.facility_id
+          ORDER BY
+        - |
+          SELECT
+            p.buddyid, p.facility_id
+            CASE
+              FROM anomdetect.pot2018 p
+            FROM anomdetect.QP e
+           qpsum.totaldefects,
+            p.buddyid, p.facility_id
+          ORDER BY
+fixture_003:
+  description: >
+  data:
+    <[table]>: "DATA_TABLE"
+  tmplt: |
+    SELECT
+      name
+    FROM sqlite_master WHERE type = "table" AND name = <[".:table:."]>;
+  output:
+    tmplt_map:
+      tmplt: >
+        SELECT
+          name
+        FROM sqlite_master WHERE type = "table" AND name = <[".:table:."]>;
+      docs:
+        - |
+          SELECT
+            name
+          FROM sqlite_master WHERE type = "table" AND name = "DATA_TABLE";
+      map:
+        sub:
+          terms:
+            '<[table]>':
+              - 'code': '<[".:table:."]>'
+                'pos': [ 65, 80 ]
+                'data': [ 'DATA_TABLE' ]
+                'final_term':
+                'mods':
+                  '<[':
+                    'final_term': '"'
+                    'pos': [ 2, 3 ]
+                  '.:':
+                    'final_term': 'table'
+                    'pos': [ 5, 10 ]
+                  ':.':
+                    'final_term': '"'
+                    'pos': [ 12, 13 ]
+fixture_004:
+  description:
+  data:
+    <[LEXIvrs]>: /mnt/iverse
+    <[expiration]>: 'continous'
+    <[project_name.lower]>:
+    <[name]>:
+    <[authority]>: document|this
+    <[security]>: lvl2
+    <[version]>: 0.0.0.0.0.0
+    <[DATAvrs]>:
+    <[plan_files]>:
+  tmplt: |
+    0_Config:
+      '::FILES::': >
+        launch.yaml:
+          '<(TEXT)>': >
+            ---
+            <(META)>:
+              docid: ''
+              name: ''
+              description: >
+              expirary: '<[expiration]>'
+              version: '<[version]>'
+              authority: '<[authority]>'
+              security: '<[security]>'
+              <(WT)>: -32
+            main: &main '<[project_name.lower]>/<[]>/main.py'
+            setup: &setup '<[project_name.lower]>/<[]>/setup.py'
+            site: &site '<[project_name.lower]>/warlockMoonBags/warlock/run.py'
+            srvcsetup: &srvcsetup '<[project_name.lower]>/warlockMoonBags/srvcMoonBags/setupSrvcMoonBags.py'
+            build:
+              main:
+                description: >
+                seq:
+                  0: *srvcsetup  #'<[project_name.lower]>/warlockMoonBags/srvcMoonBags/setupSrvcMoonBags.py'
+                  1: *setup
+                  2: *main
+              full:
+                description: >
+                seq:
+                  0: *srvcsetup  #'<[project_name.lower]>/warlockMoonBags/srvcMoonBags/setupSrvcMoonBags.py'
+                  1: *setup
+                  2: *site
+                  3: *main
+    1_Plan:
+      '::FILES::':
+        '<[name]>.ctd':
+          '<(PATH)>': '<[DATAvrs]>/OPs/opENGRg/3_Work/jobOPRM/3_Work/actvProjects/2_Resources/TMPLTs/project.ctd'
+          dargs:
+            project_number:
+            name:
+            project_description:
+        '<[plan_files]>':
+    2_Resources:
+      Tools:
+        '::FILES::':
+          releaseTLs.py:
+            '<(PATH)>':
+            dargs:
+          launchCode.sh:
+            '<(TEXT)>': >
+            dargs:
+    3_Work:
+      0_GAMMA:
+        '::FILES::':
+        'zz-hist_':
+          '::FILES::':
+      1_DELTA:
+        'zz-work_':
+          '::FILES::':
+        'zz-hist_':
+          '::FILES::':
+        'zz-tomb_':
+      2_ZETA:
+        '::FILES::':
+        'zz-hist_':
+          '::FILES::':
+      3_ALPHA:
+        '::FILES::':
+        'zz-hist_':
+          '::FILES::':
+      4_BETA:
+        '::FILES::':
+        'zz-hist_':
+          '::FILES::':
+      5_OMEGA:
+        '::FILES::':
+        'zz-hist_':
+          '::FILES::':
+    4_Deliver:
+      '::FILES::':
+      'zz-hist_':
+        '::FILES::':
+    5_Feedback:
+      Internal:
+        '::FILES::':
+        'zz-hist_':
+          '::FILES::':
+      External:
+        '::FILES::':
+        'zz-hist_':
+          '::FILES::':
+  output:
+    tmplt_map:
+      tmplt: |
+        0_Config:
+          '::FILES::': >
+            launch.yaml:
+              '<(TEXT)>': >
+                ---
+                <(META)>:
+                  docid: ''
+                  name: ''
+                  description: >
+                  expirary: '<[expiration]>'
+                  version: '<[version]>'
+                  path: '<[LEXIvrs]>panda/LEXI/'
+                  outline: '<[outline]>'
+                  authority: 'document|this'
+                  security: 'sec|lvl2'
+                  <(WT)>: -32
+                main: &main '<[project_name.lower]>/<[]>/main.py'
+                setup: &setup '<[project_name.lower]>/<[]>/setup.py'
+                site: &site '<[project_name.lower]>/warlockMoonBags/warlock/run.py'
+                srvcsetup: &srvcsetup '<[project_name.lower]>/warlockMoonBags/srvcMoonBags/setupSrvcMoonBags.py'
+                build:
+                  main:
+                    description: >
+                    seq:
+                      0: *srvcsetup  #'<[project_name.lower]>/warlockMoonBags/srvcMoonBags/setupSrvcMoonBags.py'
+                      1: *setup
+                      2: *main
+                  full:
+                    description: >
+                    seq:
+                      0: *srvcsetup  #'<[project_name.lower]>/warlockMoonBags/srvcMoonBags/setupSrvcMoonBags.py'
+                      1: *setup
+                      2: *site
+                      3: *main
+        1_Plan:
+          '::FILES::':
+            '<[name]>.ctd':
+              '<(PATH)>': '<[DATAvrs]>/OPs/opENGRg/3_Work/jobOPRM/3_Work/actvProjects/2_Resources/TMPLTs/project.ctd'
+              dargs:
+                project_number:
+                name:
+                project_description:
+            '<[plan_files]>':
+        2_Resources:
+          Tools:
+            '::FILES::':
+              releaseTLs.py:
+                '<(PATH)>':
+                dargs:
+              launchCode.sh:
+                '<(TEXT)>': >
+                dargs:
+        3_Work:
+          0_GAMMA:
+            '::FILES::':
+            'zz-hist_':
+              '::FILES::':
+          1_DELTA:
+            'zz-work_':
+              '::FILES::':
+            'zz-hist_':
+              '::FILES::':
+            'zz-tomb_':
+          2_ZETA:
+            '::FILES::':
+            'zz-hist_':
+              '::FILES::':
+          3_ALPHA:
+            '::FILES::':
+            'zz-hist_':
+              '::FILES::':
+          4_BETA:
+            '::FILES::':
+            'zz-hist_':
+              '::FILES::':
+          5_OMEGA:
+            '::FILES::':
+            'zz-hist_':
+              '::FILES::':
+        4_Deliver:
+          '::FILES::':
+          'zz-hist_':
+            '::FILES::':
+        5_Feedback:
+          Internal:
+            '::FILES::':
+            'zz-hist_':
+              '::FILES::':
+          External:
+            '::FILES::':
+            'zz-hist_':
+              '::FILES::':
+      docs:
+        - |
+          0_Config:
+            '::FILES::': >
+              launch.yaml:
+                '<(TEXT)>': >
+                  ---
+                  <(META)>:
+                    docid: ''
+                    name: ''
+                    description: >
+                    expirary: '<[expiration]>'
+                    version: '<[version]>'
+                    path: '<[LEXIvrs]>panda/LEXI/'
+                    outline: '<[outline]>'
+                    authority: 'document|this'
+                    security: 'sec|lvl2'
+                    <(WT)>: -32
+                  main: &main '<[project_name.lower]>/<[]>/main.py'
+                  setup: &setup '<[project_name.lower]>/<[]>/setup.py'
+                  site: &site '<[project_name.lower]>/warlockMoonBags/warlock/run.py'
+                  srvcsetup: &srvcsetup '<[project_name.lower]>/warlockMoonBags/srvcMoonBags/setupSrvcMoonBags.py'
+                  build:
+                    main:
+                      description: >
+                      seq:
+                        0: *srvcsetup  #'<[project_name.lower]>/warlockMoonBags/srvcMoonBags/setupSrvcMoonBags.py'
+                        1: *setup
+                        2: *main
+                    full:
+                      description: >
+                      seq:
+                        0: *srvcsetup  #'<[project_name.lower]>/warlockMoonBags/srvcMoonBags/setupSrvcMoonBags.py'
+                        1: *setup
+                        2: *site
+                        3: *main
+          1_Plan:
+            '::FILES::':
+              '<[name]>.ctd':
+                '<(PATH)>': '<[DATAvrs]>/OPs/opENGRg/3_Work/jobOPRM/3_Work/actvProjects/2_Resources/TMPLTs/project.ctd'
+                dargs:
+                  project_number:
+                  name:
+                  project_description:
+              '<[plan_files]>':
+          2_Resources:
+            Tools:
+              '::FILES::':
+                releaseTLs.py:
+                  '<(PATH)>':
+                  dargs:
+                launchCode.sh:
+                  '<(TEXT)>': >
+                  dargs:
+          3_Work:
+            0_GAMMA:
+              '::FILES::':
+              'zz-hist_':
+                '::FILES::':
+            1_DELTA:
+              'zz-work_':
+                '::FILES::':
+              'zz-hist_':
+                '::FILES::':
+              'zz-tomb_':
+            2_ZETA:
+              '::FILES::':
+              'zz-hist_':
+                '::FILES::':
+            3_ALPHA:
+              '::FILES::':
+              'zz-hist_':
+                '::FILES::':
+            4_BETA:
+              '::FILES::':
+              'zz-hist_':
+                '::FILES::':
+            5_OMEGA:
+              '::FILES::':
+              'zz-hist_':
+                '::FILES::':
+          4_Deliver:
+            '::FILES::':
+            'zz-hist_':
+              '::FILES::':
+          5_Feedback:
+            Internal:
+              '::FILES::':
+              'zz-hist_':
+                '::FILES::':
+            External:
+              '::FILES::':
+              'zz-hist_':
+                '::FILES::':
+      map:
+fixture_005:
+  description: >
+    Provide a simple substitution test text
+  data:
+    <[not_here]>: 'not here'
+    not_there: 'not there'
+  tmplt: |
+    SELECT <[year]> FROM <[from]> GROUP BY <[year]>
+  output:
+    tmplt_map:
+      'tmplt': 'SELECT <[year]> FROM <[from]> GROUP BY <[year]>'
+      'docs': [ 'SELECT <[year]> FROM <[from]> GROUP BY <[year]>' ]
+      'map':
+        sub:
+          'terms':
+            '<[from]>':
+              - 'code': '<[from]>'
+                'pos': [ 21, 29 ]
+                'data': [ "DATA_TABLE", ]
+                'final_term':
+                'mods': { }
+            <[year]>:
+              - 'code': '<[year]>'
+                'pos': [ 7, 15 ]
+                'data': [ "2015", ]
+                'final_term':
+                'mods': { }
+              - 'code': '<[year]>'
+                'pos': [ 39, 47 ]
+                'data': [ "2015", ]
+                'final_term':
+                'mods': { }
+    text: |
+      SELECT 2015 FROM DATA_TABLE GROUP BY 2015

@@ -1,0 +1,13 @@
+CHANGELOG.rst
+LICENSE
+LICENSE.rst
+MANIFEST.in
+README.md
+README.rst
+pyproject.toml
+setup.cfg
+src/subtrix.egg-info/PKG-INFO
+src/subtrix.egg-info/SOURCES.txt
+src/subtrix.egg-info/dependency_links.txt
+src/subtrix.egg-info/requires.txt
+src/subtrix.egg-info/top_level.txt

@@ -1,0 +1,87 @@
+---
+<(META)>:
+  DOCid: <^[uuid]^>
+  name: Rule System Substitution Configuration
+  description: >
+  version: 0.0.0.0.0.0
+  expire: <^[expire]^>
+  here: <[path]>
+  outline:
+base:
+  description: >
+    A simple substitution rule that operates just like the standard tmplt rule
+      with some extended behaviors
+  ex: >
+    <[prefix:.term.:suffix]>
+  pattern:
+    initialize:
+      - symbol: "<["
+        name: Start Substitution Symbol
+        description: >
+          Signal the start of a substitution command
+            for use in standard substitution templates
+        obligation: required
+      - symbol: "<^["
+        name: &USSS Update Start Substitution Symbol
+        description: >
+          Signal the start of a substitution command
+          for use in meta substitution templates
+          this indicates the need to replace these
+            template values in the template itself
+          used for manual editing integration
+        obligation: required
+      - symbol: "<~["
+        name: &OSSS Optional Start Substitution Symbol
+        description: >
+          Signal the start of an optional substitution
+          command this is a term that can be scrubbed
+          from the template if a replacement is not
+          provided
+        obligation: optional
+      - symbol: "<o["
+        name: Start Template Override Control
+        ex: >
+        description: >
+          Signal the start of an override control with in a
+          templating cascade.  an override control stops
+                the term from getting override by templates closer
+          to the object
+        obligation: required
+    processors:
+      prefix:
+        - symbol: ".:"
+          name: prefixalize
+          description: >
+            Signal the start of a substitution command
+          obligation: optional
+      midfix:
+      suffix:
+        - symbol: ":."
+          name: suffixalize
+          description: >
+            Signal the start of a substitution command
+          obligation: optional
+    finalize:
+      - symbol: "]>"
+        name: &ESS End Substitution Symbol
+        description: >
+          Signal the end of a substitution command
+      - symbol: "]^>"
+        name: &UESS Update End Substitution Symbol
+        description: >
+          Signal the end of a substitution command
+          for use in meta substitution templates
+          this indicates the need to replace these
+          tempalte values in the template itself
+          used for manual editing integration
+      - symbol: "]~>"
+        name: &OESS Optional End Substitution Symbol
+        description: >
+          Signal the end of a substitution command
+        obligation: optional
+      - symbol: "]o>"
+        name: End Template Override Control
+        description: >
+          Signal the end of an override control with in a
+          templating cascade
+how: sub

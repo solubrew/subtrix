@@ -1,0 +1,23 @@
+[build-system]
+requires = ["setuptools>=42", "wheel"]  # Specify required build tools
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "subtrix"  # Unique PyPI name
+version = "0.0.1"  # Semantic versioning
+description = "A Substitution Framework"
+readme = "README.md"  # Points to the README file
+license = { file = "LICENSE" }
+authors = [{ name = "solubrew", email = "pypi@solutionsbrewer.com" }]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent"
+]
+requires-python = ">=3.6"
+dependencies = ["pytest==8.3.3"]
+
+[tool.black]
+line-length = 120
+skip-string-normalization = false
+
