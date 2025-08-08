@@ -1,23 +1,101 @@
 [build-system]
-requires = ["setuptools>=42", "wheel"]  # Specify required build tools
+requires = ["setuptools>=68", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "subtrix"  # Unique PyPI name
-version = "0.0.1"  # Semantic versioning
-description = "A Substitution Framework"
-readme = "README.md"  # Points to the README file
+name = "subtrix"
+version = "0.0.1"
+description = "Your project description"
+readme = { file = "README.rst", content-type = "text/x-rst" }
 license = { file = "LICENSE" }
-authors = [{ name = "solubrew", email = "pypi@solutionsbrewer.com" }]
-classifiers = [
-    "Programming Language :: Python :: 3",
-    "License :: OSI Approved :: MIT License",
-    "Operating System :: OS Independent"
-]
+authors = [{ name = "Maintainers", email = "solubrew@solutionsbrewer.com" }]
 requires-python = ">=3.6"
-dependencies = ["pytest==8.3.3"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "Intended Audience :: System Administrators",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: POSIX :: Linux",
+    "Operating System :: MacOS :: MacOS X",
+    "Operating System :: Microsoft :: Windows",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.6",
+    "Programming Language :: Python :: Implementation :: CPython",
+    "Programming Language :: Python :: Implementation :: PyPy",
+    "Topic :: Utilities"]
+# Dependencies with environment markers preserved from the original config
+dependencies = [
+    "backoff",
+    "click",
+    'defusedxml; platform_system == "Windows"',
+    'futures; python_version < "3"',
+    'six; platform_system == "Linux" and python_version > "3.3"',
+    'pypiwin32; platform_system == "Windows"',
+    'wheel<=0.29.0; python_version < "2.7"']
+
+[project.urls]
+Homepage = "https://www.solutionsbrewer.com/"
+Changelog = "CHANGELOG.rst"
+
+[tool.setuptools]
+include-package-data = true
+
+[tool.setuptools.dynamic]
+dependencies = { file = ["requirements.txt"] }
+
+# Flat layout: project root contains "subtrix" and a sibling "test_subtrix".
+# Limit discovery to only the actual package.
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["subtrix", "subtrix.*"]
+exclude = [
+    "test*",
+    "tests*",
+    "docs*",
+    "examples*",
+    "scripts*",
+    "tools*",
+]
 
 [tool.black]
 line-length = 120
 skip-string-normalization = false
 
+# Flake8 configuration
+[tool.flake8]
+exclude = [
+    ".tox",
+    ".git",
+    "__pycache__",
+    ".eggs",
+    "*.egg",
+    "build",
+    "dist",
+    "htmlcov",
+    "*/static/salt/formulas/*"]
+ignore = ["FI15", "FI16", "FI17", "FI5", "D107"]
+
+# Pytest configuration
+[tool.pytest.ini_options]
+testpaths = ["test"]
+mock_use_standalone_module = true
+norecursedirs = [
+    ".git",
+    ".tox",
+    ".env",
+    "__pycache__",
+    "dist",
+    "build",
+    "htmlcov"]
+collect_ignore = ["hook-*.py"]
+python_files = [
+    "test_*.py",
+    "*_test.py",
+    "tests.py"]
+addopts = [
+    "-rxEfsw",
+    "--strict",
+    "--doctest-modules",
+    "--doctest-glob=*.md",
+    "--tb=short"]
