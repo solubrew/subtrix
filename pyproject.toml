@@ -59,7 +59,7 @@ exclude = [
 ]
 [tool.setuptools.package-data]
 # keys are package names; globs are relative to the package dirs
-nchantdoffice = [
+subtrix = [
     "**/*.yaml",
 ]
 [tool.black]
