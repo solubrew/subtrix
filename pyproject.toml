@@ -57,7 +57,11 @@ exclude = [
     "scripts*",
     "tools*",
 ]
-
+[tool.setuptools.package-data]
+# keys are package names; globs are relative to the package dirs
+nchantdoffice = [
+    "**/*.yaml",
+]
 [tool.black]
 line-length = 120
 skip-string-normalization = false
