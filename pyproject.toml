@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "subtrix"
-version = "0.0.0.0.0.1"
+version = "0.0.1.0.1.2"
 description = "Your project description"
 readme = { file = "README.rst", content-type = "text/x-rst" }
 license = { file = "LICENSE" }
