@@ -17,13 +17,11 @@ import datetime as dt
 # ===============================================================================||
 from os.path import dirname, join
 
-import crow
-
-crow.crowLoad("Subtrix", "DELTA")
 from condor import condor
-from subtrix.subtrix import Mechanism
-from subtrix import subtrix
 from ogma.logma import Logma
+
+from subtrix import subtrix
+from subtrix.subtrix import Mechanism
 
 # ========================Common Globals=========================================||
 here = join(dirname(__file__), "")  # ||
@@ -37,9 +35,9 @@ cfg = condor.Instruct(pxcfg).load().dikt
 
 test_000 = True  # --verified - 2025/09/17
 test_001 = True  # --verified - 2025/09/17
-test_002 = False
+test_002 = True  # --verified - 2025/09/17
 test_003 = True  # --verified - 2025/09/17
-test_004 = False
+test_004 = True
 test_005 = True  # --verified - 2025/09/17
 
 fixtures = condor.Instruct(join(here, "..", "fixtures", "fixtures.yaml")).load().dikt

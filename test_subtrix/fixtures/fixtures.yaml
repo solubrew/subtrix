@@ -156,7 +156,7 @@ fixture_002:
               FROM anomdetect.pot2015 p
             FROM anomdetect.eQP e
            qpsum.totaldefects,
-              p.buddyid
+            p.buddyid
           ORDER BY
         - |
           SELECT
