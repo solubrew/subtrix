@@ -403,7 +403,8 @@ fixture_003:
                     'final_term': '"'
                     'pos': [ 12, 13 ]
 fixture_004:
-  description:
+  description: >
+    full file test
   data:
     <[LEXIvrs]>: /mnt/iverse
     <[expiration]>: 'continous'
@@ -414,6 +415,7 @@ fixture_004:
     <[version]>: 0.0.0.0.0.0
     <[DATAvrs]>:
     <[plan_files]>:
+    <[outline]>:
   tmplt: |
     0_Config:
       '::FILES::': >
@@ -426,6 +428,8 @@ fixture_004:
               description: >
               expirary: '<[expiration]>'
               version: '<[version]>'
+              path: '<[LEXIvrs]>/panda/LEXI/'
+              outline: '<[outline]>'
               authority: '<[authority]>'
               security: '<[security]>'
               <(WT)>: -32
@@ -611,12 +615,12 @@ fixture_004:
                     docid: ''
                     name: ''
                     description: >
-                    expirary: '<[expiration]>'
-                    version: '<[version]>'
-                    path: '<[LEXIvrs]>panda/LEXI/'
+                    expirary: 'continous'
+                    version: '0.0.0.0.0.0'
+                    path: '/mnt/iverse/panda/LEXI/'
                     outline: '<[outline]>'
                     authority: 'document|this'
-                    security: 'sec|lvl2'
+                    security: 'lvl2'
                     <(WT)>: -32
                   main: &main '<[project_name.lower]>/<[]>/main.py'
                   setup: &setup '<[project_name.lower]>/<[]>/setup.py'

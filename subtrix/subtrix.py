@@ -651,8 +651,7 @@ class OriginalMechanism(object):
         """
         for i in self.config.dikt["sequence"]:  # get the sequence for processing substitution variables
             # select the process runner self.sub, self.func, self.loop, self.matrix, self.varr
-            if log:
-                logma.info(f"Run Method {i}")
+            logma.info(f"Run Method {i}")
             getattr(self, f"_{i}")()
         #        logma.info(f"Populate Template Docs")
         self._set_templates()
@@ -862,17 +861,14 @@ class OriginalMechanism(object):
                 x, y = termmap["pos"]
                 if term in updated_doc or term in updated_doc:
                     front = updated_doc[: x + shift]
-                    if log:
-                        logma.info(f"Count {cnt}")
-                    if log:
-                        logma.info(f"Front {front}")
+                    logma.info(f"Count {cnt}")
+                    logma.info(f"Front {front}")
                     back = updated_doc[y + shift :]
-                    if log:
-                        logma.info(f"Back {back}")
+                    logma.info(f"Back {back}")
                     final_term = termmap["code"]
                     # remove optional may need to be placed in here
                     if len(termmap["data"]) > 0:
-                        final_term = self._process_final_term(termmap["mods"], termmap["data"][d])
+                        final_term = self._process_final_term(termmap["mods"], termmap["data"][d], termmap["code"])
                     shift += len(final_term) - len(termmap["code"])
                     updated_doc = front + final_term + back
                     # if cnt >= 7:
@@ -884,12 +880,14 @@ class OriginalMechanism(object):
         self.map_processed = True
         return self
 
-    def _process_final_term(self, fix_map, terms):
+    def _process_final_term(self, fix_map, terms, code=None):
         """"""
         if not isinstance(terms, list):
             terms = [terms]
         final_term = ""
         for term in terms:
+            if term is None:
+                term = code
             fix_map = dict(sorted(fix_map.items(), key=lambda x: x[1]["pos"][0]))
             if ".:" not in fix_map.keys():
                 final_term += str(term)
@@ -930,8 +928,7 @@ class OriginalMechanism(object):
             for term in self.tmplt_map["map"][how]["terms"].keys():
                 if isinstance(self.tmplt_map["map"][how]["terms"][term][0]["data"], list):
                     template_cnt = template_cnt * len(self.tmplt_map["map"][how]["terms"][term][0]["data"])
-                    if log:
-                        logma.info(f"Template Count {template_cnt}")
+                    logma.info(f"Template Count {template_cnt}")
         [self.docs.append(self.tmplt) for i in range(1, template_cnt)]
 
     def _sub(self, data=None):
@@ -984,6 +981,7 @@ class OriginalMechanism(object):
 
     def _validate_data(self):
         """"""
+        # self.data = {k: v for k, v in self.data.items() if v is not None}
         for term in self.data.keys():
             if not isinstance(self.data[term], list):
                 self.data[term] = [self.data[term]]

@@ -1,35 +1,36 @@
-# @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@||
+# @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@||
 """
 ---
 <(META)>:
     docid: '6705b527-60ca-48a8-9d67-357b22afd1fe'
     name: Subtrix Module Python Testing Document
-    description: >
-    expiry: <[expiration]>
-    version: <[version]>
-    outline: <[outline]>
-    authority: document|this
-    security: sec|lvl2
-    <(WT)>: -32
+	description: >
+	version: 0.0.0.0.0.0
+	authority: filesystem
+	security: seclvl2
+	<(WT)>: -32
 """
+# -*- coding: utf-8 -*
+# ======================================Standard Library Modules======================================================||
 import datetime as dt
-# -*- coding: utf-8 -*-
-# ===============================================================================||
 from os.path import dirname, join
 
+# ======================================Solutions Brewer Library Modules==============================================||
 from condor import condor
 from ogma.logma import Logma
 
 from subtrix import subtrix
 from subtrix.subtrix import Mechanism
 
-# ========================Common Globals=========================================||
+# ======================================3rd Party Library Modules=====================================================||
+
+# ====================================================================================================================||
 here = join(dirname(__file__), "")  # ||
 subtrix.log = True
 log = subtrix.log
 logma = Logma(__name__)
 
-# ===============================================================================||
+# ====================================================================================================================||
 pxcfg = join(here, "_data_", "subtrixTEST.yaml")
 cfg = condor.Instruct(pxcfg).load().dikt
 
@@ -380,8 +381,13 @@ class Test_Mechanism:
         if test_004:
             logma.info(f"Run Test 004")
             result = fixture004["output"]["tmplt_map"]
-            output = self.test_Mechanism_004.run()
-            assert output == result["docs"][0].strip(), output
+            # output = codecs.decode(self.test_Mechanism_004.run().strip('"'), "unicode_escape")
+            output = self.test_Mechanism_004.run().strip('"')
+            logma.write(output)
+            # output_result = codecs.decode(result["docs"][0].strip().strip('"'), "unicode_escape")
+            output_result = result["docs"][0].strip().strip('"')
+            logma.write(output_result)
+            assert output == output_result, output
         logma.info(f"Complete Mechanism Run method Test")
 
     def test_varr(self):
@@ -394,3 +400,8 @@ class Test_Mechanism:
             result = result["map"]["varr"]
             assert self.test_Mechanism_001.tmplt_map["map"]["varr"] == result, self.test_Mechanism_001.tmplt_map
         logma.info(f"Complete Mechanism Init method Test")
+
+
+# ====================================================================================================================||
+
+# @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@||
