@@ -110,21 +110,21 @@ fixture_002:
           "terms":
             "<@[controlfield]@>":
               - 'code': '<@[controlfield:., ]@>'
-              'pos': [ 9, 31 ]
+                'pos': [ 9, 31 ]
                 'data': [ [ 'p.buddyid' ], [ 'p.facility_id' ], [ "p.buddyid", "p.facility_id" ] ]
                 'final_term':
-              'mods':
-                ':.':
-                  'final_term': ', '
-                  'pos': [ 17, 19 ]
+                'mods':
+                  ':.':
+                    'final_term': ', '
+                    'pos': [ 17, 19 ]
               - 'code': '<@[controlfield:., ]@>'
-              'pos': [ 123, 145 ]
+                'pos': [ 123, 145 ]
                 'data': [ [ 'p.buddyid' ], [ 'p.facility_id' ], [ "p.buddyid", "p.facility_id" ] ]
                 'final_term':
-              'mods':
-                ':.':
-                  'final_term': ', '
-                  'pos': [ 17, 19 ]
+                'mods':
+                  ':.':
+                    'final_term': ', '
+                    'pos': [ 17, 19 ]
         sub:
           terms:
             "<[year]>":

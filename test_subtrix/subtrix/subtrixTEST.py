@@ -35,12 +35,12 @@ logma = Logma(__name__)
 pxcfg = join(here, "_data_", "subtrixTEST.yaml")
 cfg = condor.Instruct(pxcfg).load().dikt
 
-test_000 = False
-test_001 = False
-test_002 = True
-test_003 = False
+test_000 = True  # --verified - 2025/09/17
+test_001 = True  # --verified - 2025/09/17
+test_002 = False
+test_003 = True  # --verified - 2025/09/17
 test_004 = False
-test_005 = False
+test_005 = True  # --verified - 2025/09/17
 
 fixtures = condor.Instruct(join(here, "..", "fixtures", "fixtures.yaml")).load().dikt
 fixture000 = fixtures["fixture_000"]

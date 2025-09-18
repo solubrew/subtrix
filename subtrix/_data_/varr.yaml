@@ -98,12 +98,12 @@ knowns:
     name:
     description: >
       implement time rules using the timemap module
-    object: subtrix.subtrix.today
+    object: subtrix.utilities.today
     outs:
   <(UUID)>:
     name: Universally Unique Identification
     description: >
-    object: subtrix.subtrix.uuid
+    object: subtrix.utilities.uuid
     outs:
   <(WT)>:
     name:

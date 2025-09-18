@@ -15,19 +15,25 @@
 	security: seclvl2
 	<(WT)>: -32
 """
-import datetime as dt
 import json
 from itertools import combinations
 # -*- coding: utf-8 -*
 # ======================================Standard Library Modules======================================================||
 from os.path import abspath, dirname, join
+from pathlib import Path
+from typing import Dict, List, Any, Optional, Union
 
 # ======================================Solutions Brewer Library Modules==============================================||
 from condor import condor
 from condor.utils import thingify
 from ogma.logma import Logma
+
+from .context import ConfigurationManager
+from .errors import TemplateProcessingError, InvalidDataTypeError, SubtrixError, DependencyError
+from .parser import TemplateParser
+from .utilities import get_variable_data
+
 # ======================================3rd Party Library Modules=====================================================||
-from uuid_extensions import uuid7
 
 # ====================================================================================================================||
 here = join(dirname(__file__), "")
@@ -38,7 +44,561 @@ logma = Logma(__name__)
 pxcfg = join(abspath(here), "_data_", "subtrix.yaml")  # ||use default configuration
 
 
-class Mechanism(object):
+class DataProcessor:
+    """Handles data validation and transformation."""
+
+    @staticmethod
+    def validate_data(data: Dict[str, Any]) -> Dict[str, List[Any]]:
+        """
+        Validate and normalize data structure.
+
+        Args:
+            data: Input data dictionary
+
+        Returns:
+            Normalized data with all values as lists
+
+        Raises:
+            InvalidDataTypeError: If data type is not supported
+        """
+        validated_data = {}
+
+        for term, value in data.items():
+            if isinstance(value, (str, int, float)):
+                validated_data[term] = [value]
+            elif isinstance(value, list):
+                validated_data[term] = value
+            elif isinstance(value, dict):
+                validated_data[term] = value
+            else:
+                raise InvalidDataTypeError(f"Unsupported data type for term '{term}': {type(value)}")
+
+        return validated_data
+
+    @staticmethod
+    def process_loop_terms(data: Dict[str, Any], processors: List[Dict[str, str]]) -> Dict[str, Any]:
+        """
+        Process loop terms to generate combinations.
+
+        Args:
+            data: Data dictionary
+            processors: List of processor configurations
+
+        Returns:
+            Data with loop terms processed
+
+        Raises:
+            InvalidDataTypeError: If loop term is not a list
+        """
+        processed_data = data.copy()
+
+        for term in processed_data.keys():
+            for processor in processors:
+                if processor["symbol"] not in term:
+                    continue
+
+                if not isinstance(processed_data.get(term), list):
+                    raise InvalidDataTypeError(f"Loop term '{term}' must be a list")
+
+                looped_terms = []
+                for r in range(1, len(processed_data[term]) + 1):
+                    looped_terms += list(combinations(processed_data[term], r))
+
+                processed_data[term] = [[y for y in x] for x in looped_terms]
+
+        return processed_data
+
+    @staticmethod
+    def normalize_term_data(term_data: Any) -> List[Any]:
+        """
+        Normalize term data to list format.
+
+        Args:
+            term_data: Data to normalize
+
+        Returns:
+            Normalized data as list
+        """
+        if isinstance(term_data, (str, int, float)):
+            return [term_data]
+        elif isinstance(term_data, list):
+            return term_data
+        else:
+            return [str(term_data)]
+
+
+class DocumentGenerator:
+    """Handles final document generation and formatting."""
+
+    def __init__(self, allow_trailing_space: bool = False, allow_trailing_suffix: bool = False):
+        """
+        Initialize document generator.
+
+        Args:
+            allow_trailing_space: Whether to allow trailing spaces
+            allow_trailing_suffix: Whether to allow trailing suffixes like commas
+        """
+        self.allow_trailing_space = allow_trailing_space
+        self.allow_trailing_suffix = allow_trailing_suffix
+
+    def process_final_term(self, fix_map: Dict[str, Any], terms: Any) -> str:
+        """
+        Process and format final term with better string handling.
+
+        Args:
+            fix_map: Fix map for term processing
+            terms: Terms to process
+
+        Returns:
+            Formatted final term
+        """
+        if not isinstance(terms, list):
+            terms = [terms]
+
+        # Use list for efficient string building
+        final_parts = []
+
+        for term in terms:
+            sorted_fix_map = dict(sorted(fix_map.items(), key=lambda x: x[1]["pos"][0]))
+
+            if ".:" not in sorted_fix_map.keys():
+                final_parts.append(str(term))
+
+            for fix in sorted_fix_map.keys():
+                if fix == ".:":
+                    final_parts.append(str(term))
+                else:
+                    final_parts.append(sorted_fix_map[fix]["final_term"])
+
+        # Join once instead of multiple concatenations
+        final_term = "".join(final_parts)
+
+        # Apply post-processing
+        return self._apply_term_formatting(final_term)
+
+    def _apply_term_formatting(self, term: str) -> str:
+        """
+        Apply formatting rules to term.
+
+        Args:
+            term: Term to format
+
+        Returns:
+            Formatted term
+        """
+        if not self.allow_trailing_space:
+            term = term.strip()
+
+        if not self.allow_trailing_suffix:
+            while term and term[-1] == ",":
+                term = term[:-1]
+
+        return term
+
+    def process_template_map(self, docs: List[str], template_map: Dict[str, Any]) -> List[str]:
+        """
+        Process template map to generate final documents.
+
+        Args:
+            docs: List of document templates
+            template_map: Template mapping data
+
+        Returns:
+            List of processed documents
+
+        Raises:
+            TemplateProcessingError: If template processing fails
+        """
+        try:
+            processed_docs = []
+
+            for d, updated_doc in enumerate(docs):
+                shift = 0
+                sorted_terms = []
+
+                # Collect all terms from all processors
+                for how in template_map["map"].keys():
+                    for term in template_map["map"][how]["terms"].keys():
+                        sorted_terms.extend(template_map["map"][how]["terms"][term])
+
+                # Sort by position for correct processing order
+                sorted_terms.sort(key=lambda x: x["pos"][0])
+
+                # Process each term
+                for termmap in sorted_terms:
+                    if d >= len(termmap["data"]) > 1:
+                        d = d % len(termmap["data"])
+
+                    term = termmap["code"]
+                    x, y = termmap["pos"]
+
+                    if term in updated_doc:
+                        front = updated_doc[: x + shift]
+                        back = updated_doc[y + shift :]
+
+                        final_term = termmap["code"]
+                        if len(termmap["data"]) > 0:
+                            final_term = self.process_final_term(termmap["mods"], termmap["data"][d])
+
+                        shift += len(final_term) - len(termmap["code"])
+                        updated_doc = front + final_term + back
+
+                processed_docs.append(updated_doc.strip())
+
+            return processed_docs
+
+        except Exception as e:
+            raise TemplateProcessingError(f"Failed to process template map: {e}")
+
+    def calculate_template_count(self, template_map: Dict[str, Any]) -> int:
+        """
+        Calculate the number of templates needed based on data.
+
+        Args:
+            template_map: Template mapping data
+
+        Returns:
+            Number of templates needed
+        """
+        template_cnt = 1
+
+        for how in template_map["map"].keys():
+            for term in template_map["map"][how]["terms"].keys():
+                term_data = template_map["map"][how]["terms"][term]
+                if term_data and isinstance(term_data[0]["data"], list):
+                    template_cnt *= len(term_data[0]["data"])
+
+        return template_cnt
+
+    def remove_optional_terms(self, template_map: Dict[str, Any]) -> Dict[str, Any]:
+        """
+        Remove optional terms marked with "<~".
+
+        Args:
+            template_map: Template mapping data
+
+        Returns:
+            Template map with optional terms removed
+        """
+        for how, terms in template_map["map"].items():
+            for term, term_maps in terms["terms"].items():
+                if "<~" in term:
+                    for term_map in term_maps:
+                        term_map["data"] = ""
+
+        return template_map
+
+
+class ImprovedMechanism:
+    """
+    Improved Subtrix templating mechanism with better error handling,
+    performance optimizations, and cleaner architecture.
+    """
+
+    def __init__(
+        self,
+        template: Optional[str] = None,
+        data: Optional[Dict[str, Any]] = None,
+        rules: Optional[Any] = None,
+        config: Optional[Dict[str, Any]] = None,
+    ):
+        """
+        Initialize the improved mechanism.
+
+        Args:
+            template: Template string or dictionary
+            data: Data for template substitution
+            rules: Processing rules (future use)
+            config: Configuration overrides
+        """
+        # Initialize components
+        self.template = self._prepare_template(template or "")
+        self.data = DataProcessor.validate_data(data or {})
+        self.rules = rules
+
+        # Load configuration
+        config_path = Path(__file__).parent / "_data_" / "subtrix.yaml"
+        self.config_manager = ConfigurationManager(str(config_path))
+        self.config = self._load_config_with_fallback(config)
+
+        # Initialize processors
+        self.template_parser = TemplateParser(self.template, self.config)
+        self.data_processor = DataProcessor()
+        self.document_generator = DocumentGenerator()
+
+        # State management
+        self.template_map = {"tmplt": self.template, "docs": [self.template], "map": {}}
+        self.processed = False
+        self.terms_looped = False
+
+    def _prepare_template(self, template: Union[str, Dict]) -> str:
+        """
+        Prepare template for processing.
+
+        Args:
+            template: Input template
+
+        Returns:
+            Prepared template string
+        """
+        if isinstance(template, dict):
+            return json.dumps(template).strip()
+        return str(template).strip()
+
+    def _load_config_with_fallback(self, config_override: Optional[Dict]) -> Dict[str, Any]:
+        """
+        Load configuration with fallback handling.
+
+        Args:
+            config_override: Configuration overrides
+
+        Returns:
+            Loaded configuration
+        """
+        try:
+            return self.config_manager.load_config(config_override)
+        except Exception as e:
+            # Fallback to basic configuration
+            return {
+                "sequence": ["varr", "sub", "loop", "sub"],
+                "processors": {
+                    "sub": {
+                        "base": {
+                            "pattern": {
+                                "initialize": [{"symbol": "<["}],
+                                "finalize": [{"symbol": "]>"}],
+                                "processors": {},
+                            }
+                        }
+                    },
+                    "loop": {
+                        "base": {
+                            "pattern": {
+                                "initialize": [{"symbol": "<["}],
+                                "finalize": [{"symbol": "]>"}],
+                                "processors": {},
+                            }
+                        }
+                    },
+                    "varr": {
+                        "base": {
+                            "pattern": {
+                                "initialize": [{"symbol": "<("}],
+                                "finalize": [{"symbol": ")>"}],
+                                "processors": {},
+                            }
+                        }
+                    },
+                },
+            }
+
+    def run(self, full: bool = False, optional: bool = True) -> Union[str, "ImprovedMechanism"]:
+        """
+        Process the template with configured data and rules.
+
+        Args:
+            full: If True, returns the full Mechanism instance
+            optional: If True, processes optional template sections
+
+        Returns:
+            Processed template string if full=False, otherwise Mechanism instance
+        """
+        try:
+            # Process according to configured sequence
+            for processor_name in self.config["sequence"]:
+                processor_method = getattr(self, f"_process_{processor_name}", None)
+                if processor_method:
+                    processor_method()
+
+            # Generate templates and process map
+            self._generate_templates()
+            self._process_template_map()
+
+            # Handle optional terms
+            if optional:
+                self._remove_optional_terms()
+
+            if full:
+                return self
+
+            return json.loads(json.dumps(self.template_map["docs"][0]).strip()).strip()
+
+        except Exception as e:
+            raise SubtrixError(f"Template processing failed: {e}")
+
+    def _process_sub(self, data: Optional[Dict] = None) -> None:
+        """Process substitution patterns."""
+        if data is None:
+            data = self.data
+        self._map_patterns(data, "sub")
+
+    def _process_loop(self, data: Optional[Dict] = None) -> None:
+        """Process loop patterns."""
+        if data is None:
+            data = self.data
+
+        if not self.terms_looped:
+            processors = self.config["processors"]["loop"]["base"]["pattern"]["initialize"]
+            self.data = self.data_processor.process_loop_terms(self.data, processors)
+            self.terms_looped = True
+
+        self._map_patterns(data, "loop")
+
+    def _process_varr(self, data: Optional[Dict] = None) -> None:
+        """Process variable patterns."""
+        if data is None:
+            data = self.data
+        self._map_patterns(data, "varr")
+
+    def _map_patterns(self, data: Dict[str, Any], how: str) -> None:
+        """
+        Map patterns in template to data.
+
+        Args:
+            data: Data for pattern mapping
+            how: Processing method (sub, loop, varr)
+        """
+        self._initialize_terms(how)
+        cfg = self.config["processors"][how]
+
+        for i, _ in enumerate(cfg["base"]["pattern"]["initialize"]):
+            offset = 0
+
+            while True:
+                try:
+                    start_n, end_n, fix_map, term, code = self.template_parser.find_pattern(cfg, i, offset)
+
+                    if start_n == -1 or term == "":
+                        break
+
+                    # Initialize term in map if needed
+                    if term not in self.template_map["map"][how]["terms"]:
+                        self.template_map["map"][how]["terms"][term] = []
+
+                    # Process based on method
+                    if how == "sub":
+                        self._assign_substitution_map(start_n, end_n, fix_map, term, code, data, how)
+                    elif how == "loop":
+                        self._assign_substitution_map(start_n, end_n, fix_map, term, code, data, how)
+                    elif how == "varr":
+                        variable_data = self._get_variable_data(term)
+                        load = self._create_map_load(how, code, [variable_data], start_n, end_n, fix_map)
+                        if load not in self.template_map["map"][how]["terms"][term]:
+                            self.template_map["map"][how]["terms"][term].append(load)
+
+                    offset = end_n
+
+                except Exception:
+                    break
+
+    def _assign_substitution_map(
+        self, start_n: int, end_n: int, fix_map: Dict, term: str, code: str, data: Dict[str, Any], how: str
+    ) -> None:
+        """
+        Assign substitution mapping for a term.
+
+        Args:
+            start_n: Start position
+            end_n: End position
+            fix_map: Fix mapping
+            term: Term name
+            code: Term code
+            data: Data dictionary
+            how: Processing method
+        """
+        if term not in data:
+            load = self._create_map_load(how, code, [], start_n, end_n, fix_map)
+        else:
+            term_data = self.data_processor.normalize_term_data(data[term])
+
+            if isinstance(data[term], dict):
+                # Handle dictionary data
+                all_data = []
+                for k, v in data[term].items():
+                    all_data.extend(self.data_processor.normalize_term_data(v))
+                load = self._create_map_load(how, code, all_data, start_n, end_n, fix_map)
+            else:
+                load = self._create_map_load(how, code, term_data, start_n, end_n, fix_map)
+
+        if load not in self.template_map["map"][how]["terms"][term]:
+            self.template_map["map"][how]["terms"][term].append(load)
+
+    def _create_map_load(
+        self, how: str, code: str, data_term: List[Any], start_n: int, end_n: int, fix_map: Dict
+    ) -> Dict[str, Any]:
+        """
+        Create a map load structure.
+
+        Args:
+            how: Processing method
+            code: Term code
+            data_term: Term data
+            start_n: Start position
+            end_n: End position
+            fix_map: Fix mapping
+
+        Returns:
+            Map load dictionary
+        """
+        return {
+            "code": code,
+            "pos": [start_n, end_n],
+            "data": self.data_processor.normalize_term_data(data_term),
+            "final_term": None,
+            "mods": fix_map,
+        }
+
+    def _initialize_terms(self, how: str) -> None:
+        """Initialize terms in template map."""
+        if how not in self.template_map["map"]:
+            self.template_map["map"][how] = {"terms": {}}
+
+    def _generate_templates(self) -> None:
+        """Generate required number of templates based on data."""
+        template_count = self.document_generator.calculate_template_count(self.template_map)
+
+        # Create additional template copies if needed
+        for i in range(1, template_count):
+            self.template_map["docs"].append(self.template)
+
+    def _process_template_map(self) -> None:
+        """Process template map to generate final documents."""
+        if self.processed:
+            return
+
+        self.template_map["docs"] = self.document_generator.process_template_map(
+            self.template_map["docs"], self.template_map
+        )
+        self.processed = True
+
+    def _remove_optional_terms(self) -> None:
+        """Remove optional terms from template map."""
+        self.template_map = self.document_generator.remove_optional_terms(self.template_map)
+
+    def _get_variable_data(self, term: str) -> Any:
+        """
+        Get variable data for a term.
+
+        Args:
+            term: Variable term
+
+        Returns:
+            Variable data
+        """
+        try:
+            # Try to use original implementation if condor is available
+            from subtrix.subtrix import get_variable_data
+
+            return get_variable_data(term)
+        except (ImportError, DependencyError):
+            # Fallback for variable processing
+            if "<(" in term:
+                # Basic variable processing without condor
+                return f"VAR_{term.strip('<()')}"
+            return term
+
+
+class OriginalMechanism(object):
     """
     class Mechanism:
         A class designed to provide a flexible and configurable mechanism for managing templates, data, rules, and
@@ -430,45 +990,8 @@ class Mechanism(object):
         return self
 
 
-def get_variable_data(term):
-    """"""
-    cfg = condor.Instruct(join(here, "_data_", "varr.yaml")).load().dikt["knowns"]
-    if "<(" in term:
-        # found, within = search(cfg, [], [], [term])
-        # varobj = found[0]
-        varobj = cfg[term]
-        if varobj.get("object", None):
-            data_function = thingify(varobj["object"])
-            if varobj.get("outs", None):
-                function_data = getattr(data_function(), varobj["outs"])
-            else:
-                function_data = data_function()
-            data_term = function_data
-        elif varobj.get("tmplt", None):
-            data_term = varobj["tmplt"]
-        else:
-            data_term = term
-    return data_term
-
-
-def now():
-    """"""
-    return dt.datetime.now().strftime("%Y%m%d%H%M%S")
-
-
-def today():
-    """"""
-    return dt.date.today().strftime("%Y%m%d")
-
-
-def uuid(n=None):
-    """"""
-    uuid_ = str(uuid7())
-    if n is None:
-        return uuid_
-    return uuid_[len(uuid_) - n :]
-
-
+# Mechanism = ImprovedMechanism
+Mechanism = OriginalMechanism
 # ====================================================================================================================||
 """
 	https://gist.github.com/angstwad/bf22d1822c38a92ec0a9
