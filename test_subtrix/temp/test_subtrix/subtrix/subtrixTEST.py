@@ -38,8 +38,9 @@ test_000 = True  # --verified - 2025/09/17
 test_001 = True  # --verified - 2025/09/17
 test_002 = True  # --verified - 2025/09/17
 test_003 = True  # --verified - 2025/09/17
-test_004 = True
+test_004 = True  # --verified - 2025/09/17
 test_005 = True  # --verified - 2025/09/17
+test_006 = True  #
 
 fixtures = condor.Instruct(join(here, "..", "fixtures", "fixtures.yaml")).load().dikt
 fixture000 = fixtures["fixture_000"]
@@ -48,6 +49,7 @@ fixture002 = fixtures["fixture_002"]
 fixture003 = fixtures["fixture_003"]
 fixture004 = fixtures["fixture_004"]
 fixture005 = fixtures["fixture_005"]
+fixture006 = fixtures["fixture_006"]
 
 
 class Test_Mechanism:
@@ -87,6 +89,8 @@ class Test_Mechanism:
             cls.test_Mechanism_004 = Mechanism(fixture004["tmplt"], fixture004["data"])
         if test_005:
             cls.test_Mechanism_005 = Mechanism(fixture005["tmplt"], fixture005["data"])
+        if test_006:
+            cls.test_Mechanism_006 = Mechanism(fixture006["tmplt"], fixture006["data"])
         return cls()
 
     @classmethod
@@ -100,16 +104,16 @@ class Test_Mechanism:
         :return: None
         """
         self.test_init()
-        # self.test_collect_symbols()
-        # self.test_find_pattern()
-        # self.test_loop_terms()
-        # self.test_mapp()
-        # self.test_proc_fixes()
-        # self.test_procss_map()
-        # self.test_sub()
-        # self.test_varr()
-        # self.test_loop()
-        # self.test_rmvOptional()
+        self.test_collect_symbols()
+        self.test_find_pattern()
+        self.test_loop_terms()
+        self.test_mapp()
+        self.test_proc_fixes()
+        self.test_procss_map()
+        self.test_sub()
+        self.test_varr()
+        self.test_loop()
+        self.test_rmvOptional()
         self.test_run()
 
     def test_init(self):
@@ -126,6 +130,10 @@ class Test_Mechanism:
             assert self.test_Mechanism_003.tmplt == fixture003["tmplt"].strip(), self.test_Mechanism_003.tmplt
             assert self.test_Mechanism_003.diktlock == self.diktlock, self.test_Mechanism_003.diktlock
             assert self.test_Mechanism_003.data == fixture003["data"], self.test_Mechanism_003.data
+        if test_006:
+            assert self.test_Mechanism_006.tmplt == fixture006["tmplt"].strip(), self.test_Mechanism_006.tmplt
+            assert self.test_Mechanism_006.diktlock == self.diktlock, self.test_Mechanism_006.diktlock
+            assert self.test_Mechanism_006.data == fixture006["data"], self.test_Mechanism_006.data
         logma.info(f"Complete Mechanism Init method Test")
 
     def test_collect_symbols(self):
@@ -145,6 +153,17 @@ class Test_Mechanism:
             cfg = self.test_Mechanism_000.config.dikt["processors"]["varr"]["base"]["pattern"]["processors"]
             patterns = self.test_Mechanism_000._collect_symbols(cfg)
             assert patterns == [".:", ":."], patterns
+        # if test_006:
+        #     cfg = self.test_Mechanism_006.config.dikt["processors"]["sub"]["base"]["pattern"]["processors"]
+        #     patterns = self.test_Mechanism_006._collect_symbols(cfg)
+        #     assert patterns == [".:", ":."], patterns
+        #     cfg = self.test_Mechanism_006.config.dikt["processors"]["loop"]["base"]["pattern"]["processors"]
+        #     patterns = self.test_Mechanism_006._collect_symbols(cfg)
+        #     assert patterns == [".:", "->", "<-", "<=>", "<*>", ":."], patterns
+        #
+        #     cfg = self.test_Mechanism_000.config.dikt["processors"]["varr"]["base"]["pattern"]["processors"]
+        #     patterns = self.test_Mechanism_000._collect_symbols(cfg)
+        #     assert patterns == [".:", ":."], patterns
         logma.info(f"Complete Mechanism Collect Symbols method Test")
 
     def test_find_pattern(self):
@@ -206,7 +225,6 @@ class Test_Mechanism:
             assert fix_map == {}, fix_map
             assert self.test_Mechanism_001.lock is None, self.test_Mechanism_001.lock
             self.test_Mechanism_001.data = {"<[from]>": "DATA_TABLE", "<[year]>": "2015"}
-
         if test_003:
             tmplt = fixture003["tmplt"]
             data = fixture003["output"]["tmplt_map"]["map"]
@@ -218,7 +236,17 @@ class Test_Mechanism:
             result = data["sub"]["terms"][term][0]["mods"]
             assert fix_map == result, fix_map
             assert self.test_Mechanism_003.lock is None, self.test_Mechanism_003.lock
-
+        if test_006:
+            tmplt = fixture006["tmplt"]
+            data = fixture006["output"]["tmplt_map"]["map"]
+            self.test_Mechanism_006.data = {"<[table]>": "DATA_TABLE"}
+            start_loc, end_loc, fix_map, term, code = self.test_Mechanism_006._find_pattern(cfg, i, end_loc)
+            assert term == "<[table]>", term
+            assert start_loc == data[how]["terms"][term][0]["pos"][0], start_loc
+            assert end_loc == data[how]["terms"][term][0]["pos"][1], end_loc
+            result = data["sub"]["terms"][term][0]["mods"]
+            assert fix_map == result, fix_map
+            assert self.test_Mechanism_006.lock is None, self.test_Mechanism_006.lock
         logma.info(f"Complete Mechanism Find Pattern method Test")
 
     def test_loop(self):
@@ -343,6 +371,16 @@ class Test_Mechanism:
             assert (
                 self.test_Mechanism_000.docs[0] == fixture000["output"]["text"].strip()
             ), self.test_Mechanism_000.docs[0]
+        if test_006:
+            data = fixture006["data"]
+            self.test_Mechanism_006._sub(data)
+            logma.info(fixture006["output"]["tmplt_map"])
+            assert (
+                self.test_Mechanism_006.tmplt_map == fixture006["output"]["tmplt_map"]
+            ), self.test_Mechanism_006.tmplt_map
+            assert (
+                self.test_Mechanism_006.docs[0] == fixture006["output"]["text"].strip()
+            ), self.test_Mechanism_006.docs[0]
         logma.info(f"Complete Mechanism Sub method Test")
 
     def test_rmvOptional(self):
@@ -383,6 +421,26 @@ class Test_Mechanism:
             result = fixture004["output"]["tmplt_map"]
             # output = codecs.decode(self.test_Mechanism_004.run().strip('"'), "unicode_escape")
             output = self.test_Mechanism_004.run().strip('"')
+            logma.write(output)
+            # output_result = codecs.decode(result["docs"][0].strip().strip('"'), "unicode_escape")
+            output_result = result["docs"][0].strip().strip('"')
+            logma.write(output_result)
+            assert output == output_result, output
+        if test_005:
+            logma.info(f"Run Test 005")
+            result = fixture005["output"]["tmplt_map"]
+            # output = codecs.decode(self.test_Mechanism_004.run().strip('"'), "unicode_escape")
+            output = self.test_Mechanism_005.run().strip('"')
+            logma.write(output)
+            # output_result = codecs.decode(result["docs"][0].strip().strip('"'), "unicode_escape")
+            output_result = result["docs"][0].strip().strip('"')
+            logma.write(output_result)
+            assert output == output_result, output
+        if test_006:
+            logma.info(f"Run Test 006")
+            result = fixture006["output"]["tmplt_map"]
+            # output = codecs.decode(self.test_Mechanism_004.run().strip('"'), "unicode_escape")
+            output = self.test_Mechanism_006.run().strip('"')
             logma.write(output)
             # output_result = codecs.decode(result["docs"][0].strip().strip('"'), "unicode_escape")
             output_result = result["docs"][0].strip().strip('"')

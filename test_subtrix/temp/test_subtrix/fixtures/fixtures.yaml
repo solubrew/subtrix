@@ -733,3 +733,36 @@ fixture_005:
                 'mods': { }
     text: |
       SELECT 2015 FROM DATA_TABLE GROUP BY 2015
+fixture_006:
+  description: >
+    Provide a simple substitution test text
+  data:
+    year: 2015
+  tmplt: |
+    SELECT <~[year]~> FROM <~[from]~> GROUP BY <[year]>
+  output:
+    tmplt_map:
+      'tmplt': 'SELECT <~[year]~> FROM <~[from]~> GROUP BY <[year]>'
+      'docs': [ 'SELECT 2015 FROM GROUP BY 2015' ]
+      'map':
+        sub:
+          'terms':
+            '<[from]>':
+              - 'code': '<[from]>'
+                'pos': [ 21, 29 ]
+                'data': [ ]
+                'final_term':
+                'mods': { }
+            <[year]>:
+              - 'code': '<[year]>'
+                'pos': [ 7, 15 ]
+                'data': [ "2015", ]
+                'final_term':
+                'mods': { }
+              - 'code': '<[year]>'
+                'pos': [ 39, 47 ]
+                'data': [ "2015", ]
+                'final_term':
+                'mods': { }
+    text: |
+      SELECT 2015 FROM GROUP BY 2015
