@@ -517,11 +517,11 @@ class ImprovedMechanism:
         how = "loop"
         if data is None:
             data = self.data
-        self._loop_terms()
         self._mapp(data, how)
+        # self._loop_terms()
         return self
 
-    def _loop_terms(self):
+    def _loop_terms(self, term, data):
         """Process loop terms to generate combinations."""
         if self.terms_looped:
             return self.data
@@ -529,23 +529,26 @@ class ImprovedMechanism:
         processors = self.config.dikt["processors"]["loop"]["base"]["pattern"]["initialize"]
         logma.info(f"Map {self.tmplt_map["map"]}")
         if "loop" not in self.tmplt_map["map"].keys():
-            return self.data
-        for term in self.data:
-            if term not in self.tmplt_map["map"]["loop"]["terms"].keys():
-                continue
-            code = self.tmplt_map["map"]["loop"]["terms"][term][0]["code"]
-            for processor in processors:
-                if processor["symbol"] not in code:
-                    continue
-                looped_terms = []
-                if isinstance(self.data.get(term, None), list):
-                    for r in range(1, len(self.data[term]) + 1):
-                        looped_terms += list(combinations(self.data[term], r))
-                else:
-                    raise Exception(f"Loop Term is not a list {term}")
-                self.data[term] = [[y for y in x] for x in looped_terms]
-        self.terms_looped = True
-        return self.data
+            logma.info(f"No Loop")
+            return data
+        # for term in data:
+        logma.info(f"Term {term}")
+        logma.info(f"Loop {self.tmplt_map["map"]["loop"]["terms"]}")
+        # if term not in self.tmplt_map["map"]["loop"]["terms"].keys():
+        #    continue
+        # code = self.tmplt_map["map"]["loop"]["terms"][term][0]["code"]
+        # for processor in processors:
+        #     # if processor["symbol"] not in code:
+        #     #    continue
+        looped_terms = []
+        if isinstance(data.get(term, None), list):
+            for r in range(1, len(data[term]) + 1):
+                looped_terms += list(combinations(data[term], r))
+        else:
+            raise Exception(f"Loop Term is not a list {term}")
+        data[term] = [[y for y in x] for x in looped_terms]
+        # self.terms_looped = True
+        return data
 
     def _mapp(self, data, how="sub"):
         """
@@ -581,6 +584,7 @@ class ImprovedMechanism:
                     if load not in self.tmplt_map["map"][how]["terms"][base_term]:
                         self.tmplt_map["map"][how]["terms"][base_term].append(load)
                 elif how in ("loop",):
+                    data = self._loop_terms(term, data)
                     self._assign_template_map(start_n, end_n, fix_map, base_term, code, data, how)
                 else:
                     raise Exception(f"Term Not Mapped {term}")

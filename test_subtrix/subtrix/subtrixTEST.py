@@ -106,8 +106,8 @@ class Test_Mechanism:
         self.test_init()
         self.test_collect_symbols()
         self.test_find_pattern()
-        self.test_loop_terms()
         self.test_mapp()
+        self.test_loop_terms()
         self.test_proc_fixes()
         self.test_procss_map()
         self.test_sub()
@@ -315,7 +315,7 @@ class Test_Mechanism:
             self.test_Mechanism_001._mapp(fixture001["data"], how)
             assert self.test_Mechanism_001.lock is False, self.test_Mechanism_001.lock
             result = fixture001["output"]["tmplt_map"]["map"][how]
-            result["terms"]["<(TODAY)>"][0]["data"] = [dt.datetime.today().strftime("%Y%m%d")]
+            result["terms"]["TODAY"][0]["data"] = [dt.datetime.today().strftime("%Y%m%d")]
             test = self.test_Mechanism_001.tmplt_map["map"][how]
             logma.info(result)
             assert test == result, test
