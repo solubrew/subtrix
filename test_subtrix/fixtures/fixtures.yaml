@@ -15,13 +15,13 @@ fixture_000:
       'map':
         sub:
           'terms':
-            '<[from]>':
+            'from':
               - 'code': '<[from]>'
                 'pos': [ 21, 29 ]
                 'data': [ "DATA_TABLE", ]
                 'final_term':
                 'mods': { }
-            <[year]>:
+            year:
               - 'code': '<[year]>'
                 'pos': [ 7, 15 ]
                 'data': [ "2015", ]
@@ -38,8 +38,8 @@ fixture_001:
   description: >
     Provide a simple substitution test text
   data:
-    <[from]>: "DATA_TABLE"
-    <[year]>: '2015'
+    from: "DATA_TABLE"
+    year: '2015'
   tmplt: |
     SELECT <[year]>, <(TODAY)> FROM <[from]> GROUP BY <[year]>
   output:
@@ -62,13 +62,13 @@ fixture_001:
       'map':
         sub:
           'terms':
-            '<[from]>':
+            'from':
               - 'code': '<[from]>'
                 'pos': [ 32, 40 ]
                 'data': [ "DATA_TABLE" ]
                 'final_term':
                 'mods': { }
-            <[year]>:
+            year:
               - 'code': '<[year]>'
                 'pos': [ 7, 15 ]
                 'data': [ "2015" ]
@@ -91,9 +91,9 @@ fixture_001:
       SELECT 2015, {today} FROM DATA_TABLE GROUP BY 2015
 fixture_002:
   data: #And Or to signify the mutiplexing processed needed 1, 0, 10,
-    <@[controlfield]@>: [ 'p.buddyid', 'p.facility_id' ]
-    '<[qp]>': [ 'eQP','QP' ]
-    '<[year]>': [ '2015', '2016','2017','2018' ]
+    controlfield: [ 'p.buddyid', 'p.facility_id' ]
+    'qp': [ 'eQP','QP' ]
+    'year': [ '2015', '2016','2017','2018' ]
   tmplt: >
     SELECT
       <@[controlfield:., ]@>
@@ -368,7 +368,7 @@ fixture_002:
 fixture_003:
   description: >
   data:
-    <[table]>: "DATA_TABLE"
+      table: "DATA_TABLE"
   tmplt: |
     SELECT
       name
@@ -387,7 +387,7 @@ fixture_003:
       map:
         sub:
           terms:
-            '<[table]>':
+            'table':
               - 'code': '<[".:table:."]>'
                 'pos': [ 65, 80 ]
                 'data': [ 'DATA_TABLE' ]
@@ -406,16 +406,16 @@ fixture_004:
   description: >
     full file test
   data:
-    <[LEXIvrs]>: /mnt/iverse
-    <[expiration]>: 'continous'
-    <[project_name.lower]>:
-    <[name]>:
-    <[authority]>: document|this
-    <[security]>: lvl2
-    <[version]>: 0.0.0.0.0.0
-    <[DATAvrs]>:
-    <[plan_files]>:
-    <[outline]>:
+    LEXIvrs: /mnt/iverse
+    expiration: 'continous'
+    project_name.lower:
+    name:
+    authority: document|this
+    security: lvl2
+    version: 0.0.0.0.0.0
+    DATAvrs:
+    plan_files:
+    outline:
   tmplt: |
     0_Config:
       '::FILES::': >
@@ -703,7 +703,7 @@ fixture_005:
   description: >
     Provide a simple substitution test text
   data:
-    <[not_here]>: 'not here'
+    not_here: 'not here'
     not_there: 'not there'
   tmplt: |
     SELECT <[year]> FROM <[from]> GROUP BY <[year]>
@@ -714,13 +714,13 @@ fixture_005:
       'map':
         sub:
           'terms':
-            '<[from]>':
+            'from':
               - 'code': '<[from]>'
                 'pos': [ 21, 29 ]
                 'data': [ "DATA_TABLE", ]
                 'final_term':
                 'mods': { }
-            <[year]>:
+            year:
               - 'code': '<[year]>'
                 'pos': [ 7, 15 ]
                 'data': [ "2015", ]
@@ -747,13 +747,13 @@ fixture_006:
       'map':
         sub:
           'terms':
-            '<[from]>':
+            'from':
               - 'code': '<[from]>'
                 'pos': [ 21, 29 ]
                 'data': [ ]
                 'final_term':
                 'mods': { }
-            <[year]>:
+            year:
               - 'code': '<[year]>'
                 'pos': [ 7, 15 ]
                 'data': [ "2015", ]

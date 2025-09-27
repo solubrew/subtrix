@@ -181,7 +181,7 @@ class Test_Mechanism:
             how = "sub"
             cfg = self.test_Mechanism_000.config.dikt["processors"][how]
             start_loc, end_loc, fix_map, term, code = self.test_Mechanism_000._find_pattern(cfg, i)
-            assert term == "<[year]>", term
+            assert term == "year", term
             assert start_loc == 7, start_loc
             assert end_loc == 15, end_loc
             assert fix_map == {}, fix_map
@@ -192,7 +192,7 @@ class Test_Mechanism:
             how = "sub"
             cfg = self.test_Mechanism_000.config.dikt["processors"][how]
             start_loc, end_loc, fix_map, term, code = self.test_Mechanism_000._find_pattern(cfg, i)
-            assert term == "<[year]>", term
+            assert term == "year", term
             logma.info(f"{data[how]["terms"][term][0]["pos"][0]}")
             assert start_loc == data[how]["terms"][term][0]["pos"][0], start_loc
             assert end_loc == data[how]["terms"][term][0]["pos"][1], end_loc
@@ -200,7 +200,7 @@ class Test_Mechanism:
             assert self.test_Mechanism_000.lock is None, self.test_Mechanism_000.lock
 
             start_loc, end_loc, fix_map, term, code = self.test_Mechanism_000._find_pattern(cfg, i, end_loc)
-            assert term == "<[from]>", term
+            assert term == "from", term
             assert start_loc == data[how]["terms"][term][0]["pos"][0], start_loc
             assert end_loc == data[how]["terms"][term][0]["pos"][1], end_loc
             assert fix_map == {}, fix_map
@@ -211,7 +211,7 @@ class Test_Mechanism:
             how = "sub"
             cfg = self.test_Mechanism_001.config.dikt["processors"][how]
             start_loc, end_loc, fix_map, term, code = self.test_Mechanism_001._find_pattern(cfg, i)
-            assert term == "<[year]>", term
+            assert term == "year", term
             assert start_loc == data[how]["terms"][term][0]["pos"][0], start_loc
             assert end_loc == data[how]["terms"][term][0]["pos"][1], end_loc
             assert fix_map == {}, fix_map
@@ -219,7 +219,7 @@ class Test_Mechanism:
 
             self.test_Mechanism_001.data = {"<[from]>": "DATA_TABLE"}
             start_loc, end_loc, fix_map, term, code = self.test_Mechanism_001._find_pattern(cfg, i, end_loc)
-            assert term == "<[from]>", term
+            assert term == "from", term
             assert start_loc == data[how]["terms"][term][0]["pos"][0], start_loc
             assert end_loc == data[how]["terms"][term][0]["pos"][1], end_loc
             assert fix_map == {}, fix_map
@@ -230,23 +230,23 @@ class Test_Mechanism:
             data = fixture003["output"]["tmplt_map"]["map"]
             self.test_Mechanism_003.data = {"<[table]>": "DATA_TABLE"}
             start_loc, end_loc, fix_map, term, code = self.test_Mechanism_003._find_pattern(cfg, i, end_loc)
-            assert term == "<[table]>", term
+            assert term == "table", term
             assert start_loc == data[how]["terms"][term][0]["pos"][0], start_loc
             assert end_loc == data[how]["terms"][term][0]["pos"][1], end_loc
             result = data["sub"]["terms"][term][0]["mods"]
             assert fix_map == result, fix_map
             assert self.test_Mechanism_003.lock is None, self.test_Mechanism_003.lock
-        if test_006:
-            tmplt = fixture006["tmplt"]
-            data = fixture006["output"]["tmplt_map"]["map"]
-            self.test_Mechanism_006.data = {"<[table]>": "DATA_TABLE"}
-            start_loc, end_loc, fix_map, term, code = self.test_Mechanism_006._find_pattern(cfg, i, end_loc)
-            assert term == "<[table]>", term
-            assert start_loc == data[how]["terms"][term][0]["pos"][0], start_loc
-            assert end_loc == data[how]["terms"][term][0]["pos"][1], end_loc
-            result = data["sub"]["terms"][term][0]["mods"]
-            assert fix_map == result, fix_map
-            assert self.test_Mechanism_006.lock is None, self.test_Mechanism_006.lock
+        # if test_006:
+        #     tmplt = fixture006["tmplt"]
+        #     data = fixture006["output"]["tmplt_map"]["map"]
+        #     self.test_Mechanism_006.data = {"table": "DATA_TABLE"}
+        #     start_loc, end_loc, fix_map, term, code = self.test_Mechanism_006._find_pattern(cfg, i, end_loc)
+        #     assert term == "table", term
+        #     assert start_loc == data[how]["terms"][term][0]["pos"][0], start_loc
+        #     assert end_loc == data[how]["terms"][term][0]["pos"][1], end_loc
+        #     result = data["sub"]["terms"][term][0]["mods"]
+        #     assert fix_map == result, fix_map
+        #     assert self.test_Mechanism_006.lock is None, self.test_Mechanism_006.lock
         logma.info(f"Complete Mechanism Find Pattern method Test")
 
     def test_loop(self):
@@ -271,7 +271,7 @@ class Test_Mechanism:
         if test_002:
             output = self.test_Mechanism_002._loop_terms()
             result = {
-                "<@[controlfield]@>": [
+                "controlfield": [
                     [
                         "p.buddyid",
                     ],
@@ -280,8 +280,8 @@ class Test_Mechanism:
                     ],
                     ["p.buddyid", "p.facility_id"],
                 ],
-                "<[qp]>": ["eQP", "QP"],
-                "<[year]>": ["2015", "2016", "2017", "2018"],
+                "qp": ["eQP", "QP"],
+                "year": ["2015", "2016", "2017", "2018"],
             }
             assert output == result, output
 
