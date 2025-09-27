@@ -1,0 +1,27 @@
+---
+tool.pytest.ini.options:
+  markers:
+    slow:
+    fixture000:
+flights:
+  flight001:
+    description: >
+    filters:
+      in:
+      out:
+    stop00:
+      path: subtrix.TEST.Test_Mechanism.test_init
+      args:
+      kwargs:
+      fixtures:
+      blocking:
+    stop01:
+      path: subtrix.TEST.Test_Mechanism.test_run
+      args:
+      kwargs:
+      fixtures:
+
+      blocking:
+
+
+
