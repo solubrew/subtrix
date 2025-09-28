@@ -1054,7 +1054,7 @@ fixture_008:
     SELECT <[#.:year]> FROM <[from:.!]> GROUP BY <[!.:year:.!]>
   output:
     tmplt_map:
-      'tmplt': 'SELECT <[year]> FROM <[from]> GROUP BY <[year]>'
+      'tmplt': 'SELECT <[#.:year]> FROM <[from:.!]> GROUP BY <[!.:year:.!]>'
       'docs': [ 'SELECT #2015 FROM DATA_TABLE! GROUP BY !2015!' ]
       'map':
         sub:
@@ -1064,17 +1064,38 @@ fixture_008:
                 'pos': [ 21, 29 ]
                 'data': [ "DATA_TABLE", ]
                 'final_term':
-                'mods': { }
+                'mods':
+                  '<[':
+                    'final_term': 'DATA_TABLE'
+                    'pos': [ 2, 3 ]
+                  ':.':
+                    'final_term': '!'
+                    'pos': [ 12, 13 ]
             year:
               - 'code': '<[year]>'
                 'pos': [ 7, 15 ]
                 'data': [ "2015", ]
                 'final_term':
-                'mods': { }
+                'mods':
+                  '<[':
+                    'final_term': '#'
+                    'pos': [ 2, 3 ]
+                  '.:':
+                    'final_term': '2015'
+                    'pos': [ 5, 10 ]
               - 'code': '<[year]>'
                 'pos': [ 39, 47 ]
                 'data': [ "2015", ]
                 'final_term':
-                'mods': { }
+                'mods':
+                  '<[':
+                    'final_term': '!'
+                    'pos': [ 2, 3 ]
+                  '.:':
+                    'final_term': '2015'
+                    'pos': [ 5, 10 ]
+                  ':.':
+                    'final_term': '!'
+                    'pos': [ 12, 13 ]
     text: |
       SELECT 2015 FROM DATA_TABLE GROUP BY 2015
