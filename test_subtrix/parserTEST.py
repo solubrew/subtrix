@@ -33,8 +33,8 @@ logma = Logma(__name__)
 pxcfg = join(here, "_data_", "<[file_name]>.yaml")
 
 class TestTemplateParser(object):
-  """Test class for TemplateParser created on 2025-09-29 11:35:33"""
-  def __init__(self<@[,.:signature_variables]@>):
+  """Test class for TemplateParser created on 2025-09-27 18:32:56"""
+  def __init__(self<@[,:.signature_variables]@>):
     """<[doc_string_initialization]>"""
     <[init_method]>
 

@@ -378,7 +378,7 @@ fixture_002:
 fixture_003:
   description: >
   data:
-      table: "DATA_TABLE"
+    table: "DATA_TABLE"
   tmplt: |
     SELECT
       name

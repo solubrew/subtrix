@@ -528,7 +528,9 @@ class ImprovedMechanism:
                         self.tmplt_map["map"][how]["terms"][base_term].append(load)
                 elif how in ("loop",):
                     logma.info(f"Term {term}")
-                    data = self._loop_terms(term, data)
+                    logma.info(f"Data {data}")
+                    if term in data.keys():
+                        data = self._loop_terms(term, data)
                     self._assign_template_map(start_n, end_n, fix_map, base_term, code, data, how)
                 else:
                     raise Exception(f"Term Not Mapped {term}")
