@@ -463,59 +463,7 @@ class ImprovedMechanism:
 
     def _load_config_with_fallback(self, cfg):
         """Load configuration with fallback when condor is not available."""
-        # if HAS_CONDOR:
-        #     try:
         return condor.Instruct(pxcfg).override(cfg if cfg else {})
-        #     except Exception:
-        #         pass
-        #
-        # # Fallback configuration that matches test expectations
-        # class MockConfig:
-        #     def __init__(self):
-        #         self.dikt = {
-        #             "sequence": ["varr", "sub", "loop", "sub"],
-        #             "processors": {
-        #                 "sub": {
-        #                     "base": {
-        #                         "pattern": {
-        #                             "initialize": [{"symbol": "<["}],
-        #                             "finalize": [{"symbol": "]>"}],
-        #                             "processors": {"prefix": [{"symbol": ".:"}, {"symbol": ":."}], "suffix": None},
-        #                         }
-        #                     }
-        #                 },
-        #                 "loop": {
-        #                     "base": {
-        #                         "pattern": {
-        #                             "initialize": [{"symbol": "<["}, {"symbol": "<@["}],
-        #                             "finalize": [{"symbol": "]>"}, {"symbol": "]@>"}],
-        #                             "processors": {
-        #                                 "prefix": [
-        #                                     {"symbol": ".:"},
-        #                                     {"symbol": "->"},
-        #                                     {"symbol": "<-"},
-        #                                     {"symbol": "<=>"},
-        #                                     {"symbol": "<*>"},
-        #                                     {"symbol": ":."},
-        #                                 ],
-        #                                 "suffix": None,
-        #                             },
-        #                         }
-        #                     }
-        #                 },
-        #                 "varr": {
-        #                     "base": {
-        #                         "pattern": {
-        #                             "initialize": [{"symbol": "<("}],
-        #                             "finalize": [{"symbol": ")>"}],
-        #                             "processors": {"prefix": [{"symbol": ".:"}, {"symbol": ":."}], "suffix": None},
-        #                         }
-        #                     }
-        #                 },
-        #             },
-        #         }
-        #
-        # return MockConfig()
 
     def _loop(self, data=None):
         """Process loop patterns."""
@@ -543,8 +491,6 @@ class ImprovedMechanism:
         data[term] = [[y for y in x] for x in looped_terms]
         logma.info(f"Loop Term {term}")
         logma.info(f"Looped Terms {data[term]}")
-        # if isinstance(data[term], list):
-        #     data[term] = "".join(data[term])
         self.terms_looped[term] = True
         return data
 
@@ -640,7 +586,8 @@ class ImprovedMechanism:
             logma.info(f"Fix Pattenr Starts at {n}")
             logma.info(f"Fix Pattern Ends at {nl}")
             final_term = term[n:nl]
-            if final_term == clean_term:
+            # TODO address limits to other prefix functionality
+            if (fix_pattern == spat and ".:" not in fix_symbols) or fix_pattern == ".:":
                 final_term = ""
             fixmap[fix_pattern] = {"final_term": final_term, "pos": [n, nl]}
         return fixmap

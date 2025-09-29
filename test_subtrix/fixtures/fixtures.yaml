@@ -1061,11 +1061,11 @@ fixture_008:
     not_here: 'not here'
     not_there: 'not there'
   tmplt: |
-    SELECT <[#.:year]> FROM <[from:.!]> GROUP BY <[!.:year:.!]>
+    SELECT <[#.:year]> FROM <[from.:from:.!]> GROUP BY <[!.:year:.!]>
   output:
     tmplt_map:
       'tmplt': 'SELECT <[#.:year]> FROM <[from:.!]> GROUP BY <[!.:year:.!]>'
-      'docs': [ 'SELECT #2015 FROM DATA_TABLE! GROUP BY !2015!' ]
+      'docs': [ 'SELECT #2015 FROM fromDATA_TABLE! GROUP BY !2015!' ]
       'map':
         sub:
           'terms':
@@ -1082,7 +1082,7 @@ fixture_008:
                     'final_term': ''
                     'pos': [ 5, 9 ]
               - 'code': '<[!.:year:.!]>'
-                'pos': [ 45, 59 ]
+                'pos': [ 51, 65 ]
                 'data': [ "2015", ]
                 'final_term':
                 'mods':
@@ -1096,16 +1096,19 @@ fixture_008:
                     'final_term': '!'
                     'pos': [ 11, 12 ]
             'from':
-              - 'code': '<[from:.!]>'
-                'pos': [ 24, 35 ]
+              - 'code': '<[from.:from:.!]>'
+                'pos': [ 24, 41 ]
                 'data': [ "DATA_TABLE", ]
                 'final_term':
                 'mods':
                   '<[':
-                    'final_term': ''
+                    'final_term': 'from'
                     'pos': [ 2,6 ]
+                  '.:':
+                    'final_term': ''
+                    'pos': [ 8,12 ]
                   ':.':
                     'final_term': '!'
-                    'pos': [ 8, 9 ]
+                    'pos': [ 14, 15 ]
     text: |
       SELECT 2015 FROM DATA_TABLE GROUP BY 2015
