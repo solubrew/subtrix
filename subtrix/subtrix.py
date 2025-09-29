@@ -15,8 +15,6 @@
 	security: seclvl2
 	<(WT)>: -32
 """
-
-
 import json
 from itertools import combinations
 # -*- coding: utf-8 -*
@@ -380,7 +378,9 @@ class ImprovedMechanism:
         else:
             if isinstance(data[term], str) or isinstance(data[term], int) or isinstance(data[term], float):
                 data[term] = [data[term]]
-            if isinstance(data[term], list):
+            if data[term] is None:
+                del self.tmplt_map["map"][how]["terms"][term]
+            elif isinstance(data[term], list):
                 data_term = data[term]
                 load = self._set_map_load(how, code, data_term, start_n, end_n, fix_map)
                 if load not in self.tmplt_map["map"][how]["terms"][term]:
@@ -394,7 +394,9 @@ class ImprovedMechanism:
                         logma.info(f"Append Load {load}")
                         self.tmplt_map["map"][how]["terms"][term].append(load)
             else:
-                raise Exception("Unknown Data")
+                logma.info(f"Term {term}")
+                logma.info(f"Data Term {data[term]}")
+                raise Exception(f"Unknown Data {data[term]}")
 
     # Original method names for test compatibility
     def _collect_symbols(self, symcfg):
@@ -445,8 +447,10 @@ class ImprovedMechanism:
         # key = code
         fix_symbols = self._collect_symbols(cfg["base"]["pattern"]["processors"])
         # logma.info(f"Fix Symbols {fix_symbols}")
-        if len([x for x in fix_symbols if x in key]) > 0:
-            key, fix_map = self._proc_fixes(code, fix_symbols, start_pattern, end_pattern)
+        fix_symbols = [x for x in fix_symbols if x in key]
+        if len(fix_symbols) > 0:
+            key = self.get_clean_term(code, start_pattern, end_pattern)
+            fix_map = self._proc_fixes(code, key, fix_symbols, start_pattern, end_pattern)
         start_loc += offset - len(start_pattern)
         end_loc += offset + len(end_pattern)
         return start_loc, end_loc, fix_map, key, code
@@ -585,7 +589,25 @@ class ImprovedMechanism:
                 phold = end_n
         return self
 
-    def _proc_fixes(self, term, fix_symbols, spat, epat):
+    def get_clean_term(self, term, start_pattern, end_pattern):
+        """
+
+        :param start_pattern:
+        :param end_pattern:
+        :return:
+        """
+        clean_term = term
+        for symbols in [[".:", ":."], [start_pattern, ":."], [start_pattern, end_pattern]]:
+            if term.find(symbols[0]) != -1 and term[term.find(symbols[0]) :].find(symbols[1]) != -1:
+                clean_term = f"{term[term.find(symbols[0]) + len(symbols[0]): term.find(symbols[1])]}"
+                # TODO HACK:
+                symbol = ".:"
+                if symbol in clean_term:
+                    clean_term = clean_term[clean_term.find(symbol) + len(symbol) :]
+                break
+        return clean_term
+
+    def _proc_fixes(self, term, clean_term, fix_symbols, spat, epat):
         """
         Fixes processors in a given term based on a specified pattern.
 
@@ -598,32 +620,30 @@ class ImprovedMechanism:
         Returns:
             Tuple of (clean_term, fixmap)
         """
-        clean_term = term
         fixmap = {}
-        fix_patterns, lpat = [spat] + fix_symbols + [epat], spat
-        for symbols in [[".:", ":."], [spat, ".:"], [spat, ":."], [spat, epat]]:
-            if term.find(symbols[0]) != -1 and term[term.find(symbols[0]) :].find(symbols[1]) != -1:
-                clean_term = f"{term[term.find(symbols[0]) + len(symbols[0]): term.find(symbols[1])]}"
-                break
-        # logma.info(f"Term {term}")
-        # logma.info(f"Clean Term {clean_term}")
-        n = 0
+        fix_patterns = [spat] + fix_symbols + [epat]
+        logma.info(f"Fix Patterns {fix_patterns}")
         for i in range(len(fix_patterns) - 1):
             fix_pattern, lpat = fix_patterns[i], fix_patterns[i + 1]
-            # logma.info(f"Fix Pattern {fix_pattern}")
+            logma.info(f"Fix Pattern {fix_pattern}")
             t = term.find(fix_pattern)
-            # logma.info(f"Fix Pattern Found at {t}")
+            logma.info(f"Fix Pattern Found at {t}")
             if t == -1:
                 continue
             n = t + len(fix_pattern)
+            logma.info(f"Last Pattern {lpat}")
             nl = term.find(lpat)
+            logma.info(f"Fix Pattern Ends at {nl}")
             if nl == -1:
                 continue
-            # logma.info(f"Term {term}")
-            # logma.info(f"Fix Pattenr Starts at {n}")
-            # logma.info(f"Fix Pattern Ends at {nl}")
-            fixmap[fix_pattern] = {"final_term": term[n:nl], "pos": [n, nl]}
-        return clean_term, fixmap
+            logma.info(f"Term {term}")
+            logma.info(f"Fix Pattenr Starts at {n}")
+            logma.info(f"Fix Pattern Ends at {nl}")
+            final_term = term[n:nl]
+            if final_term == clean_term:
+                final_term = ""
+            fixmap[fix_pattern] = {"final_term": final_term, "pos": [n, nl]}
+        return fixmap
 
     def _process_map(self):
         """Process template map to generate final documents."""
@@ -658,6 +678,7 @@ class ImprovedMechanism:
                     # logma.info(f"Back {back}")
                     final_term = termmap["code"]
                     if len(termmap["data"]) > 0:
+                        logma.info(f"Data {termmap['data'][d]}")
                         final_term = self._process_final_term(termmap["mods"], termmap["data"][d], termmap["code"])
                     # logma.info(f"Final Term {final_term}, Code {termmap['code']}")
                     shift += len(final_term) - len(termmap["code"])
@@ -679,20 +700,18 @@ class ImprovedMechanism:
             if not isinstance(term_, list):
                 term_ = [term_]
             for term in term_:
-                # logma.info(f"TERM {term}")
-                # if term is None:
-                #     term = code
-                # if isinstance(term, list):
-                #     if len(term) == 1:
-                #         term = "".join(term)
+                logma.info(f"Term {term}")
                 sorted_fix_map = dict(sorted(fix_map.items(), key=lambda x: x[1]["pos"][0]))
+                logma.info(f"Sorted Fix Map {sorted_fix_map}")
                 if ".:" not in sorted_fix_map.keys():
                     final_parts.append(str(term))
                 for fix in sorted_fix_map.keys():
+                    logma.info(f"Fix {fix}")
                     if fix == ".:":
                         final_parts.append(str(term))
                     else:
                         final_parts.append(sorted_fix_map[fix]["final_term"])
+                    logma.info(f"Final Parts {final_parts}")
         # Join once instead of multiple concatenations
         final_term = "".join(final_parts)
         if not self.allow_trailing_space:
