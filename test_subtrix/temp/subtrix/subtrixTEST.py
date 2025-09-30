@@ -48,7 +48,7 @@ test_008 = 1  # --verified - 2025/09/29
 fixtures = condor.Instruct(join(here, "..", "fixtures", "fixtures.yaml")).load().dikt
 
 
-class Test_Mechanism:
+class Test_ImprovedMechanism:
     """
     This module defines a `Test_Mechanism` class containing test cases for the `Mechanism` class.
 
@@ -356,25 +356,6 @@ class Test_Mechanism:
             assert self.test_Mechanism_002.data == self.fixture002["data"], self.test_Mechanism_002.data
             assert len(self.test_Mechanism_002.docs) == 1, len(self.test_Mechanism_002.docs)
         logma.info(f"Complete Mechanism Loop method Test")
-
-    # def test_loop_terms(self):
-    #     """"""
-    #     if test_002:
-    #         output = self.test_Mechanism_002._loop_terms("controlfield", self.fixture001["data"])
-    #         result = {
-    #             "controlfield": [
-    #                 [
-    #                     "p.buddyid",
-    #                 ],
-    #                 [
-    #                     "p.facility_id",
-    #                 ],
-    #                 ["p.buddyid", "p.facility_id"],
-    #             ],
-    #             "qp": ["eQP", "QP"],
-    #             "year": ["2015", "2016", "2017", "2018"],
-    #         }
-    #         assert output == result, output
 
     def test_mapp(self):
         """"""

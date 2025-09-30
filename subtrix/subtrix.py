@@ -36,6 +36,7 @@ from .utilities import get_variable_data
 here = join(dirname(__file__), "")
 log = False
 logma = Logma(__name__)
+logma.off()
 
 # ====================================================================================================================||
 pxcfg = join(abspath(here), "_data_", "subtrix.yaml")  # ||use default configuration
@@ -731,7 +732,6 @@ class ImprovedMechanism:
 
 
 Mechanism = ImprovedMechanism
-# Mechanism = OriginalMechanism
 # ====================================================================================================================||
 """
 	https://gist.github.com/angstwad/bf22d1822c38a92ec0a9

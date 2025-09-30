@@ -18,6 +18,11 @@ base: #seems like everything could just be a type of function but with some bein
         description: >
           Signal the start of a loop based command
         obligation: optional
+      - symbol: "<~@["
+        name: &SLOSS Start Loop Optional Substitute Symbol
+        description: >
+          Signal the start of a loop based command
+        obligation: optional
       - symbol: "<@{"
         name: &SLFS Start Loop Function Symbol
         description: >
@@ -57,6 +62,11 @@ base: #seems like everything could just be a type of function but with some bein
     finalize:
       - symbol: "]@>"
         name: &ELSS End Loop Substitute Symbol
+        description: >
+          Signal the start of a loop based command
+        obligation: optional
+      - symbol: "]@~>"
+        name: &ELOSS End Loop Optional Substitute Symbol
         description: >
           Signal the start of a loop based command
         obligation: optional
