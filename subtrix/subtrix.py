@@ -16,6 +16,7 @@
 	<(WT)>: -32
 """
 import json
+from copy import deepcopy
 from itertools import combinations
 # -*- coding: utf-8 -*
 # ======================================Standard Library Modules======================================================||
@@ -331,7 +332,7 @@ class ImprovedMechanism:
 
         # Process data with validation
         self.data = data
-        # self._validate_data()
+        self._validate_data()
 
         # Load configuration with fallback
         self.config = self._load_config_with_fallback(cfg)
@@ -717,9 +718,10 @@ class ImprovedMechanism:
 
     def _validate_data(self):
         """Validate and normalize data structure (original method)."""
-        for term in self.data.keys():
-            if not isinstance(self.data[term], list):
-                self.data[term] = [self.data[term]]
+        data = deepcopy(self.data)
+        for term in data.keys():
+            self.data[term.replace("<[", "").replace("]>", "")] = data[term]
+            del self.data[term]
         return self
 
     def _varr(self, data=None):

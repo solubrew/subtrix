@@ -2,7 +2,7 @@ fixture_000:
   description: >
     Provide a simple substitution test text
   data:
-    from: "DATA_TABLE"
+    <[from]>: "DATA_TABLE"
     year: '2015'
     not_here: 'not here'
     not_there: 'not there'
