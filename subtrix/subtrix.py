@@ -38,7 +38,7 @@ from .utilities import get_variable_data
 here = join(dirname(__file__), "")
 log = False
 logma = Logma(__name__)
-logma.off()
+# logma.off()
 
 # ====================================================================================================================||
 pxcfg = join(abspath(here), "_data_", "subtrix.yaml")  # ||use default configuration
@@ -289,6 +289,10 @@ class DocumentGenerator:
         return template_map
 
 
+# TODO: refactor current loop to use factorial nomenclature
+#   create a new looping mechanism that combines list inputs into a string input
+
+
 class ImprovedMechanism:
     """
     Improved Subtrix templating mechanism with better error handling,
@@ -318,6 +322,8 @@ class ImprovedMechanism:
         if data is None:
             data = {}
 
+        logma.info(f"Data {data}")
+
         # Original state variables for test compatibility
         self.diktlock = 0
         self.term = None
@@ -346,7 +352,7 @@ class ImprovedMechanism:
         self.docs = [self.tmplt]
         self.tmplt_map = {"tmplt": self.tmplt, "docs": self.docs, "map": {}}
 
-    def run(self, full: bool = False) -> Union[str, "ImprovedMechanism"]:
+    def run(self, full: bool = False, remove=True) -> Union[str, "ImprovedMechanism"]:
         """
         Process the template with configured data and rules - maintains original API.
 
@@ -364,7 +370,8 @@ class ImprovedMechanism:
         self._set_templates()
         logma.info(f"Process Token Map")
         self._process_map()
-        self._remove_optional()
+        if remove:
+            self._remove_optional()
         logma.info(f"Clear Optional tokens")
         if full:
             return self
@@ -372,6 +379,7 @@ class ImprovedMechanism:
 
     def _assign_template_map(self, start_n, end_n, fix_map, term, code, data, how):
         """Assign substitution mapping for a term."""
+        logma.info(f"Assign Template Map {data}")
         if term not in data.keys():
             logma.info(f"Term {term} not in data")
             load = self._set_map_load(how, code, [], start_n, end_n, fix_map)
@@ -721,8 +729,10 @@ class ImprovedMechanism:
         """Validate and normalize data structure (original method)."""
         data = deepcopy(self.data)
         for term in data.keys():
-            self.data[term.replace("<[", "").replace("]>", "")] = data[term]
-            del self.data[term]
+            stripped_term = term.replace("<[", "").replace("]>", "")
+            if stripped_term != term:
+                self.data[stripped_term] = data[term]
+                del self.data[term]
         return self
 
     def _varr(self, data=None):
@@ -737,8 +747,11 @@ class ImprovedMechanism:
 Mechanism = ImprovedMechanism
 # ====================================================================================================================||
 """
-	https://gist.github.com/angstwad/bf22d1822c38a92ec0a9
-	http://pybem.sourceforge.net/
-	http://www.prankster.com/project/index.htm
+    change log:
+        
+    inspirational sources:
+	    https://gist.github.com/angstwad/bf22d1822c38a92ec0a9
+	    http://pybem.sourceforge.net/
+	    http://www.prankster.com/project/index.htm
 """
 # @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@||

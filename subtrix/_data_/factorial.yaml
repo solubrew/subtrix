@@ -14,18 +14,23 @@ base: #seems like everything could just be a type of function but with some bein
     A system to generate data based on simple looping rules
   pattern:
     initialize:
-      - symbol: "<@["
-        name: &SLSS Start Loop Substitute Symbol
+      - symbol: "<!["
+        name: &SFSS Start Factorial Substitute Symbol
         description: >
           Signal the start of a loop based command
         obligation: optional
-      - symbol: "<~@["
-        name: &SLOSS Start Loop Optional Substitute Symbol
+      - symbol: "<~!["
+        name: &SFOSS Start Factorial Optional Substitute Symbol
         description: >
           Signal the start of a loop based command
         obligation: optional
-      - symbol: "<@{"
-        name: &SLFS Start Loop Function Symbol
+      - symbol: "<!{"
+        name: &SFFS Start Factorial Function Symbol
+        description: >
+          Signal the start of a loop based command
+        obligation: optional
+      - symbol: "<!#["
+        name: &SFFS Start Cross Factorial Function Symbol
         description: >
           Signal the start of a loop based command
         obligation: optional
@@ -61,18 +66,18 @@ base: #seems like everything could just be a type of function but with some bein
             Signal the start of a substitution command
           obligation: optional
     finalize:
-      - symbol: "]@>"
-        name: &ELSS End Loop Substitute Symbol
+      - symbol: "]!>"
+        name: &EFSS End Factorial Substitute Symbol
         description: >
           Signal the start of a loop based command
         obligation: optional
-      - symbol: "]@~>"
-        name: &ELOSS End Loop Optional Substitute Symbol
+      - symbol: "]!~>"
+        name: &EFOSS End Factorial Optional Substitute Symbol
         description: >
           Signal the start of a loop based command
         obligation: optional
-      - symbol: "}@>"
-        name: &ELFS End Loop Function Symbol
+      - symbol: "}!>"
+        name: &EFFS End Factorial Function Symbol
         description: >
           Signal the start of a loop based command
         obligation: optional
