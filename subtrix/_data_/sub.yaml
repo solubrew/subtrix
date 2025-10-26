@@ -38,6 +38,20 @@ base:
           from the template if a replacement is not
           provided
         obligation: optional
+      - symbol: "<|["
+        name: &SBSS Start Block Substitution Symbol
+        description: >
+          Signal the start of a block substitution
+          command this is a term that will maintain the indent level 
+          of the token across the block of text
+        obligation: optional
+      - symbol: "<~|["
+        name: &OSBSS Start Block Substitution Symbol
+        description: >
+          Signal the start of a block substitution
+          command this is a term that will maintain the indent level 
+          of the token across the block of text
+        obligation: optional
       - symbol: "<o["
         name: Start Template Override Control
         ex: >
@@ -79,6 +93,18 @@ base:
         description: >
           Signal the end of a substitution command
         obligation: optional
+      - symbol: "]|>"
+        name: &EBSS End Block Substitution Symbol
+        description: >
+          Signal the end of a block substitution
+          command this is a term that will maintain the indent level 
+          of the token across the block of text
+      - symbol: "]|~>"
+        name: &0EBSS End Block Substitution Symbol
+        description: >
+          Signal the end of a block substitution
+          command this is a term that will maintain the indent level 
+          of the token across the block of text
       - symbol: "]o>"
         name: End Template Override Control
         description: >

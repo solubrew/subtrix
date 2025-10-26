@@ -321,9 +321,6 @@ class ImprovedMechanism:
             tmplt = ""
         if data is None:
             data = {}
-
-        logma.info(f"Data {data}")
-
         # Original state variables for test compatibility
         self.diktlock = 0
         self.term = None
@@ -365,26 +362,26 @@ class ImprovedMechanism:
         """
         self.map_processed = False
         for i in self.config.dikt["sequence"]:
-            logma.info(f"Run Method {i}")
+            # logma.info(f"Run Method {i}")
             getattr(self, f"_{i}")()
         self._set_templates()
-        logma.info(f"Process Token Map")
+        # logma.info(f"Process Token Map")
         self._process_map()
         if remove:
             self._remove_optional()
-        logma.info(f"Clear Optional tokens")
+        # logma.info(f"Clear Optional tokens")
         if full:
             return self
         return json.loads(json.dumps(self.docs[0]).strip()).strip()
 
     def _assign_template_map(self, start_n, end_n, fix_map, term, code, data, how):
         """Assign substitution mapping for a term."""
-        logma.info(f"Assign Template Map {data}")
+        # logma.info(f"Assign Template Map {data}")
         if term not in data.keys():
-            logma.info(f"Term {term} not in data")
+            # logma.info(f"Term {term} not in data")
             load = self._set_map_load(how, code, [], start_n, end_n, fix_map)
             if load not in self.tmplt_map["map"][how]["terms"][term]:
-                logma.info(f"Append Load {load}")
+                # logma.info(f"Append Load {load}")
                 self.tmplt_map["map"][how]["terms"][term].append(load)
         else:
             if isinstance(data[term], str) or isinstance(data[term], int) or isinstance(data[term], float):
@@ -395,18 +392,18 @@ class ImprovedMechanism:
                 data_term = data[term]
                 load = self._set_map_load(how, code, data_term, start_n, end_n, fix_map)
                 if load not in self.tmplt_map["map"][how]["terms"][term]:
-                    logma.info(f"Append Load {load}")
+                    # logma.info(f"Append Load {load}")
                     self.tmplt_map["map"][how]["terms"][term].append(load)
             elif isinstance(data[term], dict):
                 for k in data[term].keys():
                     data_term = data[term][k]
                     load = self._set_map_load(how, code, data_term, start_n, end_n, fix_map)
                     if load not in self.tmplt_map["map"][how]["terms"][term]:
-                        logma.info(f"Append Load {load}")
+                        # logma.info(f"Append Load {load}")
                         self.tmplt_map["map"][how]["terms"][term].append(load)
             else:
-                logma.info(f"Term {term}")
-                logma.info(f"Data Term {data[term]}")
+                # logma.info(f"Term {term}")
+                # logma.info(f"Data Term {data[term]}")
                 raise Exception(f"Unknown Data {data[term]}")
 
     # Original method names for test compatibility
@@ -525,21 +522,25 @@ class ImprovedMechanism:
                 start_n, end_n, fix_map, term, code = self._find_pattern(cfg, i, phold)
                 if code == "<[]>":
                     raise Exception(f"Invalid pattern found for {term}")
-                logma.info(f"Start {start_n}, End {end_n}, Fix Map {fix_map}, Term {term}, Code {code}")
+                # logma.info(f"Start {start_n}, End {end_n}, Fix Map {fix_map}, Term {term}, Code {code}")
                 if term == "":
                     continue
                 base_term = term
                 if base_term not in self.tmplt_map["map"][how]["terms"].keys():
                     self.tmplt_map["map"][how]["terms"][base_term] = []
                 if how in ("sub",):
+                    # logma.info(f"Start {start}")
+                    if start["symbol"] in ("<|[", "<~|["):  # Block Text Symbols
+                        logma.info(f"Data {data}")
+                        data[base_term] = self._update_line_spacing(start_n, data[base_term])
                     self._assign_template_map(start_n, end_n, fix_map, base_term, code, data, how)
                 elif how in ("varr",):
                     load = self._set_map_load(how, code, [get_variable_data(code)], start_n, end_n, fix_map)
                     if load not in self.tmplt_map["map"][how]["terms"][base_term]:
                         self.tmplt_map["map"][how]["terms"][base_term].append(load)
                 elif how in ("loop",):
-                    logma.info(f"Term {term}")
-                    logma.info(f"Data {data}")
+                    # logma.info(f"Term {term}")
+                    # logma.info(f"Data {data}")
                     if term in data.keys():
                         data = self._loop_terms(term, data)
                     self._assign_template_map(start_n, end_n, fix_map, base_term, code, data, how)
@@ -581,23 +582,23 @@ class ImprovedMechanism:
         """
         fixmap = {}
         fix_patterns = [spat] + fix_symbols + [epat]
-        logma.info(f"Fix Patterns {fix_patterns}")
+        # logma.info(f"Fix Patterns {fix_patterns}")
         for i in range(len(fix_patterns) - 1):
             fix_pattern, lpat = fix_patterns[i], fix_patterns[i + 1]
-            logma.info(f"Fix Pattern {fix_pattern}")
+            # logma.info(f"Fix Pattern {fix_pattern}")
             t = term.find(fix_pattern)
-            logma.info(f"Fix Pattern Found at {t}")
+            # logma.info(f"Fix Pattern Found at {t}")
             if t == -1:
                 continue
             n = t + len(fix_pattern)
-            logma.info(f"Last Pattern {lpat}")
+            # logma.info(f"Last Pattern {lpat}")
             nl = term.find(lpat)
-            logma.info(f"Fix Pattern Ends at {nl}")
+            # logma.info(f"Fix Pattern Ends at {nl}")
             if nl == -1:
                 continue
-            logma.info(f"Term {term}")
-            logma.info(f"Fix Pattenr Starts at {n}")
-            logma.info(f"Fix Pattern Ends at {nl}")
+            # logma.info(f"Term {term}")
+            # logma.info(f"Fix Pattenr Starts at {n}")
+            # logma.info(f"Fix Pattern Ends at {nl}")
             final_term = term[n:nl]
             # TODO address limits to other prefix functionality
             if (fix_pattern == spat and ".:" not in fix_symbols) or fix_pattern == ".:":
@@ -611,7 +612,7 @@ class ImprovedMechanism:
             raise Exception(f"Map Already Processed")
         docs = []
         cnt = 0
-        logma.info(f"Docs {len(self.docs)}")
+        #        logma.info(f"Docs {len(self.docs)}")
         for d, updated_doc in enumerate(self.docs):
             shift = 0
             sorted_terms = []
@@ -638,7 +639,7 @@ class ImprovedMechanism:
                     # logma.info(f"Back {back}")
                     final_term = termmap["code"]
                     if len(termmap["data"]) > 0:
-                        logma.info(f"Data {termmap['data'][d]}")
+                        #                        logma.info(f"Data {termmap['data'][d]}")
                         final_term = self._process_final_term(termmap["mods"], termmap["data"][d], termmap["code"])
                     # logma.info(f"Final Term {final_term}, Code {termmap['code']}")
                     shift += len(final_term) - len(termmap["code"])
@@ -660,18 +661,18 @@ class ImprovedMechanism:
             if not isinstance(term_, list):
                 term_ = [term_]
             for term in term_:
-                logma.info(f"Term {term}")
+                #                logma.info(f"Term {term}")
                 sorted_fix_map = dict(sorted(fix_map.items(), key=lambda x: x[1]["pos"][0]))
-                logma.info(f"Sorted Fix Map {sorted_fix_map}")
+                #                logma.info(f"Sorted Fix Map {sorted_fix_map}")
                 if ".:" not in sorted_fix_map.keys():
                     final_parts.append(str(term))
                 for fix in sorted_fix_map.keys():
-                    logma.info(f"Fix {fix}")
+                    #                   logma.info(f"Fix {fix}")
                     if fix == ".:":
                         final_parts.append(str(term))
                     else:
                         final_parts.append(sorted_fix_map[fix]["final_term"])
-                    logma.info(f"Final Parts {final_parts}")
+        #                    logma.info(f"Final Parts {final_parts}")
         # Join once instead of multiple concatenations
         final_term = "".join(final_parts)
         if not self.allow_trailing_space:
@@ -709,10 +710,14 @@ class ImprovedMechanism:
         template_cnt = 1
         for how in self.tmplt_map["map"].keys():
             for term in self.tmplt_map["map"][how]["terms"].keys():
+                # logma.info(f"Term {term}")
+                # logma.info(f"Template Map {self.tmplt_map['map'][how]['terms'][term]}")
+                if self.tmplt_map["map"][how]["terms"][term] == []:  # Monitor impact
+                    continue
                 if isinstance(self.tmplt_map["map"][how]["terms"][term][0]["data"], list):
-                    logma.info(f"Template Map {self.tmplt_map["map"][how]["terms"][term][0]["data"]}")
+                    # logma.info(f"Template Map {self.tmplt_map["map"][how]["terms"][term][0]["data"]}")
                     template_cnt = template_cnt * len(self.tmplt_map["map"][how]["terms"][term][0]["data"])
-                    logma.info(f"Template Count {template_cnt}")
+                    # logma.info(f"Template Count {template_cnt}")
         [self.docs.append(self.tmplt) for i in range(1, template_cnt)]
 
     def _sub(self, data=None):
@@ -724,6 +729,32 @@ class ImprovedMechanism:
         terms = self.tmplt_map["map"][how]["terms"]
         if list(terms.keys()) == []:
             return self
+
+    def _update_line_spacing(self, start_n, data):
+        """Update line spacing in data."""
+        # logma.info(f"Start {start_n}")
+        # logma.info(f"TEmplate {self.tmplt}")
+        text = self.tmplt[:start_n]
+        # logma.info(f"Text {text}")
+        indent = start_n - text.rfind("\n") - 1
+        # logma.info(f"Indent {indent}")
+        if indent == -1:
+            return data
+        # logma.info(f"Data {data}")
+        new_data = []
+        for term in data:
+            # logma.info(f"Term {term}")
+            new_term = []
+            for i, line in enumerate(term.split("\n")):
+                # logma.warning(f"Line {line}")
+                if i == 0:
+                    new_term.append(line)
+                    continue
+                line = " " * indent + line
+                new_term.append(line)
+                # logma.info(f"New Term {new_term}")
+            new_data.append("\n".join(new_term))
+        return new_data
 
     def _validate_data(self):
         """Validate and normalize data structure (original method)."""

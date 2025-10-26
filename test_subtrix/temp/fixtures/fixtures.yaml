@@ -1112,3 +1112,63 @@ fixture_008:
                     'pos': [ 14, 15 ]
     text: |
       SELECT 2015 FROM DATA_TABLE GROUP BY 2015
+fixture_009:
+  description: >
+    Provide a simple substitution test text
+  data:
+    from: "DATA_TABLE"
+    year: '2015'
+    not_here: 'not here'
+    not_there: 'not there'
+  tmplt: |
+    SELECT <[#.:year]> FROM <[from.:from:.!]> GROUP BY <[!.:year:.!]>
+  output:
+    tmplt_map:
+      'tmplt': 'SELECT <[#.:year]> FROM <[from:.!]> GROUP BY <[!.:year:.!]>'
+      'docs': [ 'SELECT #2015 FROM fromDATA_TABLE! GROUP BY !2015!' ]
+      'map':
+        sub:
+          'terms':
+            year:
+              - 'code': '<[#.:year]>'
+                'pos': [ 7, 18 ]
+                'data': [ "2015", ]
+                'final_term':
+                'mods':
+                  '<[':
+                    'final_term': '#'
+                    'pos': [ 2,3 ]
+                  '.:':
+                    'final_term': ''
+                    'pos': [ 5, 9 ]
+              - 'code': '<[!.:year:.!]>'
+                'pos': [ 51, 65 ]
+                'data': [ "2015", ]
+                'final_term':
+                'mods':
+                  '<[':
+                    'final_term': '!'
+                    'pos': [ 2,3 ]
+                  '.:':
+                    'final_term': ''
+                    'pos': [ 5, 9 ]
+                  ':.':
+                    'final_term': '!'
+                    'pos': [ 11, 12 ]
+            'from':
+              - 'code': '<[from.:from:.!]>'
+                'pos': [ 24, 41 ]
+                'data': [ "DATA_TABLE", ]
+                'final_term':
+                'mods':
+                  '<[':
+                    'final_term': 'from'
+                    'pos': [ 2,6 ]
+                  '.:':
+                    'final_term': ''
+                    'pos': [ 8,12 ]
+                  ':.':
+                    'final_term': '!'
+                    'pos': [ 14, 15 ]
+    text: |
+      SELECT 2015 FROM DATA_TABLE GROUP BY 2015

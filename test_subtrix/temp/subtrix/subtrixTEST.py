@@ -44,8 +44,9 @@ test_005 = 1  # --verified - 2025/09/29
 test_006 = 1  # --verified - 2025/09/29
 test_007 = 0  # --verified - 2025/09/
 test_008 = 1  # --verified - 2025/09/29
+test_009 = 1  # --verified - 2025/09
 
-fixtures = condor.Instruct(join(here, "..", "fixtures", "fixtures.yaml")).load().dikt
+FIXTURES = condor.Instruct(join(here, "..", "fixtures", "fixtures.yaml")).load().dikt
 
 
 class Test_ImprovedMechanism:
@@ -74,31 +75,31 @@ class Test_ImprovedMechanism:
         cls.tipe = "SUBTRIX"
         cls.diktlock = 0
         if test_000:
-            cls.fixture000 = deepcopy(fixtures["fixture_000"])
+            cls.fixture000 = deepcopy(FIXTURES["fixture_000"])
             cls.test_Mechanism_000 = Mechanism(deepcopy(cls.fixture000["tmplt"]), deepcopy(cls.fixture000["data"]))
         if test_001:
-            cls.fixture001 = deepcopy(fixtures["fixture_001"])
+            cls.fixture001 = deepcopy(FIXTURES["fixture_001"])
             cls.test_Mechanism_001 = Mechanism(deepcopy(cls.fixture001["tmplt"]), deepcopy(cls.fixture001["data"]))
         if test_002:
-            cls.fixture002 = deepcopy(fixtures["fixture_002"])
+            cls.fixture002 = deepcopy(FIXTURES["fixture_002"])
             cls.test_Mechanism_002 = Mechanism(deepcopy(cls.fixture002["tmplt"]), deepcopy(cls.fixture002["data"]))
         if test_003:
-            cls.fixture003 = deepcopy(fixtures["fixture_003"])
+            cls.fixture003 = deepcopy(FIXTURES["fixture_003"])
             cls.test_Mechanism_003 = Mechanism(deepcopy(cls.fixture003["tmplt"]), deepcopy(cls.fixture003["data"]))
         if test_004:
-            cls.fixture004 = deepcopy(fixtures["fixture_004"])
+            cls.fixture004 = deepcopy(FIXTURES["fixture_004"])
             cls.test_Mechanism_004 = Mechanism(deepcopy(cls.fixture004["tmplt"]), deepcopy(cls.fixture004["data"]))
         if test_005:
-            cls.fixture005 = deepcopy(fixtures["fixture_005"])
+            cls.fixture005 = deepcopy(FIXTURES["fixture_005"])
             cls.test_Mechanism_005 = Mechanism(deepcopy(cls.fixture005["tmplt"]), deepcopy(cls.fixture005["data"]))
         if test_006:
-            cls.fixture006 = deepcopy(fixtures["fixture_006"])
+            cls.fixture006 = deepcopy(FIXTURES["fixture_006"])
             cls.test_Mechanism_006 = Mechanism(deepcopy(cls.fixture006["tmplt"]), deepcopy(cls.fixture006["data"]))
         if test_007:
-            cls.fixture007 = deepcopy(fixtures["fixture_007"])
+            cls.fixture007 = deepcopy(FIXTURES["fixture_007"])
             cls.test_Mechanism_007 = Mechanism(deepcopy(cls.fixture007["tmplt"]), deepcopy(cls.fixture007["data"]))
         if test_008:
-            cls.fixture008 = deepcopy(fixtures["fixture_008"])
+            cls.fixture008 = deepcopy(FIXTURES["fixture_008"])
             cls.test_Mechanism_008 = Mechanism(deepcopy(cls.fixture008["tmplt"]), deepcopy(cls.fixture008["data"]))
         return cls()
 
@@ -109,32 +110,35 @@ class Test_ImprovedMechanism:
     def reset(self):
         """"""
         if test_000:
-            self.fixture000 = deepcopy(fixtures["fixture_000"])
+            self.fixture000 = deepcopy(FIXTURES["fixture_000"])
             self.test_Mechanism_000 = Mechanism(deepcopy(self.fixture000["tmplt"]), deepcopy(self.fixture000["data"]))
         if test_001:
-            self.fixture001 = deepcopy(fixtures["fixture_001"])
+            self.fixture001 = deepcopy(FIXTURES["fixture_001"])
             self.test_Mechanism_001 = Mechanism(deepcopy(self.fixture001["tmplt"]), deepcopy(self.fixture001["data"]))
         if test_002:
-            self.fixture002 = deepcopy(fixtures["fixture_002"])
+            self.fixture002 = deepcopy(FIXTURES["fixture_002"])
             self.test_Mechanism_002 = Mechanism(deepcopy(self.fixture002["tmplt"]), deepcopy(self.fixture002["data"]))
         if test_003:
-            self.fixture003 = deepcopy(fixtures["fixture_003"])
+            self.fixture003 = deepcopy(FIXTURES["fixture_003"])
             self.test_Mechanism_003 = Mechanism(deepcopy(self.fixture003["tmplt"]), deepcopy(self.fixture003["data"]))
         if test_004:
-            self.fixture004 = deepcopy(fixtures["fixture_004"])
+            self.fixture004 = deepcopy(FIXTURES["fixture_004"])
             self.test_Mechanism_004 = Mechanism(deepcopy(self.fixture004["tmplt"]), deepcopy(self.fixture004["data"]))
         if test_005:
-            self.fixture005 = deepcopy(fixtures["fixture_005"])
+            self.fixture005 = deepcopy(FIXTURES["fixture_005"])
             self.test_Mechanism_005 = Mechanism(deepcopy(self.fixture005["tmplt"]), deepcopy(self.fixture005["data"]))
         if test_006:
-            self.fixture006 = deepcopy(fixtures["fixture_006"])
+            self.fixture006 = deepcopy(FIXTURES["fixture_006"])
             self.test_Mechanism_006 = Mechanism(deepcopy(self.fixture006["tmplt"]), deepcopy(self.fixture006["data"]))
         if test_007:
-            self.fixture007 = deepcopy(fixtures["fixture_007"])
+            self.fixture007 = deepcopy(FIXTURES["fixture_007"])
             self.test_Mechanism_007 = Mechanism(deepcopy(self.fixture007["tmplt"]), deepcopy(self.fixture007["data"]))
         if test_008:
-            self.fixture008 = deepcopy(fixtures["fixture_008"])
+            self.fixture008 = deepcopy(FIXTURES["fixture_008"])
             self.test_Mechanism_008 = Mechanism(deepcopy(self.fixture008["tmplt"]), deepcopy(self.fixture008["data"]))
+        if test_009:
+            self.fixture009 = deepcopy(FIXTURES["fixture_009"])
+            self.test_Mechanism_009 = Mechanism(deepcopy(self.fixture009["tmplt"]), deepcopy(self.fixture009["data"]))
         return self
 
     def test_all(self):
@@ -144,15 +148,15 @@ class Test_ImprovedMechanism:
         :return: None
         """
         self.test_init()
-        self.test_collect_symbols()
-        self.test_find_pattern()
-        self.test_mapp()
-        self.test_proc_fixes()
-        self.test_procss_map()
-        self.test_sub()
-        self.test_varr()
+        self.test__collect_symbols()
+        self.test__find_pattern()
+        self.test__mapp()
+        self.test__proc_fixes()
+        self.test__procss_map()
+        self.test__sub()
+        self.test__varr()
         self.reset()
-        self.test_loop()
+        self.test__loop()
         self.test__remove_optional()
         self.reset()
         self.test_run()
@@ -183,7 +187,12 @@ class Test_ImprovedMechanism:
             assert self.test_Mechanism_008.data == self.fixture008["data"], self.test_Mechanism_008.data
         logma.info(f"Complete Mechanism Init method Test")
 
-    def test_collect_symbols(self):
+    def test__assign_template_map(self):
+        """
+        Verifies the `_assign_template_map` method's ability to accurately extract and return template map data from the `test_Mechanism_000` object's configuration.
+        """
+
+    def test__collect_symbols(self):
         """
         Verifies the `_collect_symbols` method's ability to accurately extract and return pattern symbols from various configuration sections in the `test_Mechanism_000` object's configuration.
 
@@ -223,7 +232,7 @@ class Test_ImprovedMechanism:
             assert patterns == [".:", ":."], patterns
         logma.info(f"Complete Mechanism Collect Symbols method Test")
 
-    def test_find_pattern(self):
+    def test__find_pattern(self):
         """
         This method tests the correctness of the `_find_pattern` method in a specific mechanism implementation.
         It ensures that the method correctly identifies patterns, start and end locations, fixed mappings,
@@ -338,7 +347,13 @@ class Test_ImprovedMechanism:
             assert self.test_Mechanism_008.lock is None, self.test_Mechanism_008.lock
         logma.info(f"Complete Mechanism Find Pattern method Test")
 
-    def test_loop(self):
+    def test__init_terms(self):
+        """"""
+
+    def test__load_config_with_fallback(self):
+        """"""
+
+    def test__loop(self):
         """"""
         if test_002:
             data = self.fixture002["data"]
@@ -357,7 +372,10 @@ class Test_ImprovedMechanism:
             assert len(self.test_Mechanism_002.docs) == 1, len(self.test_Mechanism_002.docs)
         logma.info(f"Complete Mechanism Loop method Test")
 
-    def test_mapp(self):
+    def test__loop_terms(self):
+        """"""
+
+    def test__mapp(self):
         """"""
         if test_000:
             how = "sub"
@@ -412,7 +430,7 @@ class Test_ImprovedMechanism:
     def test__process_final_term(self):
         """"""
 
-    def test_proc_fixes(self):
+    def test__proc_fixes(self):
         """"""
         if test_000:
             term = "<[pre.:term:.suf]>"
@@ -443,7 +461,7 @@ class Test_ImprovedMechanism:
             assert fix_map == result, fix_map
         logma.info(f"Complete Mechanism Fix Map method Test")
 
-    def test_procss_map(self):
+    def test__procss_map(self):
         """"""
         if test_000:
             self.test_Mechanism_000._process_map()
@@ -458,7 +476,7 @@ class Test_ImprovedMechanism:
             assert self.test_Mechanism_003.docs[0] == result, self.test_Mechanism_003.docs[0]
         logma.info(f"Complete Mechanism Process Map method Test")
 
-    def test_sub(self):
+    def test__sub(self):
         """"""
         if test_000:
             data = self.fixture000["data"]
@@ -557,9 +575,22 @@ class Test_ImprovedMechanism:
             logma.info(f"Run Test 008")
             result = self.fixture008["output"]["tmplt_map"]
             assert self.test_Mechanism_008.run() == result["docs"][0].strip(), self.test_Mechanism_008.run()
+        if test_009:
+            logma.info(f"Run Test 009")
+            result = self.fixture009["output"]["tmplt_map"]
+            assert self.test_Mechanism_009.run() == result["docs"][0].strip(), self.test_Mechanism_009.run()
         logma.info(f"Complete Mechanism Run method Test")
 
-    def test_varr(self):
+    def test__set_map_load(self):
+        """"""
+
+    def test__set_template(self):
+        """"""
+
+    def test__update_line_spacing(self):
+        """"""
+
+    def test__varr(self):
         """"""
         if test_001:
             self.test_Mechanism_001._varr(self.fixture001["data"])
