@@ -1,52 +1,51 @@
 # @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@||
 """
----
-<(META)>:
-    docid: '6705b527-60ca-48a8-9d67-357b22afd1fe'
-    name: Subtrix Module Python Testing Document
-	description: >
-	version: 0.0.0.0.0.0
-	authority: filesystem
-	security: seclvl2
-	<(WT)>: -32
+-(META)-:
+    docid: <[uuid]>
+    name: <[file name]>
+    description: >
+      <[description]>
+    expiry: <[expiration]>
+    version: <[version]>
+    authority: <[authority]>
+    security: <[security]>
+    -(WT)-: -32  # 2025-11-06 11:38:14
 """
+import datetime as dt
+# 2025-11-06 11:38:14
 # -*- coding: utf-8 -*
 # ======================================Standard Library Modules======================================================||
-import datetime as dt
 from copy import deepcopy
 from os.path import dirname, join
 
-# ======================================Solutions Brewer Library Modules==============================================||
+# =========================================Local Library Modules======================================================||
 from condor import condor
 from ogma.logma import Logma
 
 from subtrix import subtrix
-from subtrix.subtrix import Mechanism
+from subtrix.subtrix import Mechanism  # 2025-11-06 11:38:14
 
 # ======================================3rd Party Library Modules=====================================================||
 
 # ====================================================================================================================||
-here = join(dirname(__file__), "")  # ||
-subtrix.log = True
+HERE = join(dirname(__file__), "")  # ||
 log = subtrix.log
-logma = Logma(__name__)
-
+LOGMA = Logma(__name__)
+PXCFG = join(HERE, "_data_", "subtrixTEST.yaml")
+cfg = condor.Instruct(PXCFG).load().dikt
+TEST_000 = 1  # --verified - 2025/09/29
+TEST_001 = 1  # --verified - 2025/09/29
+TEST_002 = 1  # --verified - 2025/09/29
+TEST_003 = 1  # --verified - 2025/09/29
+TEST_004 = 1  # --verified - 2025/09/29
+TEST_005 = 1  # --verified - 2025/09/29
+TEST_006 = 1  # --verified - 2025/09/29
+TEST_007 = 0  # --verified - 2025/09/
+TEST_008 = 1  # --verified - 2025/09/29
+TEST_009 = 1  # --verified - 2025/09
+FIXTURES = condor.Instruct(join(HERE, "..", "fixtures", "fixtures.yaml")).load().dikt
+# 2025-11-06 11:38:14
 # ====================================================================================================================||
-pxcfg = join(here, "_data_", "subtrixTEST.yaml")
-cfg = condor.Instruct(pxcfg).load().dikt
-
-test_000 = 1  # --verified - 2025/09/29
-test_001 = 1  # --verified - 2025/09/29
-test_002 = 1  # --verified - 2025/09/29
-test_003 = 1  # --verified - 2025/09/29
-test_004 = 1  # --verified - 2025/09/29
-test_005 = 1  # --verified - 2025/09/29
-test_006 = 1  # --verified - 2025/09/29
-test_007 = 0  # --verified - 2025/09/
-test_008 = 1  # --verified - 2025/09/29
-test_009 = 1  # --verified - 2025/09
-
-FIXTURES = condor.Instruct(join(here, "..", "fixtures", "fixtures.yaml")).load().dikt
 
 
 class Test_ImprovedMechanism:
@@ -74,33 +73,36 @@ class Test_ImprovedMechanism:
         """
         cls.tipe = "SUBTRIX"
         cls.diktlock = 0
-        if test_000:
+        if TEST_000:
             cls.fixture000 = deepcopy(FIXTURES["fixture_000"])
             cls.test_Mechanism_000 = Mechanism(deepcopy(cls.fixture000["tmplt"]), deepcopy(cls.fixture000["data"]))
-        if test_001:
+        if TEST_001:
             cls.fixture001 = deepcopy(FIXTURES["fixture_001"])
             cls.test_Mechanism_001 = Mechanism(deepcopy(cls.fixture001["tmplt"]), deepcopy(cls.fixture001["data"]))
-        if test_002:
+        if TEST_002:
             cls.fixture002 = deepcopy(FIXTURES["fixture_002"])
             cls.test_Mechanism_002 = Mechanism(deepcopy(cls.fixture002["tmplt"]), deepcopy(cls.fixture002["data"]))
-        if test_003:
+        if TEST_003:
             cls.fixture003 = deepcopy(FIXTURES["fixture_003"])
             cls.test_Mechanism_003 = Mechanism(deepcopy(cls.fixture003["tmplt"]), deepcopy(cls.fixture003["data"]))
-        if test_004:
+        if TEST_004:
             cls.fixture004 = deepcopy(FIXTURES["fixture_004"])
             cls.test_Mechanism_004 = Mechanism(deepcopy(cls.fixture004["tmplt"]), deepcopy(cls.fixture004["data"]))
-        if test_005:
+        if TEST_005:
             cls.fixture005 = deepcopy(FIXTURES["fixture_005"])
             cls.test_Mechanism_005 = Mechanism(deepcopy(cls.fixture005["tmplt"]), deepcopy(cls.fixture005["data"]))
-        if test_006:
+        if TEST_006:
             cls.fixture006 = deepcopy(FIXTURES["fixture_006"])
             cls.test_Mechanism_006 = Mechanism(deepcopy(cls.fixture006["tmplt"]), deepcopy(cls.fixture006["data"]))
-        if test_007:
+        if TEST_007:
             cls.fixture007 = deepcopy(FIXTURES["fixture_007"])
             cls.test_Mechanism_007 = Mechanism(deepcopy(cls.fixture007["tmplt"]), deepcopy(cls.fixture007["data"]))
-        if test_008:
+        if TEST_008:
             cls.fixture008 = deepcopy(FIXTURES["fixture_008"])
             cls.test_Mechanism_008 = Mechanism(deepcopy(cls.fixture008["tmplt"]), deepcopy(cls.fixture008["data"]))
+        if TEST_009:
+            cls.fixture009 = deepcopy(FIXTURES["fixture_009"])
+            cls.test_Mechanism_009 = Mechanism(deepcopy(cls.fixture009["tmplt"]), deepcopy(cls.fixture009["data"]))
         return cls()
 
     @classmethod
@@ -109,36 +111,7 @@ class Test_ImprovedMechanism:
 
     def reset(self):
         """"""
-        if test_000:
-            self.fixture000 = deepcopy(FIXTURES["fixture_000"])
-            self.test_Mechanism_000 = Mechanism(deepcopy(self.fixture000["tmplt"]), deepcopy(self.fixture000["data"]))
-        if test_001:
-            self.fixture001 = deepcopy(FIXTURES["fixture_001"])
-            self.test_Mechanism_001 = Mechanism(deepcopy(self.fixture001["tmplt"]), deepcopy(self.fixture001["data"]))
-        if test_002:
-            self.fixture002 = deepcopy(FIXTURES["fixture_002"])
-            self.test_Mechanism_002 = Mechanism(deepcopy(self.fixture002["tmplt"]), deepcopy(self.fixture002["data"]))
-        if test_003:
-            self.fixture003 = deepcopy(FIXTURES["fixture_003"])
-            self.test_Mechanism_003 = Mechanism(deepcopy(self.fixture003["tmplt"]), deepcopy(self.fixture003["data"]))
-        if test_004:
-            self.fixture004 = deepcopy(FIXTURES["fixture_004"])
-            self.test_Mechanism_004 = Mechanism(deepcopy(self.fixture004["tmplt"]), deepcopy(self.fixture004["data"]))
-        if test_005:
-            self.fixture005 = deepcopy(FIXTURES["fixture_005"])
-            self.test_Mechanism_005 = Mechanism(deepcopy(self.fixture005["tmplt"]), deepcopy(self.fixture005["data"]))
-        if test_006:
-            self.fixture006 = deepcopy(FIXTURES["fixture_006"])
-            self.test_Mechanism_006 = Mechanism(deepcopy(self.fixture006["tmplt"]), deepcopy(self.fixture006["data"]))
-        if test_007:
-            self.fixture007 = deepcopy(FIXTURES["fixture_007"])
-            self.test_Mechanism_007 = Mechanism(deepcopy(self.fixture007["tmplt"]), deepcopy(self.fixture007["data"]))
-        if test_008:
-            self.fixture008 = deepcopy(FIXTURES["fixture_008"])
-            self.test_Mechanism_008 = Mechanism(deepcopy(self.fixture008["tmplt"]), deepcopy(self.fixture008["data"]))
-        if test_009:
-            self.fixture009 = deepcopy(FIXTURES["fixture_009"])
-            self.test_Mechanism_009 = Mechanism(deepcopy(self.fixture009["tmplt"]), deepcopy(self.fixture009["data"]))
+        self.setup_class()
         return self
 
     def test_all(self):
@@ -167,25 +140,25 @@ class Test_ImprovedMechanism:
 
         :return: None
         """
-        if test_000:
+        if TEST_000:
             assert self.test_Mechanism_000.tmplt == self.fixture000["tmplt"].strip(), self.test_Mechanism_000.tmplt
             assert self.test_Mechanism_000.diktlock == self.diktlock, self.test_Mechanism_000.diktlock
-            logma.info(f"Data {self.fixture000['data']}")
+            LOGMA.info(f"Data {self.fixture000['data']}")
             assert self.test_Mechanism_000.data == self.fixture000["data"], self.test_Mechanism_000.data
-        if test_003:
+        if TEST_003:
             assert self.test_Mechanism_003.tmplt == self.fixture003["tmplt"].strip(), self.test_Mechanism_003.tmplt
             assert self.test_Mechanism_003.diktlock == self.diktlock, self.test_Mechanism_003.diktlock
             assert self.test_Mechanism_003.data == self.fixture003["data"], self.test_Mechanism_003.data
-        if test_006:
+        if TEST_006:
             assert self.test_Mechanism_006.tmplt == self.fixture006["tmplt"].strip(), self.test_Mechanism_006.tmplt
             assert self.test_Mechanism_006.diktlock == self.diktlock, self.test_Mechanism_006.diktlock
             assert self.test_Mechanism_006.data == self.fixture006["data"], self.test_Mechanism_006.data
-        if test_008:
+        if TEST_008:
             assert self.test_Mechanism_008.tmplt == self.fixture008["tmplt"].strip(), self.test_Mechanism_008.tmplt
             assert self.test_Mechanism_008.diktlock == self.diktlock, self.test_Mechanism_008.diktlock
-            logma.info(f"Data {self.fixture008['data']}")
+            LOGMA.info(f"Data {self.fixture008['data']}")
             assert self.test_Mechanism_008.data == self.fixture008["data"], self.test_Mechanism_008.data
-        logma.info(f"Complete Mechanism Init method Test")
+        LOGMA.info(f"Complete Mechanism Init method Test")
 
     def test__assign_template_map(self):
         """
@@ -198,7 +171,7 @@ class Test_ImprovedMechanism:
 
         :return: Pass condition of the assertions verifying extracted pattern symbols match the expected results for each configuration section.
         """
-        if test_000:
+        if TEST_000:
             cfg = self.test_Mechanism_000.config.dikt["processors"]["sub"]["base"]["pattern"]["processors"]
             patterns = self.test_Mechanism_000._collect_symbols(cfg)
             assert patterns == [".:", ":."], patterns
@@ -209,7 +182,7 @@ class Test_ImprovedMechanism:
             cfg = self.test_Mechanism_000.config.dikt["processors"]["varr"]["base"]["pattern"]["processors"]
             patterns = self.test_Mechanism_000._collect_symbols(cfg)
             assert patterns == [".:", ":."], patterns
-        # if test_006:
+        # if TEST_006:
         #     cfg = self.test_Mechanism_006.config.dikt["processors"]["sub"]["base"]["pattern"]["processors"]
         #     patterns = self.test_Mechanism_006._collect_symbols(cfg)
         #     assert patterns == [".:", ":."], patterns
@@ -220,7 +193,7 @@ class Test_ImprovedMechanism:
         #     cfg = self.test_Mechanism_000.config.dikt["processors"]["varr"]["base"]["pattern"]["processors"]
         #     patterns = self.test_Mechanism_000._collect_symbols(cfg)
         #     assert patterns == [".:", ":."], patterns
-        if test_008:
+        if TEST_008:
             cfg = self.test_Mechanism_008.config.dikt["processors"]["sub"]["base"]["pattern"]["processors"]
             patterns = self.test_Mechanism_008._collect_symbols(cfg)
             assert patterns == [".:", ":."], patterns
@@ -230,7 +203,7 @@ class Test_ImprovedMechanism:
             cfg = self.test_Mechanism_008.config.dikt["processors"]["varr"]["base"]["pattern"]["processors"]
             patterns = self.test_Mechanism_008._collect_symbols(cfg)
             assert patterns == [".:", ":."], patterns
-        logma.info(f"Complete Mechanism Collect Symbols method Test")
+        LOGMA.info(f"Complete Mechanism Collect Symbols method Test")
 
     def test__find_pattern(self):
         """
@@ -241,7 +214,7 @@ class Test_ImprovedMechanism:
 
         :return: None
         """
-        if test_000:
+        if TEST_000:
             tmplt = "anomdetect.pot<[year]>.ReportingSeriesCode,"
             i = 0
             how = "sub"
@@ -259,7 +232,7 @@ class Test_ImprovedMechanism:
             cfg = self.test_Mechanism_000.config.dikt["processors"][how]
             start_loc, end_loc, fix_map, term, code = self.test_Mechanism_000._find_pattern(cfg, i)
             assert term == "year", term
-            logma.info(f"{data[how]["terms"][term][0]["pos"][0]}")
+            LOGMA.info(f"{data[how]["terms"][term][0]["pos"][0]}")
             assert start_loc == data[how]["terms"][term][0]["pos"][0], start_loc
             assert end_loc == data[how]["terms"][term][0]["pos"][1], end_loc
             assert fix_map == {}, fix_map
@@ -271,7 +244,7 @@ class Test_ImprovedMechanism:
             assert end_loc == data[how]["terms"][term][0]["pos"][1], end_loc
             assert fix_map == {}, fix_map
             assert self.test_Mechanism_000.lock is None, self.test_Mechanism_000.lock
-        if test_001:
+        if TEST_001:
             data = self.fixture001["output"]["tmplt_map"]["map"]
             i = 0
             how = "sub"
@@ -291,7 +264,7 @@ class Test_ImprovedMechanism:
             assert fix_map == {}, fix_map
             assert self.test_Mechanism_001.lock is None, self.test_Mechanism_001.lock
             self.test_Mechanism_001.data = {"<[from]>": "DATA_TABLE", "<[year]>": "2015"}
-        if test_003:
+        if TEST_003:
             tmplt = self.fixture003["tmplt"]
             data = self.fixture003["output"]["tmplt_map"]["map"]
             self.test_Mechanism_003.data = {"<[table]>": "DATA_TABLE"}
@@ -300,10 +273,10 @@ class Test_ImprovedMechanism:
             assert start_loc == data[how]["terms"][term][0]["pos"][0], start_loc
             assert end_loc == data[how]["terms"][term][0]["pos"][1], end_loc
             result = data["sub"]["terms"][term][0]["mods"]
-            logma.info(f"Result {result}")
+            LOGMA.info(f"Result {result}")
             assert fix_map == result, fix_map
             assert self.test_Mechanism_003.lock is None, self.test_Mechanism_003.lock
-        # if test_006:
+        # if TEST_006:
         #     tmplt = fixture006["tmplt"]
         #     data = fixture006["output"]["tmplt_map"]["map"]
         #     self.test_Mechanism_006.data = {"table": "DATA_TABLE"}
@@ -314,15 +287,15 @@ class Test_ImprovedMechanism:
         #     result = data["sub"]["terms"][term][0]["mods"]
         #     assert fix_map == result, fix_map
         #     assert self.test_Mechanism_006.lock is None, self.test_Mechanism_006.lock
-        if test_008:
+        if TEST_008:
             tmplt = "anomdetect.pot<[year]>.ReportingSeriesCode,"
             i = 0
             how = "sub"
             cfg = self.test_Mechanism_008.config.dikt["processors"][how]
             start_loc, end_loc, fix_map, term, code = self.test_Mechanism_008._find_pattern(cfg, i)
-            logma.info(f"Fix Map {fix_map}")
-            logma.info(f"Code {code}")
-            logma.info(f"Term {term}")
+            LOGMA.info(f"Fix Map {fix_map}")
+            LOGMA.info(f"Code {code}")
+            LOGMA.info(f"Term {term}")
             assert term == "year", term
             assert start_loc == 7, start_loc
             assert end_loc == 18, end_loc
@@ -334,7 +307,7 @@ class Test_ImprovedMechanism:
             cfg = self.test_Mechanism_008.config.dikt["processors"][how]
             start_loc, end_loc, fix_map, term, code = self.test_Mechanism_008._find_pattern(cfg, i)
             assert term == "year", term
-            logma.info(f"{data[how]["terms"][term][0]["pos"][0]}")
+            LOGMA.info(f"{data[how]["terms"][term][0]["pos"][0]}")
             assert start_loc == data[how]["terms"][term][0]["pos"][0], start_loc
             assert end_loc == data[how]["terms"][term][0]["pos"][1], end_loc
             # assert fix_map == {}, fix_map
@@ -345,17 +318,11 @@ class Test_ImprovedMechanism:
             assert end_loc == data[how]["terms"][term][0]["pos"][1], end_loc
             # assert fix_map == {}, fix_map
             assert self.test_Mechanism_008.lock is None, self.test_Mechanism_008.lock
-        logma.info(f"Complete Mechanism Find Pattern method Test")
-
-    def test__init_terms(self):
-        """"""
-
-    def test__load_config_with_fallback(self):
-        """"""
+        LOGMA.info(f"Complete Mechanism Find Pattern method Test")
 
     def test__loop(self):
         """"""
-        if test_002:
+        if TEST_002:
             data = self.fixture002["data"]
             self.test_Mechanism_002._loop(data)
             assert len(self.test_Mechanism_002.tmplt_map["docs"]) == 1, len(self.test_Mechanism_002.tmplt_map["docs"])
@@ -367,17 +334,14 @@ class Test_ImprovedMechanism:
             result = self.fixture002["output"]["tmplt_map"]["tmplt"]
             assert self.test_Mechanism_002.tmplt.strip() == result.strip(), self.test_Mechanism_002.tmplt
             self.reset()
-            logma.info(f"Data {self.fixture002["data"]}")
+            LOGMA.info(f"Data {self.fixture002["data"]}")
             assert self.test_Mechanism_002.data == self.fixture002["data"], self.test_Mechanism_002.data
             assert len(self.test_Mechanism_002.docs) == 1, len(self.test_Mechanism_002.docs)
-        logma.info(f"Complete Mechanism Loop method Test")
-
-    def test__loop_terms(self):
-        """"""
+        LOGMA.info(f"Complete Mechanism Loop method Test")
 
     def test__mapp(self):
         """"""
-        if test_000:
+        if TEST_000:
             how = "sub"
             self.test_Mechanism_000._mapp(self.fixture000["data"], how)
             assert self.test_Mechanism_000.lock is False, self.test_Mechanism_000.lock
@@ -385,20 +349,20 @@ class Test_ImprovedMechanism:
             test = self.test_Mechanism_000.tmplt_map["map"][how]
             assert test == result, test
 
-        if test_003:
+        if TEST_003:
             how = "sub"
             self.test_Mechanism_003._mapp(self.fixture003["data"], how)
             assert self.test_Mechanism_003.lock is False, self.test_Mechanism_003.lock
             result = self.fixture003["output"]["tmplt_map"]["map"][how]
             test = self.test_Mechanism_003.tmplt_map["map"][how]
             assert test == result, test
-        if test_001:
+        if TEST_001:
             how = "sub"
             self.test_Mechanism_001._mapp(self.fixture001["data"], how)
             assert self.test_Mechanism_001.lock is False, self.test_Mechanism_001.lock
             result = self.fixture001["output"]["tmplt_map"]["map"][how]
             test = self.test_Mechanism_001.tmplt_map["map"][how]
-            logma.info(result)
+            LOGMA.info(result)
             assert test == result, test
 
             how = "varr"
@@ -407,32 +371,29 @@ class Test_ImprovedMechanism:
             result = self.fixture001["output"]["tmplt_map"]["map"][how]
             result["terms"]["TODAY"][0]["data"] = [dt.datetime.today().strftime("%Y%m%d")]
             test = self.test_Mechanism_001.tmplt_map["map"][how]
-            logma.info(result)
+            LOGMA.info(result)
             assert test == result, test
-        if test_002:
+        if TEST_002:
             how = "loop"
             self.test_Mechanism_002._mapp(self.fixture002["data"], how)
             assert self.test_Mechanism_002.lock is False, self.test_Mechanism_002.lock
             result = self.fixture002["output"]["tmplt_map"]["map"][how]
             test = self.test_Mechanism_002.tmplt_map["map"][how]
-            logma.info(result)
+            LOGMA.info(result)
             assert test == result, test
-        if test_008:
+        if TEST_008:
             how = "sub"
             self.test_Mechanism_008._mapp(self.fixture008["data"], how)
             assert self.test_Mechanism_008.lock is False, self.test_Mechanism_008.lock
             result = self.fixture008["output"]["tmplt_map"]["map"][how]
             test = self.test_Mechanism_008.tmplt_map["map"][how]
-            logma.info(result)
+            LOGMA.info(result)
             assert test == result, test
-        logma.info(f"Complete Mechanism Mapp method Test")
-
-    def test__process_final_term(self):
-        """"""
+        LOGMA.info(f"Complete Mechanism Mapp method Test")
 
     def test__proc_fixes(self):
         """"""
-        if test_000:
+        if TEST_000:
             term = "<[pre.:term:.suf]>"
             spat = "<["
             epat = "]>"
@@ -446,7 +407,7 @@ class Test_ImprovedMechanism:
             }
             assert key == "term", key
             assert fix_map == result, fix_map
-        if test_008:
+        if TEST_008:
             term = "<[pre.:term]>"
             spat = "<["
             epat = "]>"
@@ -459,52 +420,52 @@ class Test_ImprovedMechanism:
             }
             assert key == "term", key
             assert fix_map == result, fix_map
-        logma.info(f"Complete Mechanism Fix Map method Test")
+        LOGMA.info(f"Complete Mechanism Fix Map method Test")
 
     def test__procss_map(self):
         """"""
-        if test_000:
+        if TEST_000:
             self.test_Mechanism_000._process_map()
             text = self.fixture000["output"]["text"].strip()
-            logma.info(f"Text {text}")
+            LOGMA.info(f"Text {text}")
             assert self.test_Mechanism_000.docs[0] == text, self.test_Mechanism_000.docs[0]
-        if test_003:
-            logma.info(self.test_Mechanism_003.tmplt_map)
+        if TEST_003:
+            LOGMA.info(self.test_Mechanism_003.tmplt_map)
             self.test_Mechanism_003._process_map()
             result = self.fixture003["output"]["tmplt_map"]["docs"][0].strip()
-            logma.info(result)
+            LOGMA.info(result)
             assert self.test_Mechanism_003.docs[0] == result, self.test_Mechanism_003.docs[0]
-        logma.info(f"Complete Mechanism Process Map method Test")
+        LOGMA.info(f"Complete Mechanism Process Map method Test")
 
     def test__sub(self):
         """"""
-        if test_000:
+        if TEST_000:
             data = self.fixture000["data"]
             self.test_Mechanism_000._sub(data)
-            logma.info(self.fixture000["output"]["tmplt_map"])
+            LOGMA.info(self.fixture000["output"]["tmplt_map"])
             assert (
                 self.test_Mechanism_000.tmplt_map == self.fixture000["output"]["tmplt_map"]
             ), self.test_Mechanism_000.tmplt_map
             assert (
                 self.test_Mechanism_000.docs[0] == self.fixture000["output"]["text"].strip()
             ), self.test_Mechanism_000.docs[0]
-        if test_006:
+        if TEST_006:
             data = self.fixture006["data"]
             self.test_Mechanism_006._sub(data)
-            logma.info(self.fixture006["output"]["tmplt_map"])
+            LOGMA.info(self.fixture006["output"]["tmplt_map"])
             # assert (
             #     self.test_Mechanism_006.tmplt_map == fixture006["output"]["tmplt_map"]
             # ), self.test_Mechanism_006.tmplt_map
             # assert (
             #     self.test_Mechanism_006.docs[0] == fixture006["output"]["text"].strip()
             # ), self.test_Mechanism_006.docs[0]
-        logma.info(f"Complete Mechanism Sub method Test")
+        LOGMA.info(f"Complete Mechanism Sub method Test")
 
     def test__remove_optional(self):
         """"""
-        if test_000:
+        if TEST_000:
             self.test_Mechanism_000._remove_optional()
-        logma.info(f"Complete Mechanism Init method Test")
+        LOGMA.info(f"Complete Mechanism Init method Test")
 
     def test_run(self):
         """
@@ -512,96 +473,89 @@ class Test_ImprovedMechanism:
 
         :return: None
         """
-        if test_000:
-            logma.info(f"Run Test 000")
+        if TEST_000:
+            LOGMA.info(f"Run Test 000")
             result = self.fixture000["output"]["tmplt_map"]
             assert self.test_Mechanism_000.run() == result["docs"][0].strip(), self.test_Mechanism_000.run()
-        if test_001:
-            logma.info(f"Run Test 001")
+        if TEST_001:
+            LOGMA.info(f"Run Test 001")
             result = self.fixture001["output"]["tmplt_map"]
             result["docs"][0] = result["docs"][0].replace("{today}", dt.datetime.today().strftime("%Y%m%d"))
-            logma.info(result["docs"][0])
+            LOGMA.info(result["docs"][0])
             assert self.test_Mechanism_001.run() == result["docs"][0].strip(), self.test_Mechanism_001.run()
-        if test_005:
-            logma.info(f"Run Test 005")
+        if TEST_005:
+            LOGMA.info(f"Run Test 005")
             result = self.fixture005["output"]["tmplt_map"]
             assert self.test_Mechanism_005.run() == result["docs"][0].strip(), self.test_Mechanism_005.run()
-        if test_002:
-            logma.info(f"Run Test 002")
+        if TEST_002:
+            LOGMA.info(f"Run Test 002")
             result = self.fixture002["output"]["tmplt_map"]
             output = self.test_Mechanism_002.run(True)
-            logma.info(len(result["docs"]))
+            LOGMA.info(len(result["docs"]))
             assert len(output.docs) == len(result["docs"]), len(output.docs)
-            logma.info(f"Doc {result['docs'][0].strip()}")
+            LOGMA.info(f"Doc {result['docs'][0].strip()}")
             assert output.docs[0] == result["docs"][0].strip(), output.docs[0]
-        if test_004:
-            logma.info(f"Run Test 004")
+        if TEST_004:
+            LOGMA.info(f"Run Test 004")
             result = self.fixture004["output"]["tmplt_map"]
             # output = codecs.decode(self.test_Mechanism_004.run().strip('"'), "unicode_escape")
             output = self.test_Mechanism_004.run().strip('"')
-            logma.write(output)
+            LOGMA.write(output)
             # output_result = codecs.decode(result["docs"][0].strip().strip('"'), "unicode_escape")
             output_result = result["docs"][0].strip().strip('"')
-            logma.write(output_result)
+            LOGMA.write(output_result)
             assert output == output_result, output
-        if test_005:
-            logma.info(f"Run Test 005")
+        if TEST_005:
+            LOGMA.info(f"Run Test 005")
             result = self.fixture005["output"]["tmplt_map"]
             # output = codecs.decode(self.test_Mechanism_004.run().strip('"'), "unicode_escape")
             output = self.test_Mechanism_005.run().strip('"')
-            logma.write(output)
+            LOGMA.write(output)
             # output_result = codecs.decode(result["docs"][0].strip().strip('"'), "unicode_escape")
             output_result = result["docs"][0].strip().strip('"')
-            logma.write(output_result)
+            LOGMA.write(output_result)
             assert output == output_result, output
-        if test_006:
-            logma.info(f"Run Test 006")
+        if TEST_006:
+            LOGMA.info(f"Run Test 006")
             result = self.fixture006["output"]["tmplt_map"]
             # output = codecs.decode(self.test_Mechanism_004.run().strip('"'), "unicode_escape")
             output = self.test_Mechanism_006.run().strip('"')
-            logma.write(output)
+            LOGMA.write(output)
             # output_result = codecs.decode(result["docs"][0].strip().strip('"'), "unicode_escape")
             output_result = result["docs"][0].strip().strip('"')
-            logma.write(output_result)
+            LOGMA.write(output_result)
             assert output == output_result, output
-        if test_007:
-            logma.info(f"Run Test 007")
+        if TEST_007:
+            LOGMA.info(f"Run Test 007")
             result = self.fixture007["output"]["tmplt_map"]
             output = self.test_Mechanism_007.run(True)
-            logma.info(len(result["docs"]))
+            LOGMA.info(len(result["docs"]))
             assert len(output.docs) == len(result["docs"]), len(output.docs)
             assert output.docs[0] == result["docs"][0].strip(), output.docs[0]
-        if test_008:
-            logma.info(f"Run Test 008")
+        if TEST_008:
+            LOGMA.info(f"Run Test 008")
             result = self.fixture008["output"]["tmplt_map"]
             assert self.test_Mechanism_008.run() == result["docs"][0].strip(), self.test_Mechanism_008.run()
-        if test_009:
-            logma.info(f"Run Test 009")
+        if TEST_009:
+            LOGMA.info(f"Run Test 009")
             result = self.fixture009["output"]["tmplt_map"]
             assert self.test_Mechanism_009.run() == result["docs"][0].strip(), self.test_Mechanism_009.run()
-        logma.info(f"Complete Mechanism Run method Test")
-
-    def test__set_map_load(self):
-        """"""
-
-    def test__set_template(self):
-        """"""
-
-    def test__update_line_spacing(self):
-        """"""
+        LOGMA.info(f"Complete Mechanism Run method Test")
 
     def test__varr(self):
         """"""
-        if test_001:
+        if TEST_001:
             self.test_Mechanism_001._varr(self.fixture001["data"])
             result = self.fixture001["output"]["test_varr"]["tmplt_map"]
             result["map"]["varr"]["terms"]["TODAY"][0]["data"] = [dt.datetime.today().strftime("%Y%m%d")]
-            logma.info(result)
+            LOGMA.info(result)
             result = result["map"]["varr"]
             assert self.test_Mechanism_001.tmplt_map["map"]["varr"] == result, self.test_Mechanism_001.tmplt_map
-        logma.info(f"Complete Mechanism Init method Test")
+        LOGMA.info(f"Complete Mechanism Init method Test")
 
 
 # ====================================================================================================================||
-
+"""
+  # 2025-11-06 11:38:14
+"""
 # @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@||

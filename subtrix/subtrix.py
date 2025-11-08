@@ -38,7 +38,8 @@ from .utilities import get_variable_data
 here = join(dirname(__file__), "")
 log = False
 logma = Logma(__name__)
-# logma.off()
+if not log:
+    logma.off()
 
 # ====================================================================================================================||
 pxcfg = join(abspath(here), "_data_", "subtrix.yaml")  # ||use default configuration
@@ -532,7 +533,8 @@ class ImprovedMechanism:
                     # logma.info(f"Start {start}")
                     if start["symbol"] in ("<|[", "<~|["):  # Block Text Symbols
                         logma.info(f"Data {data}")
-                        data[base_term] = self._update_line_spacing(start_n, data[base_term])
+                        if base_term in data and data[base_term] is not None:
+                            data[base_term] = self._update_line_spacing(start_n, data[base_term])
                     self._assign_template_map(start_n, end_n, fix_map, base_term, code, data, how)
                 elif how in ("varr",):
                     load = self._set_map_load(how, code, [get_variable_data(code)], start_n, end_n, fix_map)
@@ -675,10 +677,10 @@ class ImprovedMechanism:
         #                    logma.info(f"Final Parts {final_parts}")
         # Join once instead of multiple concatenations
         final_term = "".join(final_parts)
-        if not self.allow_trailing_space:
-            final_term = final_term.strip()
+        #        if not self.allow_trailing_space:
+        #            final_term = final_term.strip()  # this can impact the ability to strip the trailing suffix
         if not self.allow_trailing_suffix:
-            while final_term and final_term[-1:] in [","]:
+            while final_term and (final_term[-1:] in [","] or final_term[-2:] in [", "]):
                 final_term = final_term[:-1]
         return final_term
 
