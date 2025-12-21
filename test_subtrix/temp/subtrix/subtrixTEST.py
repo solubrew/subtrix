@@ -9,15 +9,21 @@
     version: <[version]>
     authority: <[authority]>
     security: <[security]>
-    -(WT)-: -32  # 2025-11-06 11:38:14
+    -(WT)-: -32  # 2025-11-17 15:10:27
 """
+
+# -*- coding: utf-8 -*
+# ======================================Standard Library Modules======================================================||
 import datetime as dt
 # 2025-11-06 11:38:14
 # -*- coding: utf-8 -*
-# ======================================Standard Library Modules======================================================||
 from copy import deepcopy
-from os.path import dirname, join
 
+import Logma  # 2025-11-17 15:10:27
+import condor  # 2025-11-17 15:10:27
+import dirname  # 2025-11-17 15:10:27
+# ======================================3rd Party Library Modules=====================================================||
+import join  # 2025-11-17 15:10:27
 # =========================================Local Library Modules======================================================||
 from condor import condor
 from ogma.logma import Logma
@@ -25,13 +31,11 @@ from ogma.logma import Logma
 from subtrix import subtrix
 from subtrix.subtrix import Mechanism  # 2025-11-06 11:38:14
 
-# ======================================3rd Party Library Modules=====================================================||
-
 # ====================================================================================================================||
-HERE = join(dirname(__file__), "")  # ||
+HERE = join(dirname(__file__))  # 2025-11-17 15:10:27
 log = subtrix.log
-LOGMA = Logma(__name__)
-PXCFG = join(HERE, "_data_", "subtrixTEST.yaml")
+LOGMA = Logma(__name__)  # 2025-11-17 15:10:27
+PXCFG = join(HERE, "_data_", "subtrixTEST.yaml")  # 2025-11-17 15:10:27
 cfg = condor.Instruct(PXCFG).load().dikt
 TEST_000 = 1  # --verified - 2025/09/29
 TEST_001 = 1  # --verified - 2025/09/29
@@ -45,22 +49,15 @@ TEST_008 = 1  # --verified - 2025/09/29
 TEST_009 = 1  # --verified - 2025/09
 FIXTURES = condor.Instruct(join(HERE, "..", "fixtures", "fixtures.yaml")).load().dikt
 # 2025-11-06 11:38:14
+
+
+CFG = condor.Instruct(PXCFG).load().dikt  # 2025-11-17 15:10:27
+
 # ====================================================================================================================||
 
 
-class Test_ImprovedMechanism:
-    """
-    This module defines a `Test_Mechanism` class containing test cases for the `Mechanism` class.
-
-    The `Test_Mechanism` class includes setup and teardown methods for initializing
-    and cleaning up test resources. It provides multiple test methods to validate
-    the functionality of various `Mechanism` methods such as initialization, symbol
-    collection, pattern finding, mapping, looping, and other processes.
-
-    The module leverages various fixtures as input data and makes use of assertions
-    to validate the expected output. Logging is used to provide information about
-    test completion.
-    """
+class Test_ImprovedMechanism:  # 2025-11-17 15:10:27
+    """"""
 
     @classmethod
     def setup_class(cls):
@@ -109,18 +106,13 @@ class Test_ImprovedMechanism:
     def teardown_class(cls):
         """ """
 
-    def reset(self):
-        """"""
-        self.setup_class()
-        return self
-
     def test_all(self):
         """
         Executes a series of test functions sequentially.
 
         :return: None
         """
-        self.test_init()
+        self.test__init__()
         self.test__collect_symbols()
         self.test__find_pattern()
         self.test__mapp()
@@ -134,7 +126,17 @@ class Test_ImprovedMechanism:
         self.reset()
         self.test_run()
 
-    def test_init(self):
+    def reset(self):
+        """"""
+        self.setup_class()
+        return self
+
+    def test_get_clean_term(self):  # 2025-11-17 15:10:27
+        """"""
+        if TEST_000:
+            pass
+
+    def test__init__(self):
         """
         Tests the initialization of the test_Mechanism_000 object.
 
@@ -160,10 +162,95 @@ class Test_ImprovedMechanism:
             assert self.test_Mechanism_008.data == self.fixture008["data"], self.test_Mechanism_008.data
         LOGMA.info(f"Complete Mechanism Init method Test")
 
+    def test_run(self):
+        """
+        Executes the test case `test_Mechanism_000` and verifies if its output matches the expected output stored in `fixture000["output"]`.
+
+        :return: None
+        """
+        if TEST_000:
+            LOGMA.info(f"Run Test 000")
+            result = self.fixture000["output"]["tmplt_map"]
+            assert self.test_Mechanism_000.run() == result["docs"][0].strip(), self.test_Mechanism_000.run()
+        if TEST_001:
+            LOGMA.info(f"Run Test 001")
+            result = self.fixture001["output"]["tmplt_map"]
+            result["docs"][0] = result["docs"][0].replace("{today}", dt.datetime.today().strftime("%Y%m%d"))
+            LOGMA.info(result["docs"][0])
+            assert self.test_Mechanism_001.run() == result["docs"][0].strip(), self.test_Mechanism_001.run()
+        if TEST_005:
+            LOGMA.info(f"Run Test 005")
+            result = self.fixture005["output"]["tmplt_map"]
+            assert self.test_Mechanism_005.run() == result["docs"][0].strip(), self.test_Mechanism_005.run()
+        if TEST_002:
+            LOGMA.info(f"Run Test 002")
+            result = self.fixture002["output"]["tmplt_map"]
+            output = self.test_Mechanism_002.run(True)
+            LOGMA.info(len(result["docs"]))
+            assert len(output.docs) == len(result["docs"]), len(output.docs)
+            LOGMA.info(f"Doc {result['docs'][0].strip()}")
+            assert output.docs[0] == result["docs"][0].strip(), output.docs[0]
+        if TEST_004:
+            LOGMA.info(f"Run Test 004")
+            result = self.fixture004["output"]["tmplt_map"]
+            # output = codecs.decode(self.test_Mechanism_004.run().strip('"'), "unicode_escape")
+            output = self.test_Mechanism_004.run().strip('"')
+            LOGMA.write(output)
+            # output_result = codecs.decode(result["docs"][0].strip().strip('"'), "unicode_escape")
+            output_result = result["docs"][0].strip().strip('"')
+            LOGMA.write(output_result)
+            assert output == output_result, output
+        if TEST_005:
+            LOGMA.info(f"Run Test 005")
+            result = self.fixture005["output"]["tmplt_map"]
+            # output = codecs.decode(self.test_Mechanism_004.run().strip('"'), "unicode_escape")
+            output = self.test_Mechanism_005.run().strip('"')
+            LOGMA.write(output)
+            # output_result = codecs.decode(result["docs"][0].strip().strip('"'), "unicode_escape")
+            output_result = result["docs"][0].strip().strip('"')
+            LOGMA.write(output_result)
+            assert output == output_result, output
+        if TEST_006:
+            LOGMA.info(f"Run Test 006")
+            result = self.fixture006["output"]["tmplt_map"]
+            # output = codecs.decode(self.test_Mechanism_004.run().strip('"'), "unicode_escape")
+            output = self.test_Mechanism_006.run().strip('"')
+            LOGMA.write(output)
+            # output_result = codecs.decode(result["docs"][0].strip().strip('"'), "unicode_escape")
+            output_result = result["docs"][0].strip().strip('"')
+            LOGMA.write(output_result)
+            assert output == output_result, output
+        if TEST_007:
+            LOGMA.info(f"Run Test 007")
+            result = self.fixture007["output"]["tmplt_map"]
+            output = self.test_Mechanism_007.run(True)
+            LOGMA.info(len(result["docs"]))
+            assert len(output.docs) == len(result["docs"]), len(output.docs)
+            assert output.docs[0] == result["docs"][0].strip(), output.docs[0]
+        if TEST_008:
+            LOGMA.info(f"Run Test 008")
+            result = self.fixture008["output"]["tmplt_map"]
+            assert self.test_Mechanism_008.run() == result["docs"][0].strip(), self.test_Mechanism_008.run()
+        if TEST_009:
+            LOGMA.info(f"Run Test 009")
+            result = self.fixture009["output"]["tmplt_map"]
+            assert self.test_Mechanism_009.run() == result["docs"][0].strip(), self.test_Mechanism_009.run()
+        LOGMA.info(f"Complete Mechanism Run method Test")
+
+    def test___init__(self):  # 2025-11-17 15:10:27
+        """"""
+        if TEST_000:
+            pass
+
     def test__assign_template_map(self):
         """
         Verifies the `_assign_template_map` method's ability to accurately extract and return template map data from the `test_Mechanism_000` object's configuration.
         """
+
+    def test__cached_find_pattern(self):  # 2025-11-17 15:10:27
+        """"""
+        if TEST_000:
+            pass
 
     def test__collect_symbols(self):
         """
@@ -320,6 +407,16 @@ class Test_ImprovedMechanism:
             assert self.test_Mechanism_008.lock is None, self.test_Mechanism_008.lock
         LOGMA.info(f"Complete Mechanism Find Pattern method Test")
 
+    def test__init_terms(self):  # 2025-11-17 15:10:27
+        """"""
+        if TEST_000:
+            pass
+
+    def test__load_config_with_fallback(self):  # 2025-11-17 15:10:27
+        """"""
+        if TEST_000:
+            pass
+
     def test__loop(self):
         """"""
         if TEST_002:
@@ -338,6 +435,11 @@ class Test_ImprovedMechanism:
             assert self.test_Mechanism_002.data == self.fixture002["data"], self.test_Mechanism_002.data
             assert len(self.test_Mechanism_002.docs) == 1, len(self.test_Mechanism_002.docs)
         LOGMA.info(f"Complete Mechanism Loop method Test")
+
+    def test__loop_terms(self):  # 2025-11-17 15:10:27
+        """"""
+        if TEST_000:
+            pass
 
     def test__mapp(self):
         """"""
@@ -422,7 +524,12 @@ class Test_ImprovedMechanism:
             assert fix_map == result, fix_map
         LOGMA.info(f"Complete Mechanism Fix Map method Test")
 
-    def test__procss_map(self):
+    def test__process_final_term(self):  # 2025-11-17 15:10:27
+        """"""
+        if TEST_000:
+            pass
+
+    def test__process_map(self):
         """"""
         if TEST_000:
             self.test_Mechanism_000._process_map()
@@ -436,6 +543,22 @@ class Test_ImprovedMechanism:
             LOGMA.info(result)
             assert self.test_Mechanism_003.docs[0] == result, self.test_Mechanism_003.docs[0]
         LOGMA.info(f"Complete Mechanism Process Map method Test")
+
+    def test__remove_optional(self):
+        """"""
+        if TEST_000:
+            self.test_Mechanism_000._remove_optional()
+        LOGMA.info(f"Complete Mechanism Init method Test")
+
+    def test__set_map_load(self):  # 2025-11-17 15:10:27
+        """"""
+        if TEST_000:
+            pass
+
+    def test__set_templates(self):  # 2025-11-17 15:10:27
+        """"""
+        if TEST_000:
+            pass
 
     def test__sub(self):
         """"""
@@ -461,86 +584,15 @@ class Test_ImprovedMechanism:
             # ), self.test_Mechanism_006.docs[0]
         LOGMA.info(f"Complete Mechanism Sub method Test")
 
-    def test__remove_optional(self):
+    def test__update_line_spacing(self):  # 2025-11-17 15:10:27
         """"""
         if TEST_000:
-            self.test_Mechanism_000._remove_optional()
-        LOGMA.info(f"Complete Mechanism Init method Test")
+            pass
 
-    def test_run(self):
-        """
-        Executes the test case `test_Mechanism_000` and verifies if its output matches the expected output stored in `fixture000["output"]`.
-
-        :return: None
-        """
+    def test__validate_data(self):  # 2025-11-17 15:10:27
+        """"""
         if TEST_000:
-            LOGMA.info(f"Run Test 000")
-            result = self.fixture000["output"]["tmplt_map"]
-            assert self.test_Mechanism_000.run() == result["docs"][0].strip(), self.test_Mechanism_000.run()
-        if TEST_001:
-            LOGMA.info(f"Run Test 001")
-            result = self.fixture001["output"]["tmplt_map"]
-            result["docs"][0] = result["docs"][0].replace("{today}", dt.datetime.today().strftime("%Y%m%d"))
-            LOGMA.info(result["docs"][0])
-            assert self.test_Mechanism_001.run() == result["docs"][0].strip(), self.test_Mechanism_001.run()
-        if TEST_005:
-            LOGMA.info(f"Run Test 005")
-            result = self.fixture005["output"]["tmplt_map"]
-            assert self.test_Mechanism_005.run() == result["docs"][0].strip(), self.test_Mechanism_005.run()
-        if TEST_002:
-            LOGMA.info(f"Run Test 002")
-            result = self.fixture002["output"]["tmplt_map"]
-            output = self.test_Mechanism_002.run(True)
-            LOGMA.info(len(result["docs"]))
-            assert len(output.docs) == len(result["docs"]), len(output.docs)
-            LOGMA.info(f"Doc {result['docs'][0].strip()}")
-            assert output.docs[0] == result["docs"][0].strip(), output.docs[0]
-        if TEST_004:
-            LOGMA.info(f"Run Test 004")
-            result = self.fixture004["output"]["tmplt_map"]
-            # output = codecs.decode(self.test_Mechanism_004.run().strip('"'), "unicode_escape")
-            output = self.test_Mechanism_004.run().strip('"')
-            LOGMA.write(output)
-            # output_result = codecs.decode(result["docs"][0].strip().strip('"'), "unicode_escape")
-            output_result = result["docs"][0].strip().strip('"')
-            LOGMA.write(output_result)
-            assert output == output_result, output
-        if TEST_005:
-            LOGMA.info(f"Run Test 005")
-            result = self.fixture005["output"]["tmplt_map"]
-            # output = codecs.decode(self.test_Mechanism_004.run().strip('"'), "unicode_escape")
-            output = self.test_Mechanism_005.run().strip('"')
-            LOGMA.write(output)
-            # output_result = codecs.decode(result["docs"][0].strip().strip('"'), "unicode_escape")
-            output_result = result["docs"][0].strip().strip('"')
-            LOGMA.write(output_result)
-            assert output == output_result, output
-        if TEST_006:
-            LOGMA.info(f"Run Test 006")
-            result = self.fixture006["output"]["tmplt_map"]
-            # output = codecs.decode(self.test_Mechanism_004.run().strip('"'), "unicode_escape")
-            output = self.test_Mechanism_006.run().strip('"')
-            LOGMA.write(output)
-            # output_result = codecs.decode(result["docs"][0].strip().strip('"'), "unicode_escape")
-            output_result = result["docs"][0].strip().strip('"')
-            LOGMA.write(output_result)
-            assert output == output_result, output
-        if TEST_007:
-            LOGMA.info(f"Run Test 007")
-            result = self.fixture007["output"]["tmplt_map"]
-            output = self.test_Mechanism_007.run(True)
-            LOGMA.info(len(result["docs"]))
-            assert len(output.docs) == len(result["docs"]), len(output.docs)
-            assert output.docs[0] == result["docs"][0].strip(), output.docs[0]
-        if TEST_008:
-            LOGMA.info(f"Run Test 008")
-            result = self.fixture008["output"]["tmplt_map"]
-            assert self.test_Mechanism_008.run() == result["docs"][0].strip(), self.test_Mechanism_008.run()
-        if TEST_009:
-            LOGMA.info(f"Run Test 009")
-            result = self.fixture009["output"]["tmplt_map"]
-            assert self.test_Mechanism_009.run() == result["docs"][0].strip(), self.test_Mechanism_009.run()
-        LOGMA.info(f"Complete Mechanism Run method Test")
+            pass
 
     def test__varr(self):
         """"""
@@ -554,8 +606,206 @@ class Test_ImprovedMechanism:
         LOGMA.info(f"Complete Mechanism Init method Test")
 
 
+class Test_DataProcessor:  # 2025-11-17 15:10:27
+    """"""
+
+    @classmethod
+    def setup_class(cls):  # 2025-11-17 15:10:27
+        """"""
+
+        return cls()
+
+    @classmethod
+    def teardown_class(cls):  # 2025-11-17 15:10:27
+        """"""
+
+        return
+
+    def reset(self):  # 2025-11-17 15:10:27
+        """"""
+        self.setup_class()
+        return self
+
+    def test_all(self):  # 2025-11-17 15:10:27
+        """Executes a series of test functions in a sequential logic."""
+
+        return self
+
+    def test_normalize_term_data(self):  # 2025-11-17 15:10:27
+        """"""
+        if TEST_000:
+            pass
+
+    def test_process_loop_terms(self):  # 2025-11-17 15:10:27
+        """"""
+        if TEST_000:
+            pass
+
+    def test_validate_data(self):  # 2025-11-17 15:10:27
+        """"""
+        if TEST_000:
+            pass
+
+
+class Test_DocumentGenerator:  # 2025-11-17 15:10:27
+    """"""
+
+    @classmethod
+    def setup_class(cls):  # 2025-11-17 15:10:27
+        """"""
+
+        return cls()
+
+    @classmethod
+    def teardown_class(cls):  # 2025-11-17 15:10:27
+        """"""
+
+        return
+
+    def reset(self):  # 2025-11-17 15:10:27
+        """"""
+        self.setup_class()
+        return self
+
+    def test_all(self):  # 2025-11-17 15:10:27
+        """Executes a series of test functions in a sequential logic."""
+
+        return self
+
+    def test_calculate_template_count(self):  # 2025-11-17 15:10:27
+        """"""
+        if TEST_000:
+            pass
+
+    def test_process_final_term(self):  # 2025-11-17 15:10:27
+        """"""
+        if TEST_000:
+            pass
+
+    def test_process_template_map(self):  # 2025-11-17 15:10:27
+        """"""
+        if TEST_000:
+            pass
+
+    def test_remove_optional_terms(self):  # 2025-11-17 15:10:27
+        """"""
+        if TEST_000:
+            pass
+
+    def test___init__(self):  # 2025-11-17 15:10:27
+        """"""
+        if TEST_000:
+            pass
+
+    def test__apply_term_formatting(self):  # 2025-11-17 15:10:27
+        """"""
+        if TEST_000:
+            pass
+
+
+class Test_PerformanceOptimizer:  # 2025-11-17 15:10:27
+    """"""
+
+    @classmethod
+    def setup_class(cls):  # 2025-11-17 15:10:27
+        """"""
+
+        return cls()
+
+    @classmethod
+    def teardown_class(cls):  # 2025-11-17 15:10:27
+        """"""
+
+        return
+
+    def reset(self):  # 2025-11-17 15:10:27
+        """"""
+        self.setup_class()
+        return self
+
+    def test_all(self):  # 2025-11-17 15:10:27
+        """Executes a series of test functions in a sequential logic."""
+
+        return self
+
+    def test_cached_pattern_search(self):  # 2025-11-17 15:10:27
+        """"""
+        if TEST_000:
+            pass
+
+    def test_efficient_string_builder(self):  # 2025-11-17 15:10:27
+        """"""
+        if TEST_000:
+            pass
+
+
+class Test_SecurityValidator:  # 2025-11-17 15:10:27
+    """"""
+
+    @classmethod
+    def setup_class(cls):  # 2025-11-17 15:10:27
+        """"""
+
+        return cls()
+
+    @classmethod
+    def teardown_class(cls):  # 2025-11-17 15:10:27
+        """"""
+
+        return
+
+    def reset(self):  # 2025-11-17 15:10:27
+        """"""
+        self.setup_class()
+        return self
+
+    def test_all(self):  # 2025-11-17 15:10:27
+        """Executes a series of test functions in a sequential logic."""
+
+        return self
+
+    def test_validate_data_structure(self):  # 2025-11-17 15:10:27
+        """"""
+        if TEST_000:
+            pass
+
+    def test_validate_template_size(self):  # 2025-11-17 15:10:27
+        """"""
+        if TEST_000:
+            pass
+
+
+class Test_Functions:  # 2025-11-17 15:10:27
+    """"""
+
+    @classmethod
+    def setup_class(cls):  # 2025-11-17 15:10:27
+        """"""
+
+        return cls()
+
+    @classmethod
+    def teardown_class(cls):  # 2025-11-17 15:10:27
+        """"""
+
+        return
+
+    def reset(self):  # 2025-11-17 15:10:27
+        """"""
+        self.setup_class()
+        return self
+
+    def test_all(self):  # 2025-11-17 15:10:27
+        """Executes a series of test functions in a sequential logic."""
+
+        return self
+
+
 # ====================================================================================================================||
 """
-  # 2025-11-06 11:38:14
+
+  # 2025-11-17 15:10:27
+
+
 """
 # @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@||

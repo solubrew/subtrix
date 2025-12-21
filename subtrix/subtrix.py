@@ -15,13 +15,15 @@
 	security: seclvl2
 	<(WT)>: -32
 """
+
 import json
 from copy import deepcopy
+from functools import lru_cache
 from itertools import combinations
 # -*- coding: utf-8 -*
 # ======================================Standard Library Modules======================================================||
 from os.path import abspath, dirname, join
-from typing import Dict, List, Any, Optional, Union
+from typing import Dict, List, Any, Optional, Union, Tuple
 
 # ======================================Solutions Brewer Library Modules==============================================||
 from condor import condor
@@ -33,16 +35,18 @@ from .utilities import get_variable_data
 
 # ======================================3rd Party Library Modules=====================================================||
 
-
 # ====================================================================================================================||
 here = join(dirname(__file__), "")
 log = False
 logma = Logma(__name__)
-if not log:
-    logma.off()
+logma.off()
 
 # ====================================================================================================================||
 pxcfg = join(abspath(here), "_data_", "subtrix.yaml")  # ||use default configuration
+# Security: Constants for input validation
+MAX_TEMPLATE_SIZE = 1024 * 1024  # 1MB max template size
+MAX_RECURSION_DEPTH = 50
+MAX_DATA_ITEMS = 10000
 
 
 class DataProcessor:
@@ -290,6 +294,53 @@ class DocumentGenerator:
         return template_map
 
 
+class PerformanceOptimizer:
+    """Performance optimization utilities."""
+
+    @staticmethod
+    @lru_cache(maxsize=1000)
+    def cached_pattern_search(template: str, pattern: str) -> int:
+        """Cache pattern search results for better performance."""
+        return template.find(pattern)
+
+    @staticmethod
+    def efficient_string_builder(parts: List[str]) -> str:
+        """Efficiently build strings using join instead of concatenation."""
+        return "".join(str(part) for part in parts if part is not None)
+
+
+class SecurityValidator:
+    """Handles input validation and security checks."""
+
+    @staticmethod
+    def validate_template_size(template: str) -> None:
+        """Validate template size to prevent memory exhaustion."""
+        if len(template) > MAX_TEMPLATE_SIZE:
+            raise TemplateProcessingError(f"Template size exceeds maximum allowed size of {MAX_TEMPLATE_SIZE} bytes")
+
+    @staticmethod
+    def validate_data_structure(data: Dict[str, Any]) -> None:
+        """Validate data structure to prevent injection and resource exhaustion."""
+        if not isinstance(data, dict):
+            raise InvalidDataTypeError("Data must be a dictionary")
+
+        # Check total number of data items
+        total_items = sum(len(v) if isinstance(v, (list, dict)) else 1 for v in data.values())
+        if total_items > MAX_DATA_ITEMS:
+            raise InvalidDataTypeError(f"Data contains too many items: {total_items} > {MAX_DATA_ITEMS}")
+
+        # Validate data types and detect potential injection
+        for key, value in data.items():
+            if not isinstance(key, str):
+                raise InvalidDataTypeError(f"Data keys must be strings, got {type(key)}")
+
+            # Basic injection pattern detection
+            dangerous_patterns = ["<script", "<?php", "${", "eval(", "exec("]
+            key_str = str(key).lower()
+            if any(pattern in key_str for pattern in dangerous_patterns):
+                raise InvalidDataTypeError(f"Potentially dangerous pattern detected in key: {key}")
+
+
 # TODO: refactor current loop to use factorial nomenclature
 #   create a new looping mechanism that combines list inputs into a string input
 
@@ -407,6 +458,13 @@ class ImprovedMechanism:
                 # logma.info(f"Data Term {data[term]}")
                 raise Exception(f"Unknown Data {data[term]}")
 
+    @lru_cache(maxsize=100)
+    def _cached_find_pattern(self, template_segment: str, start_pattern: str, end_pattern: str) -> Tuple[int, int]:
+        """Cache pattern finding for better performance."""
+        start_loc = template_segment.find(start_pattern)
+        end_loc = template_segment.find(end_pattern)
+        return start_loc, end_loc
+
     # Original method names for test compatibility
     def _collect_symbols(self, symcfg):
         """
@@ -521,6 +579,7 @@ class ImprovedMechanism:
             self.lock = True
             while self.lock:
                 start_n, end_n, fix_map, term, code = self._find_pattern(cfg, i, phold)
+                logma.info(f"Start {start_n}, End {end_n}, Fix Map {fix_map}, Term {term}, Code {code}")
                 if code == "<[]>":
                     raise Exception(f"Invalid pattern found for {term}")
                 # logma.info(f"Start {start_n}, End {end_n}, Fix Map {fix_map}, Term {term}, Code {code}")
