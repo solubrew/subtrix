@@ -571,6 +571,8 @@ class ImprovedMechanism:
             data: The data used for substitution in the template
             how: The type of processing to be performed on the template
 
+                edit
+
         Returns:
             The updated object
         """
