@@ -20,6 +20,7 @@ import json
 from copy import deepcopy
 from functools import lru_cache
 from itertools import combinations
+
 # -*- coding: utf-8 -*
 # ======================================Standard Library Modules======================================================||
 from os.path import abspath, dirname, join
@@ -569,6 +570,8 @@ class ImprovedMechanism:
         Args:
             data: The data used for substitution in the template
             how: The type of processing to be performed on the template
+
+                edit
 
         Returns:
             The updated object
