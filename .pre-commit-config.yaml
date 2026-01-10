@@ -1,0 +1,9 @@
+repos:
+  - repo: local
+    hooks:
+      - id: run-tests
+        name: Run Project Tests
+        entry: pytest
+        language: system
+        types: [ python ]
+        pass_filenames: false
