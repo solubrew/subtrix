@@ -9,7 +9,7 @@
     version: <[version]>
     authority: <[authority]>
     security: <[security]>
-    -(WT)-: -32  # 2025-11-17 15:10:27
+    -(WT)-: -32  # 2026-01-09 13:57:25
 """
 
 # -*- coding: utf-8 -*
@@ -19,12 +19,12 @@ import datetime as dt
 # -*- coding: utf-8 -*
 from copy import deepcopy
 
+# ======================================3rd Party Library Modules=====================================================||
 import Logma  # 2025-11-17 15:10:27
+# =========================================Local Library Modules======================================================||
 import condor  # 2025-11-17 15:10:27
 import dirname  # 2025-11-17 15:10:27
-# ======================================3rd Party Library Modules=====================================================||
 import join  # 2025-11-17 15:10:27
-# =========================================Local Library Modules======================================================||
 from condor import condor
 from ogma.logma import Logma
 
@@ -32,7 +32,7 @@ from subtrix import subtrix
 from subtrix.subtrix import Mechanism  # 2025-11-06 11:38:14
 
 # ====================================================================================================================||
-HERE = join(dirname(__file__))  # 2025-11-17 15:10:27
+HERE = Path(__file__).parent  # 2026-01-09 13:57:26
 log = subtrix.log
 LOGMA = Logma(__name__)  # 2025-11-17 15:10:27
 PXCFG = join(HERE, "_data_", "subtrixTEST.yaml")  # 2025-11-17 15:10:27
@@ -53,6 +53,8 @@ FIXTURES = condor.Instruct(join(HERE, "..", "fixtures", "fixtures.yaml")).load()
 
 CFG = condor.Instruct(PXCFG).load().dikt  # 2025-11-17 15:10:27
 
+
+CONFIG_PATH = HERE / "_data_" / "subtrix.yaml"  # 2026-01-09 13:57:26
 # ====================================================================================================================||
 
 
@@ -804,7 +806,7 @@ class Test_Functions:  # 2025-11-17 15:10:27
 # ====================================================================================================================||
 """
 
-  # 2025-11-17 15:10:27
+  # 2026-01-09 13:57:25
 
 
 """

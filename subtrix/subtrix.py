@@ -20,7 +20,6 @@ import json
 from copy import deepcopy
 from functools import lru_cache
 from itertools import combinations
-
 # -*- coding: utf-8 -*
 # ======================================Standard Library Modules======================================================||
 from os.path import abspath, dirname, join
@@ -414,6 +413,7 @@ class ImprovedMechanism:
             Processed template string if full=False, otherwise Mechanism instance
         """
         self.map_processed = False
+        logma.info(f"Config {self.config.dikt}")
         for i in self.config.dikt["sequence"]:
             # logma.info(f"Run Method {i}")
             getattr(self, f"_{i}")()

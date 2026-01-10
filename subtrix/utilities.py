@@ -11,26 +11,42 @@
 	security: seclvl2
 	<(WT)>: -32
 """
+
+
 import datetime as dt
+import difflib
+import json
 # -*- coding: utf-8 -*
 # ======================================Standard Library Modules======================================================||
 from os.path import dirname, join
 from typing import Optional
 
-# ======================================Solutions Brewer Library Modules==============================================||
-from condor import condor
-from condor.utils import thingify
-from ogma.logma import Logma
 # ======================================3rd Party Library Modules=====================================================||
 from uuid_extensions import uuid7
 
+# ======================================Solutions Brewer Library Modules==============================================||
+
 # ====================================================================================================================||
 here = join(dirname(__file__), "")  # ||
-log = True
-logma = Logma(__name__)
+
 
 # ====================================================================================================================||
 pxcfg = join(here, "_data_", ".yaml")
+
+
+def diff_dicts(dict1, dict2):
+    # 1. Convert dicts to sorted, indented JSON strings to make them comparable line-by-line
+    # sort_keys=True is crucial to ensure order doesn't trigger "fake" differences
+    str1 = json.dumps(dict1, indent=2, sort_keys=True).splitlines()
+    str2 = json.dumps(dict2, indent=2, sort_keys=True).splitlines()
+    # 2. Generate a unified diff
+    diff = difflib.unified_diff(str1, str2, fromfile="original", tofile="current", lineterm="")
+    # 3. Join and return or print
+    result = "\n".join(diff)
+    # if result:
+    # print("Dictionaries differ:", file=sys.stderr)
+    # print(result, file=sys.stderr)
+    return result
 
 
 def now() -> str:
@@ -93,6 +109,9 @@ def get_doc(file_path: str) -> str:
 
 def get_variable_data(term):
     """"""
+    from condor import condor
+    from condor.utils import thingify
+
     cfg = condor.Instruct(join(here, "_data_", "varr.yaml")).load().dikt["knowns"]
     if "<(" in term:
         # found, within = search(cfg, [], [], [term])
@@ -121,6 +140,31 @@ def get_variable_data(term):
 # def today():
 #     """"""
 #     return dt.date.today().strftime("%Y%m%d")
+# def thingify(thing, module=None, path=None, test=False):
+#     """Import dotted path text and return the attribute/class"""
+#     if test:
+#         if module is None:
+#             module_path, thing = thing.rsplit(".", 1)
+#             module = import_module(module_path)
+#         obj = getattr(module, thing)
+#         return obj
+#     else:
+#         if module is None:
+#             try:
+#                 module_path, thing = thing.rsplit(".", 1)
+#                 module = import_module(module_path)
+#             except Exception as e:
+#                 logma.warning(f"Thingify Module Path {thing} Failed {e}")
+#                 logma.warning(f"From this Path {path}")
+#                 traceback.print_exc()
+#                 raise e
+#         try:
+#             obj = getattr(module, thing)
+#         except AttributeError as e:
+#             logma.warning(f"Thingification Failed due to {e}")
+#             traceback.print_exc()
+#             raise e
+#         return obj
 
 
 def uuid(n=None):
