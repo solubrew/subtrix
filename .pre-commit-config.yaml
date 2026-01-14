@@ -3,7 +3,7 @@ repos:
     hooks:
       - id: run-tests
         name: Run Project Tests
-        entry: pytest
+        entry: /usr/bin/env PYTHONPATH=/home/solubrew/Documents/AIM /mnt/iverse/ENVs/uh/bin/python -m pytest
         language: system
         types: [ python ]
         pass_filenames: false

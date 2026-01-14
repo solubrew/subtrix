@@ -12,7 +12,6 @@
 """
 
 import datetime as dt
-
 # -*- coding: utf-8 -*-
 # -*- coding: utf-8 -*
 # ======================================Standard Library Modules======================================================||
@@ -26,7 +25,7 @@ import crow
 
 crow.crowLoad("Subtrix", "DELTA")
 from ogma.logma import Logma
-from test_subtrix.subtrix.subtrixTEST import Test_ImprovedMechanism
+from test_subtrix.unit.subtrixTEST import Test_Mechanism
 
 # ====================================================================================================================||
 here = join(dirname(__file__), "")  # ||
@@ -40,7 +39,7 @@ pxcfg = join(here, "_data_", ".yaml")
 def run(args):
     """Run individual tabs with mock data for development purposes"""
     if args[1] == "class" or args[1] == "all":
-        test = Test_ImprovedMechanism.setup_class()
+        test = Test_Mechanism.setup_class()
         test.test_all()
         test.teardown_class()
 

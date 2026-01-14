@@ -20,7 +20,6 @@ import json
 from copy import deepcopy
 from functools import lru_cache
 from itertools import combinations
-
 # -*- coding: utf-8 -*
 # ======================================Standard Library Modules======================================================||
 from os.path import abspath, dirname, join
@@ -346,7 +345,7 @@ class SecurityValidator:
 #   create a new looping mechanism that combines list inputs into a string input
 
 
-class ImprovedMechanism:
+class Mechanism:
     """
     Improved Subtrix templating mechanism with better error handling,
     performance optimizations, and cleaner architecture while maintaining
@@ -566,7 +565,6 @@ class ImprovedMechanism:
     def _mapp(self, data, how="sub"):
         """
         Map patterns in template to data.
-
         Args:
             data: The data used for substitution in the template
             how: The type of processing to be performed on the template
@@ -837,7 +835,7 @@ class ImprovedMechanism:
         return self
 
 
-Mechanism = ImprovedMechanism
+# Mechanism = ImprovedMechanism
 # ====================================================================================================================||
 """
     change log:

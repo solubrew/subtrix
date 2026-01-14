@@ -49,6 +49,12 @@ def diff_dicts(dict1, dict2):
     return result
 
 
+def diff_strings(str1, str2):
+    return difflib.unified_diff(
+        str1.splitlines(), str2.splitlines(), fromfile="original", tofile="current", lineterm=""
+    )
+
+
 def now() -> str:
     """
     Get current timestamp as string.
